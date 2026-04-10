@@ -2,6 +2,8 @@
 
 Update brainlink to the latest version.
 
+**Run in your terminal only** — this downloads and installs software. Always prompts before doing anything.
+
 ---
 
 ## Synopsis

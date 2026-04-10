@@ -74,7 +74,7 @@ brainlink init
 
 ## Commands
 
-**Run once, before your first AI session:**
+**Run once, before your first AI session — in your terminal:**
 ```bash
 brainlink init        # sets everything up — never needs to run again
 ```
@@ -87,31 +87,36 @@ brainlink log         # complete session history
 brainlink sync --once # check what other sessions have shared
 ```
 
-**Run in a background terminal tab while sessions are active:**
+**Run in a dedicated background terminal tab while sessions are active:**
 ```bash
-brainlink sync        # watch mode — surfaces changes as they happen
+brainlink sync        # watch mode — stays running, surfaces changes from other sessions the moment they happen
 ```
+Watch mode is the default. It keeps the process alive and prints a notification whenever another session writes to the shared memory. Stop it with Ctrl+C. Use `--once` to check once and exit.
 
-**Run between sessions:**
+**Run in your terminal between sessions — not via AI (interactive or destructive):**
 ```bash
 brainlink clear       # fresh session start (keeps memory and history intact)
 brainlink reset       # scorched earth — wipe all memory, keep your settings
 brainlink config      # change agents, git tracking, or auto-sync
 ```
 
-**Maintenance:**
+**Run in your terminal only — maintenance tasks:**
 ```bash
 brainlink update      # check for a newer version, never installs without asking
 brainlink uninstall   # remove Brainlink from this project
 ```
 
-Every command supports `--help`. Full reference: [`commands/`](commands/index.md).
+Every command supports `--help`. Full CLI reference: [commands/](commands/index.md).
 
 ---
 
 ## Can my AI run these commands itself?
 
-Yes — and it should. Your AI has a terminal. Tell it to run `brainlink summary` or `brainlink status` and it reads the output directly. This is the cleanest way to brief a mid-session agent without copying files around.
+Yes — and it should, for the read-only ones. Your AI has a terminal. Tell it to run `brainlink summary` or `brainlink status` and it reads the output directly. This is the cleanest way to brief a mid-session agent without copying files around.
+
+**AI can run:** `status`, `summary`, `log`, `sync --once`
+
+**Run yourself:** `init`, `clear`, `reset`, `config`, `update`, `uninstall` — these are interactive, change settings, or modify/remove files. Keep human hands on them.
 
 The one exception: `brainlink sync` in watch mode runs continuously — keep it in a separate terminal tab.
 

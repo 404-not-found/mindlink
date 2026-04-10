@@ -2,6 +2,8 @@
 
 Remove Brainlink from the current project.
 
+**Run in your terminal only** — this permanently removes files. Always prompts for confirmation first.
+
 ---
 
 ## Synopsis

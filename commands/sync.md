@@ -1,6 +1,8 @@
 # brainlink sync
 
-Sync shared context between sessions.
+Watch for shared context written by other sessions and surface it automatically.
+
+**Run this in a dedicated background terminal tab** while your AI sessions are active. It stays running until you stop it (Ctrl+C).
 
 ---
 
@@ -12,13 +14,15 @@ brainlink sync [--once] [--no-progress]
 
 ---
 
-## Description
+## What "watch mode" means
 
-Merges new content written to `.brain/SHARED.md` by any session in this project. When two AI sessions are running in the same project folder, each can write discoveries, decisions, and context to `SHARED.md`. `brainlink sync` detects changes and merges them so both sessions stay aware of each other.
+**Watch mode is the default** — when you run `brainlink sync` with no flags, the process stays alive. It watches `.brain/SHARED.md` for any new content written by other sessions in this project. The moment another session appends a discovery or decision, sync detects the change and prints a notification so you know to tell your AI to check `SHARED.md`.
 
-**Watch mode is the default.** `brainlink sync` runs continuously, watching for changes and syncing automatically as sessions write. Use `--once` to sync a single time and exit.
+This is designed to run in a separate terminal tab alongside your AI session, not as a one-shot command.
 
-If you enabled auto-sync during `brainlink init`, sync runs automatically in the background — you don't need to run this command manually.
+**`--once`** runs a single check and exits — useful when you just want to see what's been shared so far without keeping a watcher running.
+
+If you enabled auto-sync during `brainlink init`, sync runs automatically in the background — you don't need to run this manually.
 
 ---
 

@@ -2,6 +2,8 @@
 
 Wipe all `.brain/` memory files and start completely fresh.
 
+**Run in your terminal, between sessions — not via AI.** This is a destructive operation; always prompts for confirmation first.
+
 ---
 
 ## Synopsis
@@ -17,6 +19,10 @@ brainlink reset [--yes]
 Resets all four `.brain/` memory files — `MEMORY.md`, `SESSION.md`, `SHARED.md`, and `LOG.md` — back to blank templates. Your settings (`config.json`) and agent instruction files (e.g. `CLAUDE.md`, `CURSOR.md`) are untouched.
 
 Use this when the project direction has fundamentally changed and you want your AI to start with no prior context. For simply starting a new work session, use [`brainlink clear`](clear.md) instead.
+
+Not what you need? See:
+- [`brainlink clear`](clear.md) — reset SESSION.md only (lighter option, keeps all history)
+- [`brainlink uninstall`](uninstall.md) — remove Brainlink from this project entirely
 
 ---
 

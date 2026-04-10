@@ -1,23 +1,54 @@
 # Brainlink CLI Reference
 
 > Full command reference for the Brainlink CLI.
+> Each command page includes synopsis, options, output examples, and error cases.
 
 ---
 
 ## Commands
 
+Commands are grouped by when and how you run them.
+
+### Run once — in your terminal, before first AI session
+
 | Command | Description |
 |---|---|
-| [init](init.md) | Set up memory for the current project |
+| [init](init.md) | Set up `.brain/` memory for the current project |
+
+### Ask your AI to run — or run yourself in any terminal
+
+| Command | Description |
+|---|---|
 | [status](status.md) | Show last session summary and what's next |
 | [summary](summary.md) | Full briefing — everything Brainlink knows, in one view |
-| [sync](sync.md) | Sync shared context between sessions |
 | [log](log.md) | View full session history |
-| [config](config.md) | Change settings after init |
-| [clear](clear.md) | Reset SESSION.md for a fresh session start |
-| [reset](reset.md) | Wipe all .brain/ memory back to blank templates |
-| [update](update.md) | Update brainlink to the latest version |
+
+### Keep running in a background terminal tab (while sessions are active)
+
+| Command | Description |
+|---|---|
+| [sync](sync.md) | Watch for changes from other sessions and surface them automatically |
+
+`brainlink sync` runs in **watch mode by default** — it stays alive and prints a notification whenever another session appends to `.brain/SHARED.md`. Use `--once` to check a single time and exit.
+
+### Run in your terminal between sessions — not via AI
+
+These commands are interactive, change settings, or modify files. Keep human hands on them.
+
+| Command | Description |
+|---|---|
+| [clear](clear.md) | Reset SESSION.md for a fresh session start (keeps memory and history) |
+| [reset](reset.md) | Wipe all `.brain/` memory back to blank templates |
+| [config](config.md) | Change agents, git tracking, or auto-sync after init |
+
+### Maintenance — run in your terminal only
+
+| Command | Description |
+|---|---|
+| [update](update.md) | Check for a newer version — never installs without asking |
 | [uninstall](uninstall.md) | Remove Brainlink from the current project |
+
+---
 
 ## Global Flags
 
@@ -27,16 +58,17 @@ These flags work on every command.
 |---|---|
 | `--help`, `-h` | Show help for the command |
 | `--version`, `-v` | Show the installed version |
+| `--yes`, `-y` | Skip confirmation prompts (where supported) |
+| `--json` | Output as JSON (status, summary, log) |
 | `--no-progress` | Disable progress bars (useful in scripts and CI) |
-| `--json` | Output as JSON where supported |
-| `--debug` | Show verbose debug output and stack traces |
+
+---
 
 ## Getting Help
 
 ```bash
-brainlink help
-brainlink help <command>
+brainlink --help
 brainlink <command> --help
 ```
 
-All three forms show the same help for a command.
+Every command's `--help` shows a synopsis, all flags, examples, and what gets removed/changed.

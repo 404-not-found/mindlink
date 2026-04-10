@@ -2,6 +2,8 @@
 
 Change settings for the current project after init.
 
+**Run in your terminal — this opens an interactive menu.** Not suitable for AI to run on your behalf.
+
 ---
 
 ## Synopsis

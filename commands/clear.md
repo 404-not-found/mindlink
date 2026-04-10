@@ -2,6 +2,8 @@
 
 Reset current session state for a fresh start.
 
+**Run in your terminal between sessions.** No confirmation needed — it just resets SESSION.md and tells you what it did.
+
 ---
 
 ## Synopsis
@@ -14,9 +16,13 @@ brainlink clear [--yes]
 
 ## Description
 
-Resets `.brain/SESSION.md` so your AI agent starts the next session with a clean slate. **`MEMORY.md` and `LOG.md` are not touched** — permanent project facts and session history are always preserved.
+Resets `.brain/SESSION.md` so your AI agent starts the next session with a clean slate. **`MEMORY.md`, `LOG.md`, and `SHARED.md` are not touched** — permanent project facts, session history, and shared context are always preserved.
 
 Use this when you want to start a genuinely new task and don't want the agent picking up mid-task state from a previous session.
+
+Not what you need? See:
+- [`brainlink reset`](reset.md) — wipe ALL memory back to blank (scorched earth)
+- [`brainlink uninstall`](uninstall.md) — remove Brainlink from this project entirely
 
 ---
 
