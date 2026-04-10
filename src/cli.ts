@@ -6,6 +6,7 @@ import { clearCommand } from './commands/clear.js';
 import { resetCommand } from './commands/reset.js';
 import { configCommand } from './commands/config.js';
 import { syncCommand } from './commands/sync.js';
+import { updateCommand } from './commands/update.js';
 
 const program = new Command();
 
@@ -21,8 +22,6 @@ program.addCommand(clearCommand);
 program.addCommand(resetCommand);
 program.addCommand(configCommand);
 program.addCommand(syncCommand);
-
-// Coming soon:
-// program.addCommand(updateCommand);
+program.addCommand(updateCommand);
 
 program.parse();
