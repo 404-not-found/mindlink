@@ -1,0 +1,23 @@
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+build/
+
+# Environment
+.env
+.env.*
+
+# OS
+.DS_Store
+
+# Internal dev files — not for public repo
+PROGRESS.md
+BOOTSTRAP.md
+CX.md
+CLAUDE.md
+CHANGELOG.md
+
+# Brainlink memory (if dogfooding on this repo)
+.brain/
