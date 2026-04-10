@@ -8,6 +8,8 @@ import { resetCommand } from './commands/reset.js';
 import { configCommand } from './commands/config.js';
 import { syncCommand } from './commands/sync.js';
 import { updateCommand } from './commands/update.js';
+import { summaryCommand } from './commands/summary.js';
+import { uninstallCommand } from './commands/uninstall.js';
 
 const program = new Command();
 
@@ -24,6 +26,8 @@ program.addCommand(resetCommand);
 program.addCommand(configCommand);
 program.addCommand(syncCommand);
 program.addCommand(updateCommand);
+program.addCommand(summaryCommand);
+program.addCommand(uninstallCommand);
 
 // "Did you mean?" on unknown commands
 program.on('command:*', (operands: string[]) => {
