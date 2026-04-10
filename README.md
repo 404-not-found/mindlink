@@ -61,21 +61,21 @@ brainlink init
 
 ## Commands
 
-```
-brainlink init      Set up memory for the current project
-brainlink status    See what was done last session and what's next
-brainlink sync      Keep two sessions in sync (watch mode by default)
-brainlink log       View full session history
-brainlink config    Change settings
-brainlink clear     Start a fresh session
-brainlink update    Update to the latest version
-brainlink help      Show help
-```
+| Command | What it does |
+|---|---|
+| [`brainlink init`](commands/init.md) | Create `.brain/` in your project and generate agent instruction files. **Run this once per project before your first AI session.** |
+| [`brainlink status`](commands/status.md) | Show what was completed last session, what's in progress, blockers, and what's next. |
+| [`brainlink log`](commands/log.md) | Print the full session history. Supports `--limit`, `--since`, `--all`, `--json`. |
+| [`brainlink sync`](commands/sync.md) | Keep concurrent sessions in sync. Watch mode by default — use `--once` to sync and exit. |
+| [`brainlink config`](commands/config.md) | Change settings after init: git tracking, auto-sync, agent files. |
+| [`brainlink clear`](commands/clear.md) | Reset `SESSION.md` for a clean session start. Leaves memory and history untouched. |
+| `brainlink reset` | Wipe all `.brain/` memory back to blank templates. Keeps your settings. |
+| [`brainlink update`](commands/update.md) | Check for the latest version and update. Never updates silently. |
 
 Every command supports `--help`:
 ```bash
+brainlink init --help
 brainlink log --help
-brainlink sync --help
 ```
 
 ---
