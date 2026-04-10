@@ -54,7 +54,7 @@ Brainlink gives you a shared memory layer — here is how to use it honestly:
 ### During the session
 
 - Keep `.brain/SESSION.md` updated: current task, progress, decisions made, blockers, what's next
-- Write important discoveries to `.brain/SHARED.md` so other sessions benefit
+- Append important discoveries to `.brain/SHARED.md` with a dated section header (e.g. `## [Session — Apr 9, 2026]`) — never overwrite what's already there; other sessions are reading it too
 
 ### At the end of the session
 

@@ -19,6 +19,10 @@ What stays:
   - The brainlink CLI itself (run: npm uninstall -g brainlink)
   - Any files Brainlink did not create
 
+Not what you need?
+  brainlink clear  — reset SESSION.md only (fresh session, keep everything else)
+  brainlink reset  — wipe memory back to blank (keep Brainlink installed)
+
 Examples:
   brainlink uninstall
   brainlink uninstall --yes
@@ -59,6 +63,10 @@ Examples:
       console.log('');
       console.log(`  ${chalk.dim('The brainlink CLI itself is NOT removed.')}`);
       console.log(`  ${chalk.dim('To remove the CLI: npm uninstall -g brainlink')}`);
+      console.log('');
+      console.log(`  ${chalk.dim('Lighter options:')}`);
+      console.log(`  ${chalk.dim('  brainlink clear  — fresh session only (keeps all memory)')}`);
+      console.log(`  ${chalk.dim('  brainlink reset  — wipe memory (keeps Brainlink installed)')}`);
       console.log('');
 
       const action = await select({

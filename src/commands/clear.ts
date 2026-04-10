@@ -1,5 +1,4 @@
 import { Command } from 'commander';
-import { confirm, isCancel, cancel } from '@clack/prompts';
 import chalk from 'chalk';
 import { existsSync, readFileSync, writeFileSync } from 'fs';
 import { join, resolve } from 'path';
@@ -9,15 +8,24 @@ export const clearCommand = new Command('clear')
   .description('Reset SESSION.md for a fresh session start')
   .option('-y, --yes', 'Skip confirmation prompt')
   .addHelpText('after', `
+What it does:
+  Resets SESSION.md to a blank template — wipes current task, in-progress items,
+  blockers, and up-next. MEMORY.md, LOG.md, and SHARED.md are untouched.
+
+Not what you need?
+  brainlink reset     — wipe ALL memory files back to blank (scorched earth)
+  brainlink uninstall — remove Brainlink from this project entirely
+
 Examples:
   brainlink clear
   brainlink clear --yes
   `)
-  .action(async (opts) => {
+  .action(async (_opts) => {
     const projectPath = resolve(process.cwd());
     const brainDir = join(projectPath, BRAIN_DIR);
 
     if (!existsSync(brainDir)) {
+      console.log('');
       console.log(`  ${chalk.red('✗')}  No .brain/ found in this directory.`);
       console.log(`     Run ${chalk.cyan('brainlink init')} to get started.`);
       console.log('');
@@ -25,22 +33,6 @@ Examples:
     }
 
     console.log('');
-
-    if (!opts.yes) {
-      console.log(`  ${chalk.dim('This will reset SESSION.md for a fresh session start.')}`);
-      console.log(`  ${chalk.dim('MEMORY.md and LOG.md are untouched.')}`);
-      console.log('');
-
-      const confirmed = await confirm({
-        message: 'Clear current session?',
-      });
-
-      if (isCancel(confirmed) || !confirmed) {
-        cancel('Cancelled.');
-        process.exit(0);
-      }
-      console.log('');
-    }
 
     try {
       const templatePath = join(BRAIN_TEMPLATES_DIR, 'SESSION.md');
@@ -53,5 +45,6 @@ Examples:
     }
 
     console.log(`  ${chalk.green('✓')}  SESSION.md cleared. Ready for a clean session.`);
+    console.log(`     ${chalk.dim('MEMORY.md, LOG.md, and SHARED.md are untouched.')}`);
     console.log('');
   });

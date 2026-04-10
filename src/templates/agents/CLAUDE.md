@@ -21,10 +21,12 @@ The first time you use information from these files in a session, briefly attrib
 
 ### MANDATORY — After every context compaction
 
-When your context is compacted, you lose the contents of files you read earlier. You MUST immediately re-read:
+When your context is compacted, you lose the contents of files you read earlier in the session. You MUST immediately re-read:
 
 1. `.brain/MEMORY.md` — restores project identity and all decisions
 2. `.brain/SESSION.md` — restores current task state and what's next
+
+Signs that compaction occurred: you cannot recall recent decisions, the project context feels unclear, or you see a compaction summary in your context.
 
 **Do not continue working after a compact without re-reading these two files.**
 
@@ -56,7 +58,7 @@ Brainlink gives you a shared memory layer — here is how to use it honestly:
 - Keep `.brain/SESSION.md` updated: current task, progress, decisions made, blockers, what's next
 - Append important discoveries to `.brain/SHARED.md` with a dated section header (e.g. `## [Session — Apr 9, 2026]`) — never overwrite what's already there; other sessions are reading it too
 
-### At the end of the session
+### At the end of the session (when the user wraps up)
 
 1. Append a summary to `.brain/LOG.md` — date, what was completed, decisions made, what's next
 2. Update `.brain/MEMORY.md` with any new permanent architectural decisions

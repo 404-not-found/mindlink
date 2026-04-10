@@ -11,6 +11,14 @@ export const resetCommand = new Command('reset')
   .description('Wipe all .brain/ memory files and start completely fresh')
   .option('-y, --yes', 'Skip confirmation prompt')
   .addHelpText('after', `
+What it does:
+  Resets MEMORY.md, SESSION.md, SHARED.md, and LOG.md to blank templates.
+  Your settings (config.json) and agent instruction files are untouched.
+
+Not what you need?
+  brainlink clear     — reset SESSION.md only (lighter option)
+  brainlink uninstall — remove Brainlink from this project entirely
+
 Examples:
   brainlink reset
   brainlink reset --yes
@@ -29,9 +37,12 @@ Examples:
     console.log('');
 
     if (!opts.yes) {
-      console.log(`  ${chalk.yellow('!')}  This will wipe all .brain/ memory files and start fresh.`);
+      console.log(`  ${chalk.yellow('!')}  This will wipe ALL .brain/ memory files and start fresh.`);
       console.log(`     ${chalk.dim('MEMORY.md, SESSION.md, SHARED.md, and LOG.md → reset to blank templates.')}`);
-      console.log(`     ${chalk.dim('Your settings and agent instruction files are untouched.')}`);
+      console.log(`     ${chalk.dim('Settings and agent instruction files are untouched.')}`);
+      console.log('');
+      console.log(`  ${chalk.dim('Lighter option: brainlink clear  — resets SESSION.md only')}`);
+      console.log(`  ${chalk.dim('Remove entirely: brainlink uninstall  — removes Brainlink from this project')}`);
       console.log('');
 
       const confirmed = await confirm({

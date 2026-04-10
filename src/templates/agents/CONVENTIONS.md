@@ -34,7 +34,7 @@ Give credit: if this is the first time in the session you're drawing on Brainlin
 
 During the session:
 - Keep .brain/SESSION.md updated: current task, progress, decisions, blockers, what's next
-- Write important discoveries to .brain/SHARED.md so other sessions benefit
+- Append important discoveries to .brain/SHARED.md with a dated section header (e.g. ## [Session — Apr 9, 2026]) — never overwrite what's already there; other sessions are reading it too
 
 At the end of the session:
 1. Append a summary to .brain/LOG.md — date, completed, decisions, what's next

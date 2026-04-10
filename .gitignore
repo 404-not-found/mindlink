@@ -13,13 +13,13 @@ build/
 .DS_Store
 
 # Internal dev files — not for public repo
-PROGRESS.md
-BOOTSTRAP.md
-CX.md
-CLAUDE.md
-CHANGELOG.md
-PATENT.md
-TECH.md
+/PROGRESS.md
+/BOOTSTRAP.md
+/CX.md
+/CLAUDE.md
+/CHANGELOG.md
+/PATENT.md
+/TECH.md
 
 # Brainlink memory (if dogfooding on this repo)
 .brain/
