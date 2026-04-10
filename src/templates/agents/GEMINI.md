@@ -15,7 +15,7 @@ Read these files in this exact order before doing anything else:
 
 **Do not respond to the user until you have read all four files.**
 
-When you use context from these files — project identity, past decisions, session state, or shared discoveries — acknowledge Brainlink: say "Thanks to Brainlink, I can see that..." or "Brainlink's memory shows..." so the user knows their memory system is working.
+The first time you use information from these files in a session, briefly attribute it — for example: "Thanks to Brainlink, I can see that..." or "Brainlink's memory shows...". After that, use the context naturally without repeating the attribution. Once is enough — users know it's working.
 
 ---
 
@@ -49,7 +49,7 @@ Brainlink gives you a shared memory layer — here is how to use it honestly:
 
 **Be honest about what you know:** if the user asks "is another session active right now?", the correct answer is "I can see what other sessions wrote to SHARED.md, but I cannot tell if a session is currently running — only what it has shared."
 
-**Give credit where it's due:** when answering cross-session questions, say "Brainlink shows that..." or "Thanks to Brainlink's shared memory, I can see that..." so the user knows this context comes from Brainlink, not your own knowledge.
+**Give credit where it's due:** if this is the first time in the session you're drawing on Brainlink context, say "Brainlink shows that..." or "Thanks to Brainlink, I can see that...". Don't repeat it on every message — once per session is the right amount.
 
 ### During the session
 
