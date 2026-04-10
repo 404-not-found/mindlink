@@ -2,8 +2,9 @@
 
 **Give your AI a permanent memory.**
 
-Every new session wakes up fully informed — no re-explaining, no lost context.
-Two sessions in the same project stay in sync — no isolated agents, no duplicate work.
+Your AI has goldfish memory. Every new session, it wakes up knowing absolutely nothing about your project — no context, no decisions, no "we tried that last week." You spend the first 10 minutes re-explaining everything. Every. Single. Time.
+
+Brainlink fixes that. One command per project, and your AI wakes up fully briefed every session.
 
 [![npm version](https://img.shields.io/npm/v/brainlink)](https://www.npmjs.com/package/brainlink)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
@@ -44,7 +45,7 @@ winget install brainlink
 scoop install brainlink
 ```
 
-No Node.js? Download a standalone binary from [GitHub Releases](https://github.com/404-not-found/brainlink/releases).
+No Node.js? Grab a standalone binary from [GitHub Releases](https://github.com/404-not-found/brainlink/releases) — no runtime required.
 
 ---
 
@@ -55,7 +56,19 @@ cd my-project
 brainlink init
 ```
 
-**Run `brainlink init` before starting your AI session** — it creates the files your agent reads on startup. The current session won't see it; the next one will. After that, every new session wakes up fully informed automatically. Nothing else to do.
+**Run this before your first AI session** — it creates the memory files your agent reads on startup. The current session won't see them; the next one will wake up fully briefed. After that, you never have to run it again. That's the whole deal.
+
+---
+
+## What It Does
+
+**No more goldfish brain** — every time you start a new AI session in your project, it already knows everything: what the project is, what decisions were made, what was built last session, what's broken, and what comes next. No briefing required.
+
+**Two sessions, one brain** — two AI sessions open in the same project? They share the same context automatically. What one learns, the other can see. No more running the same experiment twice because your two agents didn't know about each other.
+
+**Plug in, not lock in** — works with Claude Code, Cursor, Codex, Gemini CLI, GitHub Copilot, Windsurf, Cline, Aider, and more. Run `brainlink init`, pick your agents, and it generates the right setup file for each one. No config to write, no API to call.
+
+**Your files, your rules** — memory lives in your project as plain Markdown in a `.brain/` folder. No account, no cloud, no surveillance. Commit it to git for shared team memory, or keep it local. Read it, edit it, delete it — it's just files.
 
 ---
 
@@ -63,14 +76,14 @@ brainlink init
 
 | Command | What it does |
 |---|---|
-| [`brainlink init`](commands/init.md) | Create `.brain/` in your project and generate agent instruction files. **Run this once per project before your first AI session.** |
-| [`brainlink status`](commands/status.md) | Show what was completed last session, what's in progress, blockers, and what's next. |
+| [`brainlink init`](commands/init.md) | Create `.brain/` in your project and generate agent instruction files. **Run once per project, before your first AI session.** |
+| [`brainlink status`](commands/status.md) | See what was done last session, what's in progress, blockers, and what's next — without opening a single file. |
 | [`brainlink log`](commands/log.md) | Print the full session history. Supports `--limit`, `--since`, `--all`, `--json`. |
-| [`brainlink sync`](commands/sync.md) | Keep concurrent sessions in sync. Watch mode by default — use `--once` to sync and exit. |
-| [`brainlink config`](commands/config.md) | Change settings after init: git tracking, auto-sync, agent files. |
-| [`brainlink clear`](commands/clear.md) | Reset `SESSION.md` for a clean session start. Leaves memory and history untouched. |
-| `brainlink reset` | Wipe all `.brain/` memory back to blank templates. Keeps your settings. |
-| [`brainlink update`](commands/update.md) | Check for the latest version and update. Never updates silently. |
+| [`brainlink sync`](commands/sync.md) | Watch for changes across sessions and surface what other sessions have written. Watch mode by default — `--once` to run and exit. |
+| [`brainlink config`](commands/config.md) | Change settings after init: git tracking, auto-sync, agent files. No need to re-run init. |
+| [`brainlink clear`](commands/clear.md) | Reset `SESSION.md` for a fresh session start. History and memory stay intact. |
+| [`brainlink reset`](commands/reset.md) | Wipe all `.brain/` memory back to blank templates. Scorched earth. Your settings are safe. |
+| [`brainlink update`](commands/update.md) | Check for a newer version and install it. Never updates without asking. |
 
 Every command supports `--help`:
 ```bash
@@ -80,15 +93,9 @@ brainlink log --help
 
 ---
 
-## What It Does
+## The Hook (Claude Code users)
 
-**New session memory** — every time you open a new AI session in your project, it already knows everything: what the project is, what decisions were made, what was built last session, and what comes next.
-
-**Shared sessions** — two AI sessions open in the same project? They share the same context automatically. What one learns, the other knows.
-
-**Works with any AI agent** — Claude Code, Cursor, Codex, Gemini CLI, GitHub Copilot, Windsurf, and more. Run `brainlink init` and it generates the right setup for each agent you use.
-
-**Your data, your files** — memory lives in your project as plain files. No account, no cloud, no API key. Commit it to git for team memory, or keep it local.
+Claude Code users get an extra layer: a `UserPromptSubmit` hook that fires on every message and reminds your agent to re-read `.brain/` if its context was just compacted. Other agents get the same reminders baked into their instruction files — Claude Code just gets a belt-and-suspenders setup because it supports OS-level hooks.
 
 ---
 
@@ -100,4 +107,4 @@ MIT — see [LICENSE](LICENSE).
 
 ## Contributing
 
-Contributions welcome. Open an issue or PR on [GitHub](https://github.com/404-not-found/brainlink).
+Spotted a bug? Have an idea? Open an issue or PR on [GitHub](https://github.com/404-not-found/brainlink). We read everything.
