@@ -1,0 +1,49 @@
+{
+  "name": "brainlink",
+  "version": "0.1.0",
+  "description": "Give your AI a permanent memory.",
+  "type": "module",
+  "bin": {
+    "brainlink": "./dist/cli.js"
+  },
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "start": "node dist/cli.js",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "dependencies": {
+    "@clack/prompts": "^0.7.0",
+    "chalk": "^5.3.0",
+    "chokidar": "^3.5.3",
+    "commander": "^12.1.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "tsup": "^8.0.0",
+    "typescript": "^5.4.0",
+    "vitest": "^1.6.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "keywords": [
+    "ai",
+    "memory",
+    "cli",
+    "claude-code",
+    "cursor",
+    "developer-tools",
+    "context",
+    "coding-agent",
+    "llm"
+  ],
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/404-not-found/brainlink.git"
+  },
+  "homepage": "https://github.com/404-not-found/brainlink"
+}
