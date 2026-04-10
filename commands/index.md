@@ -13,7 +13,8 @@
 | [sync](sync.md) | Sync shared context between sessions |
 | [log](log.md) | View full session history |
 | [config](config.md) | Change settings after init |
-| [clear](clear.md) | Reset current session state |
+| [clear](clear.md) | Reset SESSION.md for a fresh session start |
+| [reset](reset.md) | Wipe all .brain/ memory back to blank templates |
 | [update](update.md) | Update brainlink to the latest version |
 
 ## Global Flags

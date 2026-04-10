@@ -103,15 +103,18 @@ brainlink init --yes
 
 ---
 
-## Error: Already Initialized
+## Already Initialized
 
-If `.brain/` already exists in the current directory:
+If `.brain/` already exists, `brainlink init` shows a recovery menu instead of an error:
 
 ```
-✗  .brain/ already exists at this path.
-   Run brainlink status to see current memory state.
-   Run brainlink config to change settings.
+.brain/ already exists at this path. What would you like to do?
+❯ Change settings       brainlink config
+  View current status   brainlink status
+  Nothing — exit
 ```
+
+With `--yes`, exits immediately and tells you to run `brainlink config` to change settings.
 
 ---
 
