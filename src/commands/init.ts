@@ -114,11 +114,14 @@ Examples:
     if (opts.yes) {
       gitTracking = true;
     } else {
+      console.log(`  ${chalk.dim('.brain/ is your AI\'s memory — MEMORY.md, SESSION.md, SHARED.md, LOG.md.')}`);
+      console.log(`  ${chalk.dim('Plain Markdown files. Commit them to share with your team, or keep them local.')}`);
+      console.log('');
       const gitResult = await select({
-        message: 'Should .brain/ be tracked by git?',
+        message: 'Should .brain/ be committed to git?',
         options: [
-          { value: 'enable',  label: 'Enable',  hint: 'commit memory — share with your team' },
-          { value: 'disable', label: 'Disable', hint: 'add to .gitignore — keep memory personal' },
+          { value: 'enable',  label: 'Enable',  hint: 'team shares the same AI memory' },
+          { value: 'disable', label: 'Disable', hint: 'add to .gitignore — personal memory only' },
         ],
       });
       if (isCancel(gitResult)) { cancel('Cancelled.'); process.exit(0); }
