@@ -10,12 +10,14 @@
 |---|---|
 | [init](init.md) | Set up memory for the current project |
 | [status](status.md) | Show last session summary and what's next |
+| [summary](summary.md) | Full briefing — everything Brainlink knows, in one view |
 | [sync](sync.md) | Sync shared context between sessions |
 | [log](log.md) | View full session history |
 | [config](config.md) | Change settings after init |
 | [clear](clear.md) | Reset SESSION.md for a fresh session start |
 | [reset](reset.md) | Wipe all .brain/ memory back to blank templates |
 | [update](update.md) | Update brainlink to the latest version |
+| [uninstall](uninstall.md) | Remove Brainlink from the current project |
 
 ## Global Flags
 
