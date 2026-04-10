@@ -52,11 +52,13 @@ No Node.js? Grab a standalone binary from [GitHub Releases](https://github.com/4
 ## Quick Start
 
 ```bash
-cd my-project
-brainlink init
+cd my-project    # navigate into the project where you want AI memory to live
+brainlink init   # run this once — your AI will know everything from the next session on
 ```
 
-**Run this before your first AI session** — it creates the memory files your agent reads on startup. The current session won't see them; the next one will wake up fully briefed. After that, you never have to run it again. That's the whole deal.
+**Run this in your project directory, before your first AI session.** Brainlink creates a `.brain/` folder right there — scoped to that project, not global. This is the folder your AI agent will read every time it wakes up in that project: your architecture decisions, what was built last session, what's broken, what's next. The more you work in that project, the smarter it gets.
+
+The current session won't see it. The next one will wake up fully briefed. After that, you never have to run `init` again. That's the whole deal.
 
 ---
 
@@ -76,9 +78,10 @@ brainlink init
 
 ## Commands
 
-**Run once, before your first AI session — in your terminal:**
+**Run once per project — in your terminal, inside the project directory:**
 ```bash
-brainlink init        # sets everything up — never needs to run again
+cd my-project
+brainlink init        # creates .brain/ here — this is where your AI's memory lives
 ```
 
 **Ask your AI to run these, or run them yourself in any terminal:**
