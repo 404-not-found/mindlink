@@ -19,17 +19,7 @@ import {
 import { join, resolve, dirname } from 'path';
 import { BRAIN_TEMPLATES_DIR, AGENT_TEMPLATES_DIR, HOOKS_TEMPLATES_DIR, BRAIN_DIR } from '../utils/paths.js';
 import { printBanner } from '../utils/banner.js';
-
-const AGENTS = [
-  { value: 'claude',   label: 'Claude Code',   hint: 'CLAUDE.md',                       templateFile: 'CLAUDE.md',               destFile: 'CLAUDE.md',                           selected: true  },
-  { value: 'cursor',   label: 'Cursor',         hint: 'CURSOR.md',                       templateFile: 'CURSOR.md',               destFile: 'CURSOR.md',                           selected: true  },
-  { value: 'codex',    label: 'Codex / OpenAI', hint: 'AGENTS.md',                       templateFile: 'AGENTS.md',               destFile: 'AGENTS.md',                           selected: true  },
-  { value: 'gemini',   label: 'Gemini CLI',     hint: 'GEMINI.md',                       templateFile: 'GEMINI.md',               destFile: 'GEMINI.md',                           selected: true  },
-  { value: 'copilot',  label: 'GitHub Copilot', hint: '.github/copilot-instructions.md', templateFile: 'copilot-instructions.md', destFile: '.github/copilot-instructions.md',      selected: true  },
-  { value: 'windsurf', label: 'Windsurf',       hint: '.windsurfrules',                  templateFile: '.windsurfrules',          destFile: '.windsurfrules',                      selected: true  },
-  { value: 'cline',    label: 'Cline',          hint: '.clinerules',                     templateFile: '.clinerules',             destFile: '.clinerules',                         selected: false },
-  { value: 'aider',    label: 'Aider',          hint: 'CONVENTIONS.md',                  templateFile: 'CONVENTIONS.md',          destFile: 'CONVENTIONS.md',                      selected: false },
-];
+import { AGENTS } from '../utils/agents.js';
 
 const BRAIN_FILES = [
   { templateFile: 'MEMORY.md',  label: '.brain/MEMORY.md',  desc: 'permanent project facts'  },
