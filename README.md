@@ -74,28 +74,52 @@ brainlink init
 
 ## Commands
 
-| Command | What it does |
-|---|---|
-| [`brainlink init`](commands/init.md) | Create `.brain/` in your project and generate agent instruction files. **Run once per project, before your first AI session.** |
-| [`brainlink status`](commands/status.md) | See what was done last session, what's in progress, blockers, and what's next — without opening a single file. |
-| [`brainlink log`](commands/log.md) | Print the full session history. Supports `--limit`, `--since`, `--all`, `--json`. |
-| [`brainlink sync`](commands/sync.md) | Watch for changes across sessions and surface what other sessions have written. Watch mode by default — `--once` to run and exit. |
-| [`brainlink config`](commands/config.md) | Change settings after init: git tracking, auto-sync, agent files. No need to re-run init. |
-| [`brainlink clear`](commands/clear.md) | Reset `SESSION.md` for a fresh session start. History and memory stay intact. |
-| [`brainlink reset`](commands/reset.md) | Wipe all `.brain/` memory back to blank templates. Scorched earth. Your settings are safe. |
-| [`brainlink update`](commands/update.md) | Check for a newer version and install it. Never updates without asking. |
-
-Every command supports `--help`:
+**Run once, before your first AI session:**
 ```bash
-brainlink init --help
-brainlink log --help
+brainlink init        # sets everything up — never needs to run again
 ```
+
+**Ask your AI to run these, or run them yourself in any terminal:**
+```bash
+brainlink status      # what happened last session, what's next
+brainlink summary     # full briefing — everything your AI knows, in one view
+brainlink log         # complete session history
+brainlink sync --once # check what other sessions have shared
+```
+
+**Run in a background terminal tab while sessions are active:**
+```bash
+brainlink sync        # watch mode — surfaces changes as they happen
+```
+
+**Run between sessions:**
+```bash
+brainlink clear       # fresh session start (keeps memory and history intact)
+brainlink reset       # scorched earth — wipe all memory, keep your settings
+brainlink config      # change agents, git tracking, or auto-sync
+```
+
+**Maintenance:**
+```bash
+brainlink update      # check for a newer version, never installs without asking
+brainlink uninstall   # remove Brainlink from this project
+```
+
+Every command supports `--help`. Full reference: [`commands/`](commands/index.md).
+
+---
+
+## Can my AI run these commands itself?
+
+Yes — and it should. Your AI has a terminal. Tell it to run `brainlink summary` or `brainlink status` and it reads the output directly. This is the cleanest way to brief a mid-session agent without copying files around.
+
+The one exception: `brainlink sync` in watch mode runs continuously — keep it in a separate terminal tab.
 
 ---
 
 ## The Hook (Claude Code users)
 
-Claude Code users get an extra layer: a `UserPromptSubmit` hook that fires on every message and reminds your agent to re-read `.brain/` if its context was just compacted. Other agents get the same reminders baked into their instruction files — Claude Code just gets a belt-and-suspenders setup because it supports OS-level hooks.
+Claude Code users get an extra layer: a `UserPromptSubmit` hook in `.claude/settings.json` that fires on every message, reminding your agent to re-read `.brain/` if its context was just compacted. Other agents rely on their instruction files — Claude Code gets both because it supports OS-level hooks. Same protection, different delivery.
 
 ---
 
