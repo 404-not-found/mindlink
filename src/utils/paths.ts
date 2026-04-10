@@ -9,5 +9,6 @@ export const TEMPLATES_DIR = join(__dirname, 'templates');
 
 export const BRAIN_TEMPLATES_DIR = join(TEMPLATES_DIR, 'brain');
 export const AGENT_TEMPLATES_DIR = join(TEMPLATES_DIR, 'agents');
+export const HOOKS_TEMPLATES_DIR = join(TEMPLATES_DIR, 'hooks');
 
 export const BRAIN_DIR = '.brain';

@@ -22,7 +22,7 @@ describe('brainlink init', () => {
   let dir: string;
 
   beforeEach(() => {
-    dir = join(tmpdir(), `brainlink-test-${Date.now()}`);
+    dir = join(tmpdir(), `brainlink-test-${Date.now()}-${Math.random().toString(36).slice(2)}`);
     mkdirSync(dir, { recursive: true });
   });
 
@@ -130,7 +130,7 @@ describe('brainlink init', () => {
     const result = run('init --yes', dir);
 
     expect(result.code).not.toBe(0);
-    expect(result.stdout).toContain('already exists');
+    expect(result.stdout).toContain('Already initialized');
   });
 
   test('does not overwrite existing .brain/ files on second run', () => {
@@ -159,10 +159,10 @@ describe('brainlink init', () => {
     expect(result.stdout).toContain('✓');
   });
 
-  test('output shows "already exists" error on second init', () => {
+  test('output shows "Already initialized" error on second init', () => {
     run('init --yes', dir);
     const result = run('init --yes', dir);
-    expect(result.stdout).toContain('already exists');
+    expect(result.stdout).toContain('Already initialized');
   });
 
   // ── Banner ─────────────────────────────────────────────────────────────────

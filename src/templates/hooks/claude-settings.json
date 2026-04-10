@@ -1,0 +1,15 @@
+{
+  "hooks": {
+    "UserPromptSubmit": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "[ -d '.brain' ] && printf '\\n[Brainlink] Persistent memory is active for this project.\\nIf your context was just compacted or you feel uncertain about project state:\\n  → Re-read .brain/MEMORY.md  (project identity, decisions)\\n  → Re-read .brain/SESSION.md  (current task, what is next)\\n  → Re-read .brain/SHARED.md   (what other concurrent sessions have shared)\\n  → Re-read .brain/LOG.md      (last 5 entries for recent session history)\\n  → Run: brainlink status\\n' || true"
+          }
+        ]
+      }
+    ]
+  }
+}

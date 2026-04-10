@@ -1,7 +1,6 @@
 import { Command } from 'commander';
 import {
   intro,
-  outro,
   multiselect,
   select,
   spinner,
@@ -17,27 +16,30 @@ import {
   writeFileSync,
   appendFileSync,
 } from 'fs';
-import { join, resolve } from 'path';
-import { BRAIN_TEMPLATES_DIR, AGENT_TEMPLATES_DIR, BRAIN_DIR } from '../utils/paths.js';
+import { join, resolve, dirname } from 'path';
+import { BRAIN_TEMPLATES_DIR, AGENT_TEMPLATES_DIR, HOOKS_TEMPLATES_DIR, BRAIN_DIR } from '../utils/paths.js';
 import { printBanner } from '../utils/banner.js';
 
 const AGENTS = [
-  { value: 'claude',   label: 'Claude Code',     hint: 'CLAUDE.md',                          templateFile: 'CLAUDE.md',                 destFile: 'CLAUDE.md',                              selected: true  },
-  { value: 'cursor',   label: 'Cursor',           hint: 'CURSOR.md',                          templateFile: 'CURSOR.md',                 destFile: 'CURSOR.md',                              selected: true  },
-  { value: 'codex',    label: 'Codex / OpenAI',   hint: 'AGENTS.md',                          templateFile: 'AGENTS.md',                 destFile: 'AGENTS.md',                              selected: true  },
-  { value: 'gemini',   label: 'Gemini CLI',       hint: 'GEMINI.md',                          templateFile: 'GEMINI.md',                 destFile: 'GEMINI.md',                              selected: true  },
-  { value: 'copilot',  label: 'GitHub Copilot',   hint: '.github/copilot-instructions.md',    templateFile: 'copilot-instructions.md',   destFile: '.github/copilot-instructions.md',        selected: true  },
-  { value: 'windsurf', label: 'Windsurf',         hint: '.windsurfrules',                     templateFile: '.windsurfrules',            destFile: '.windsurfrules',                         selected: true  },
-  { value: 'cline',    label: 'Cline',            hint: '.clinerules',                        templateFile: '.clinerules',               destFile: '.clinerules',                            selected: false },
-  { value: 'aider',    label: 'Aider',            hint: 'CONVENTIONS.md',                     templateFile: 'CONVENTIONS.md',            destFile: 'CONVENTIONS.md',                         selected: false },
+  { value: 'claude',   label: 'Claude Code',   hint: 'CLAUDE.md',                       templateFile: 'CLAUDE.md',               destFile: 'CLAUDE.md',                           selected: true  },
+  { value: 'cursor',   label: 'Cursor',         hint: 'CURSOR.md',                       templateFile: 'CURSOR.md',               destFile: 'CURSOR.md',                           selected: true  },
+  { value: 'codex',    label: 'Codex / OpenAI', hint: 'AGENTS.md',                       templateFile: 'AGENTS.md',               destFile: 'AGENTS.md',                           selected: true  },
+  { value: 'gemini',   label: 'Gemini CLI',     hint: 'GEMINI.md',                       templateFile: 'GEMINI.md',               destFile: 'GEMINI.md',                           selected: true  },
+  { value: 'copilot',  label: 'GitHub Copilot', hint: '.github/copilot-instructions.md', templateFile: 'copilot-instructions.md', destFile: '.github/copilot-instructions.md',      selected: true  },
+  { value: 'windsurf', label: 'Windsurf',       hint: '.windsurfrules',                  templateFile: '.windsurfrules',          destFile: '.windsurfrules',                      selected: true  },
+  { value: 'cline',    label: 'Cline',          hint: '.clinerules',                     templateFile: '.clinerules',             destFile: '.clinerules',                         selected: false },
+  { value: 'aider',    label: 'Aider',          hint: 'CONVENTIONS.md',                  templateFile: 'CONVENTIONS.md',          destFile: 'CONVENTIONS.md',                      selected: false },
 ];
 
 const BRAIN_FILES = [
-  { templateFile: 'MEMORY.md',  label: '.brain/MEMORY.md',  desc: 'permanent project facts'         },
-  { templateFile: 'SESSION.md', label: '.brain/SESSION.md', desc: 'current session state'            },
-  { templateFile: 'SHARED.md',  label: '.brain/SHARED.md',  desc: 'shared across sessions'           },
-  { templateFile: 'LOG.md',     label: '.brain/LOG.md',     desc: 'full session history'             },
+  { templateFile: 'MEMORY.md',  label: '.brain/MEMORY.md',  desc: 'permanent project facts'  },
+  { templateFile: 'SESSION.md', label: '.brain/SESSION.md', desc: 'current session state'    },
+  { templateFile: 'SHARED.md',  label: '.brain/SHARED.md',  desc: 'shared across sessions'   },
+  { templateFile: 'LOG.md',     label: '.brain/LOG.md',     desc: 'full session history'     },
 ];
+
+const DEFAULT_MAX_LOG_ENTRIES = 50;
+
 
 export const initCommand = new Command('init')
   .description('Set up memory for the current project')
@@ -53,19 +55,42 @@ Examples:
 
     printBanner();
 
-    // Already initialized?
+    // --- Already initialized? Show recovery menu ---
     if (existsSync(brainDir)) {
-      console.log(`  ${chalk.red('✗')}  .brain/ already exists at this path.`);
-      console.log(`     Run ${chalk.cyan('brainlink status')} to see current memory state.`);
-      console.log(`     Run ${chalk.cyan('brainlink config')} to change settings.`);
+      if (opts.yes) {
+        console.log(`  ${chalk.red('✗')}  Already initialized at this path.`);
+        console.log(`     Run ${chalk.cyan('brainlink config')} to change settings.`);
+        console.log('');
+        process.exit(1);
+      }
+
+      const action = await select({
+        message: '.brain/ already exists at this path. What would you like to do?',
+        options: [
+          { value: 'config', label: 'Change settings',     hint: 'brainlink config' },
+          { value: 'status', label: 'View current status', hint: 'brainlink status' },
+          { value: 'exit',   label: 'Nothing — exit',      hint: ''                 },
+        ],
+      });
+
+      if (isCancel(action) || action === 'exit') {
+        process.exit(0);
+      }
+      if (action === 'status') {
+        const { execSync } = await import('child_process');
+        try { execSync('brainlink status', { stdio: 'inherit' }); } catch {}
+      }
+      if (action === 'config') {
+        console.log(`  Run ${chalk.cyan('brainlink config')} to change settings.`);
+      }
       console.log('');
-      process.exit(1);
+      process.exit(0);
     }
 
-    intro(chalk.bold(`Initializing memory for this project:`));
+    intro(chalk.bold('Initializing memory for this project:'));
     console.log(`  ${chalk.dim(projectPath)}`);
     console.log(`  ${chalk.dim('This creates a .brain/ folder scoped to this project only.')}`);
-    console.log(`  ${chalk.dim('Run brainlink init separately in each project you want to give memory.')}`);
+    console.log(`  ${chalk.dim('Run brainlink init once per project — never needs to be run again.')}`);
     console.log('');
 
     // --- Prompt 1: Agent selection ---
@@ -87,11 +112,7 @@ Examples:
         required: false,
       });
 
-      if (isCancel(agentResult)) {
-        cancel('Cancelled.');
-        process.exit(0);
-      }
-
+      if (isCancel(agentResult)) { cancel('Cancelled.'); process.exit(0); }
       selectedAgents = agentResult as string[];
       console.log(`  ${chalk.dim('↩  Add or remove agents anytime: brainlink config → Agent instruction files')}`);
       console.log('');
@@ -110,12 +131,7 @@ Examples:
           { value: 'disable', label: 'Disable', hint: 'add to .gitignore — keep memory personal' },
         ],
       });
-
-      if (isCancel(gitResult)) {
-        cancel('Cancelled.');
-        process.exit(0);
-      }
-
+      if (isCancel(gitResult)) { cancel('Cancelled.'); process.exit(0); }
       gitTracking = gitResult === 'enable';
       console.log(`  ${chalk.dim('↩  Change anytime: brainlink config → Git tracking')}`);
       console.log('');
@@ -134,12 +150,7 @@ Examples:
           { value: 'disable', label: 'Disable', hint: 'run brainlink sync manually when needed' },
         ],
       });
-
-      if (isCancel(syncResult)) {
-        cancel('Cancelled.');
-        process.exit(0);
-      }
-
+      if (isCancel(syncResult)) { cancel('Cancelled.'); process.exit(0); }
       autoSync = syncResult === 'enable';
       console.log(`  ${chalk.dim('↩  Change anytime: brainlink config → Auto-sync')}`);
       console.log('');
@@ -152,73 +163,71 @@ Examples:
     const created: string[] = [];
     const errors: string[] = [];
 
-    // Create .brain/ directory
     try {
       mkdirSync(brainDir, { recursive: true });
 
-      // Copy .brain/ template files
+      // .brain/ template files
       for (const file of BRAIN_FILES) {
-        const src = join(BRAIN_TEMPLATES_DIR, file.templateFile);
         const dest = join(brainDir, file.templateFile);
-        writeFileSync(dest, readFileSync(src, 'utf8'));
-        created.push(`${file.label.padEnd(30)} ${chalk.dim(file.desc)}`);
+        writeFileSync(dest, readFileSync(join(BRAIN_TEMPLATES_DIR, file.templateFile), 'utf8'));
+        created.push(`${file.label.padEnd(32)} ${chalk.dim(file.desc)}`);
       }
 
-      // Copy selected agent instruction files
+      // Agent instruction files
       for (const agentValue of selectedAgents) {
         const agent = AGENTS.find(a => a.value === agentValue);
         if (!agent) continue;
-
-        const src = join(AGENT_TEMPLATES_DIR, agent.templateFile);
         const destPath = join(projectPath, agent.destFile);
-
-        // Create parent dir if needed (e.g. .github/)
-        const destDir = destPath.substring(0, destPath.lastIndexOf('/'));
-        if (destDir !== projectPath) {
-          mkdirSync(destDir, { recursive: true });
-        }
-
-        writeFileSync(destPath, readFileSync(src, 'utf8'));
-        created.push(`${agent.destFile.padEnd(30)} ${chalk.dim(agent.label)}`);
+        mkdirSync(dirname(destPath), { recursive: true });
+        writeFileSync(destPath, readFileSync(join(AGENT_TEMPLATES_DIR, agent.templateFile), 'utf8'));
+        created.push(`${agent.destFile.padEnd(32)} ${chalk.dim(agent.label)}`);
       }
 
-      // Handle .gitignore for .brain/
+      // .claude/settings.json hook for Claude Code
+      if (selectedAgents.includes('claude')) {
+        const hookDest = join(projectPath, '.claude', 'settings.json');
+        if (!existsSync(hookDest)) {
+          mkdirSync(dirname(hookDest), { recursive: true });
+          writeFileSync(hookDest, readFileSync(join(HOOKS_TEMPLATES_DIR, 'claude-settings.json'), 'utf8'));
+          created.push(`.claude/settings.json${' '.repeat(14)} ${chalk.dim('Claude Code compact hook')}`);
+        }
+      }
+
+      // .gitignore
       if (!gitTracking) {
         const gitignorePath = join(projectPath, '.gitignore');
         const entry = '\n# Brainlink memory (personal — not shared with team)\n.brain/\n';
         if (existsSync(gitignorePath)) {
           const current = readFileSync(gitignorePath, 'utf8');
-          if (!current.includes('.brain/')) {
-            appendFileSync(gitignorePath, entry);
-          }
+          if (!current.includes('.brain/')) appendFileSync(gitignorePath, entry);
         } else {
           writeFileSync(gitignorePath, entry.trim() + '\n');
         }
-        created.push(`.gitignore${' '.repeat(22)} ${chalk.dim('.brain/ excluded')}`);
+        created.push(`.gitignore${' '.repeat(23)} ${chalk.dim('.brain/ excluded')}`);
       }
 
-      // Save brainlink config
-      const config = { gitTracking, autoSync, agents: selectedAgents };
+      // Save config (includes maxLogEntries for log rotation)
+      const config = {
+        gitTracking,
+        autoSync,
+        agents: selectedAgents,
+        maxLogEntries: DEFAULT_MAX_LOG_ENTRIES,
+      };
       writeFileSync(join(brainDir, 'config.json'), JSON.stringify(config, null, 2));
 
     } catch (err: unknown) {
-      const message = err instanceof Error ? err.message : String(err);
-      errors.push(message);
+      errors.push(err instanceof Error ? err.message : String(err));
     }
 
     s.stop('Done.');
     console.log('');
 
-    // Print created files
     for (const line of created) {
       console.log(`  ${chalk.green('✓')}  ${line}`);
     }
-
     if (errors.length > 0) {
       console.log('');
-      for (const err of errors) {
-        console.log(`  ${chalk.red('✗')}  ${err}`);
-      }
+      for (const err of errors) console.log(`  ${chalk.red('✗')}  ${err}`);
     }
 
     console.log('');
