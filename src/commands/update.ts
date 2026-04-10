@@ -66,6 +66,19 @@ Examples:
   .action(async () => {
     const current = currentVersion();
 
+    // Non-TTY: just check and report, don't prompt
+    if (!process.stdin.isTTY) {
+      const latest = await latestVersion();
+      if (!latest) {
+        console.log(JSON.stringify({ current, latest: null, upToDate: null }));
+        process.exit(1);
+      }
+      const upToDate = !semverGt(latest, current);
+      console.log(JSON.stringify({ current, latest, upToDate }));
+      if (!upToDate) process.exit(2); // exit 2 = update available
+      return;
+    }
+
     const s = spinner();
     s.start('Checking for updates...');
 

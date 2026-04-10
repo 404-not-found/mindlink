@@ -94,6 +94,16 @@ Examples:
       process.exit(1);
     }
 
+    // Non-TTY: just print current settings and exit
+    if (!process.stdin.isTTY) {
+      const cfg = readConfig(brainDir);
+      const agentLabels = cfg.agents
+        .map((v: string) => AGENTS.find(a => a.value === v)?.hint ?? v)
+        .join(', ');
+      console.log(JSON.stringify({ ...cfg, agentFiles: agentLabels }, null, 2));
+      return;
+    }
+
     let config = readConfig(brainDir);
 
     // ── Main menu loop ────────────────────────────────────────────────────────
