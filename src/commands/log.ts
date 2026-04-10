@@ -1,6 +1,6 @@
 import { Command } from 'commander';
 import chalk from 'chalk';
-import { existsSync, readFileSync } from 'fs';
+import { existsSync, readFileSync, readdirSync } from 'fs';
 import { join, resolve } from 'path';
 import { parseLogEntries } from '../utils/parser.js';
 import { BRAIN_DIR } from '../utils/paths.js';
@@ -79,6 +79,17 @@ Examples:
           console.log(`  ${chalk.dim(line)}`);
         }
       }
+      console.log('');
+    }
+
+    // Check for archive files and show friendly notice
+    const archiveFiles = readdirSync(brainDir).filter(f => /^LOG-\d{4}-\d{2}-\d{2}\.md$/.test(f)).sort();
+    if (archiveFiles.length > 0) {
+      console.log(`  ${chalk.dim('─'.repeat(44))}`);
+      console.log(`  ${chalk.dim('Like all human brains, Brainlink forgets old sessions')}`);
+      console.log(`  ${chalk.dim('that haven\'t come up in a while — that\'s by design.')}`);
+      console.log(`  ${chalk.dim(`Older entries archived to: ${archiveFiles.join(', ')}`)}`);
+      console.log(`  ${chalk.dim('Anything that truly matters belongs in MEMORY.md.')}`);
       console.log('');
     }
   });

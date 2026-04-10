@@ -1,5 +1,5 @@
 import { Command } from 'commander';
-import { select, multiselect, isCancel, cancel } from '@clack/prompts';
+import { select, multiselect, text, isCancel, cancel } from '@clack/prompts';
 import chalk from 'chalk';
 import {
   existsSync,
@@ -113,6 +113,7 @@ Examples:
       console.log('');
       console.log(`  Git tracking   : ${config.gitTracking ? chalk.green('enabled') : chalk.dim('disabled')}   ${chalk.dim(config.gitTracking ? '(team shares memory)' : '(.brain/ excluded from git)')}`);
       console.log(`  Auto-sync      : ${config.autoSync ? chalk.green('enabled') : chalk.dim('disabled')}   ${chalk.dim(config.autoSync ? '(watch mode)' : '(run brainlink sync manually)')}`);
+      console.log(`  Max log entries: ${chalk.dim(String(config.maxLogEntries))}   ${chalk.dim('(archive rotation threshold)')}`);
 
       const agentLabels = config.agents
         .map(v => AGENTS.find(a => a.value === v)?.hint ?? v)
@@ -125,6 +126,7 @@ Examples:
         options: [
           { value: 'git',    label: 'Git tracking' },
           { value: 'sync',   label: 'Auto-sync' },
+          { value: 'memory', label: 'Memory settings', hint: 'log rotation threshold' },
           { value: 'agents', label: 'Agent instruction files' },
           { value: 'exit',   label: 'Exit' },
         ],
@@ -189,6 +191,37 @@ Examples:
         saveConfig(brainDir, config);
         console.log(`  ${chalk.green('✓')}  Auto-sync ${newValue ? 'enabled' : 'disabled'}.`);
         console.log(`  ${chalk.dim('↩  Change anytime: brainlink config → Auto-sync')}`);
+      }
+
+      // ── Memory settings ───────────────────────────────────────────────────
+      if (action === 'memory') {
+        console.log('');
+        console.log(`  ${chalk.dim('How many session entries to keep in LOG.md before archiving older ones.')}`);
+        console.log(`  ${chalk.dim('Archived entries move to LOG-YYYY-MM-DD.md — never deleted.')}`);
+        console.log(`  ${chalk.dim('Lower = lighter context for your AI. Higher = more history visible.')}`);
+        console.log('');
+
+        const input = await text({
+          message: `Max log entries before archiving (current: ${config.maxLogEntries})`,
+          placeholder: String(config.maxLogEntries),
+          validate(value) {
+            const n = parseInt(value, 10);
+            if (isNaN(n) || n < 1) return 'Enter a number greater than 0';
+          },
+        });
+
+        if (isCancel(input)) continue;
+
+        const newValue = parseInt(input as string, 10);
+        if (newValue === config.maxLogEntries) {
+          console.log(`  ${chalk.dim('No change.')}`);
+          continue;
+        }
+
+        config.maxLogEntries = newValue;
+        saveConfig(brainDir, config);
+        console.log(`  ${chalk.green('✓')}  Max log entries set to ${newValue}.`);
+        console.log(`  ${chalk.dim('↩  Change anytime: brainlink config → Memory settings')}`);
       }
 
       // ── Agent files ────────────────────────────────────────────────────────

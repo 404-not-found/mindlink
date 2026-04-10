@@ -70,6 +70,8 @@ brainlink init
 
 **Your files, your rules** — memory lives in your project as plain Markdown in a `.brain/` folder. No account, no cloud, no surveillance. Commit it to git for shared team memory, or keep it local. Read it, edit it, delete it — it's just files.
 
+**Two kinds of memory, like a real brain** — `MEMORY.md` holds permanent facts (architecture, decisions, conventions) and never gets cleared. `LOG.md` holds recent session history; older entries get archived automatically when it grows too long. Like all human brains, Brainlink forgets old sessions that haven't come up in a while — that's by design. Anything that truly matters belongs in `MEMORY.md`, where it lives forever.
+
 ---
 
 ## Commands
