@@ -1,0 +1,24 @@
+PackageIdentifier: 404-not-found.Brainlink
+PackageVersion: 1.0.0
+PackageLocale: en-US
+Publisher: 404-not-found
+PublisherUrl: https://github.com/404-not-found
+PackageName: Brainlink
+PackageUrl: https://github.com/404-not-found/brainlink
+License: MIT
+LicenseUrl: https://github.com/404-not-found/brainlink/blob/main/LICENSE
+ShortDescription: Give your AI a brain — session memory, cross-session sync, cross-agent context
+Description: |-
+  Brainlink gives AI coding agents permanent, persistent memory so every new
+  session wakes up fully informed. Works with Claude Code, Cursor, Codex,
+  Gemini CLI, GitHub Copilot, Windsurf, Cline, and Aider.
+Tags:
+  - ai
+  - cli
+  - developer-tools
+  - claude-code
+  - cursor
+  - memory
+  - context
+ManifestType: defaultLocale
+ManifestVersion: 1.6.0
