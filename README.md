@@ -1,5 +1,7 @@
 # ◉ Brainlink
 
+**Give your AI a brain.**
+
 Three things break AI-assisted development:
 
 **Every new session starts blank.** No memory of what you built, what you decided, or what blew up last week. You spend the first 10 minutes re-explaining everything. Every. Single. Time.
