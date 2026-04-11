@@ -14,6 +14,10 @@
 
 <!-- What has been started but not finished? -->
 
+## Topics & Conversations
+
+<!-- Everything discussed this session — not just code. Career plans, ideas, decisions, research, anything the user shared. -->
+
 ## Decisions Made This Session
 
 <!-- Decisions made this session that should eventually move to MEMORY.md. -->

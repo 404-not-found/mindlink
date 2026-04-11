@@ -18,9 +18,9 @@ MindLink fixes all three. One command per project.
 
 ---
 
-> ### ◉ Latest — v1.0.4
+> ### ◉ Latest — v1.0.5
 > **Session memory · Cross-session sync · Cross-agent · 8 AI agents supported**
-> [→ Full release notes](https://github.com/404-not-found/mindlink/releases/tag/v1.0.4)
+> [→ Full release notes](https://github.com/404-not-found/mindlink/releases/tag/v1.0.5)
 
 ---
 
@@ -54,11 +54,6 @@ brew install mindlink
 **curl (macOS / Linux)**
 ```bash
 curl -sL https://raw.githubusercontent.com/404-not-found/mindlink/main/scripts/install.sh | sh
-```
-
-**Windows (winget)**
-```bash
-winget install mindlink
 ```
 
 **Windows (Scoop)**
