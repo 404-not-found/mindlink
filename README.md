@@ -1,7 +1,5 @@
 # ◉ Brainlink
 
-**Give your AI a permanent memory.**
-
 Three things break AI-assisted development:
 
 **Every new session starts blank.** No memory of what you built, what you decided, or what blew up last week. You spend the first 10 minutes re-explaining everything. Every. Single. Time.
@@ -19,7 +17,7 @@ Brainlink fixes all three. One command per project.
 ---
 
 > ### ◉ Latest — v1.0.0
-> **Permanent session memory · Shared context across sessions · 8 AI agents supported**
+> **Session memory that never resets · Shared context across sessions · 8 AI agents supported**
 > [→ Full release notes](https://github.com/404-not-found/brainlink/releases/tag/v1.0.0)
 
 ---
@@ -84,7 +82,7 @@ Close any AI session whenever you want — Claude Code, Cursor, Codex, whatever 
 
 **Your files, your rules** — memory lives in your project as plain Markdown in a `.brain/` folder. No account, no cloud, no surveillance. Commit it to git for shared team memory, or keep it local. Read it, edit it, delete it — it's just files.
 
-**Smart memory, like a real brain** — `MEMORY.md` holds permanent facts (architecture, decisions, conventions) and is never cleared. `LOG.md` holds session history and quietly archives old entries when it gets long. Like any good brain, Brainlink remembers what matters and lets go of the stuff that hasn't come up in a while. Anything truly important belongs in `MEMORY.md` — promote it there and it lives forever.
+**Smart memory, like a real brain** — `MEMORY.md` holds the facts that matter forever (architecture, decisions, conventions) and is never cleared. `LOG.md` holds session history and quietly archives old entries when it gets long. Like any good brain, Brainlink remembers what matters and lets go of the stuff that hasn't come up in a while. Anything truly important belongs in `MEMORY.md` — promote it there and it lives forever.
 
 ---
 
