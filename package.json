@@ -1,6 +1,6 @@
 {
   "name": "mindlink",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Give your AI a brain. Session memory, cross-session sync, and cross-agent context — one command per project.",
   "type": "module",
   "bin": {
@@ -13,7 +13,7 @@
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "test:watch": "vitest",
-    "build:binaries": "npm run build && npx --yes @yao-pkg/pkg dist/cli.js --targets node18-macos-arm64,node18-macos-x64,node18-linux-x64,node18-win-x64 --out-path binaries/ --no-bytecode --public"
+    "build:binaries": "npm run build && npx --yes @yao-pkg/pkg dist/cli.js --targets node22-macos-arm64,node22-macos-x64,node22-linux-x64,node22-win-x64 --out-path binaries/ --no-bytecode --public"
   },
   "dependencies": {
     "@clack/prompts": "^0.7.0",
