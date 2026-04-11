@@ -227,7 +227,7 @@ Examples:
 
     try {
       mkdirSync(brainDir, { recursive: true });
-      registerProject(projectPath);
+      try { registerProject(projectPath); } catch {}
 
       const projectInfo = detectProjectInfo(projectPath);
 

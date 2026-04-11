@@ -1,5 +1,6 @@
 import { existsSync, readFileSync, writeFileSync, mkdirSync } from 'fs';
-import { join, homedir } from 'path';
+import { join } from 'path';
+import { homedir } from 'os';
 
 const REGISTRY_DIR = join(homedir(), '.mindlink');
 const REGISTRY_PATH = join(REGISTRY_DIR, 'projects.json');
