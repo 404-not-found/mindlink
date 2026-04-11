@@ -68,6 +68,8 @@ The current session won't see it. The next one will wake up fully briefed. After
 
 **Two sessions, one brain** — two AI sessions open in the same project? They share the same context automatically. What one learns, the other can see. No more running the same experiment twice because your two agents didn't know about each other.
 
+**One memory, every agent** — use Claude Code in the morning, switch to Cursor in the afternoon — both read the exact same `.brain/` folder. No syncing. No duplicating context. No "but I told the other AI this already." Every agent you use shares one brain, because the memory lives in your project, not inside any particular tool. This is something no AI vendor can replicate — they each only know their own product.
+
 **Plug in, not lock in** — works with Claude Code, Cursor, Codex, Gemini CLI, GitHub Copilot, Windsurf, Cline, Aider, and more. Run `brainlink init`, pick your agents, and it generates the right setup file for each one. No config to write, no API to call.
 
 **Your files, your rules** — memory lives in your project as plain Markdown in a `.brain/` folder. No account, no cloud, no surveillance. Commit it to git for shared team memory, or keep it local. Read it, edit it, delete it — it's just files.

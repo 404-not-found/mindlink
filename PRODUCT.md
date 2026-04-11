@@ -108,7 +108,9 @@ No bootstrapping. No re-explaining. Memory compounds.
 | Superpowers | Partial | Partial | ❌ | Partial | ✅ |
 | **Brainlink** | ✅ | ✅ automatic | ✅ v2 | ✅ | ✅ |
 
-**Our moat:** Zero infrastructure. No account. No cloud. Just files — and every new session wakes up fully informed automatically.
+**Our moats:**
+1. **Zero infrastructure** — no account, no cloud, no API key. Just files.
+2. **Cross-agent shared memory** — Claude Code, Cursor, Codex, Gemini, Copilot, Windsurf all read the same `.brain/` folder. No AI vendor can replicate this — they only know their own tool. A developer who uses multiple agents throughout the day has one consistent brain across all of them. This is unique to an agent-agnostic, file-based approach.
 
 ---
 
