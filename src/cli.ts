@@ -10,6 +10,8 @@ import { syncCommand } from './commands/sync.js';
 import { updateCommand } from './commands/update.js';
 import { summaryCommand } from './commands/summary.js';
 import { uninstallCommand } from './commands/uninstall.js';
+import { exportCommand } from './commands/export.js';
+import { importCommand } from './commands/import.js';
 
 const program = new Command();
 
@@ -28,6 +30,8 @@ program.addCommand(syncCommand);
 program.addCommand(updateCommand);
 program.addCommand(summaryCommand);
 program.addCommand(uninstallCommand);
+program.addCommand(exportCommand);
+program.addCommand(importCommand);
 
 // "Did you mean?" on unknown commands
 program.on('command:*', (operands: string[]) => {
