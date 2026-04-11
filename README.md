@@ -53,7 +53,7 @@ brew install mindlink
 
 **curl (macOS / Linux)**
 ```bash
-curl -sL https://get.mindlink.dev | sh
+curl -sL https://raw.githubusercontent.com/404-not-found/mindlink/main/scripts/install.sh | sh
 ```
 
 **Windows (winget)**
