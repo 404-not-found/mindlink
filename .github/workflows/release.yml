@@ -1,0 +1,71 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+      - run: npm ci
+      - run: npm run build
+      - run: npm test
+
+  build:
+    needs: test
+    strategy:
+      matrix:
+        include:
+          - runner: macos-latest
+            target: node18-macos-arm64
+            artifact: brainlink-macos-arm64
+          - runner: macos-13
+            target: node18-macos-x64
+            artifact: brainlink-macos-x64
+          - runner: ubuntu-latest
+            target: node18-linux-x64
+            artifact: brainlink-linux-x64
+          - runner: windows-latest
+            target: node18-win-x64
+            artifact: brainlink-win-x64.exe
+    runs-on: ${{ matrix.runner }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+      - run: npm ci
+      - run: npm run build
+      - name: Build binary
+        run: npx --yes @yao-pkg/pkg dist/cli.js --target ${{ matrix.target }} --output ${{ matrix.artifact }} --no-bytecode --public
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.artifact }}
+          path: ${{ matrix.artifact }}
+
+  release:
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          merge-multiple: true
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          generate_release_notes: true
+          files: |
+            brainlink-macos-arm64
+            brainlink-macos-x64
+            brainlink-linux-x64
+            brainlink-win-x64.exe

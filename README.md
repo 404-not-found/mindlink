@@ -47,6 +47,7 @@ npm install -g brainlink
 
 **Homebrew (macOS / Linux)**
 ```bash
+brew tap 404-not-found/brainlink
 brew install brainlink
 ```
 

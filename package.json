@@ -12,7 +12,8 @@
     "start": "node dist/cli.js",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "build:binaries": "npm run build && npx --yes @yao-pkg/pkg dist/cli.js --targets node18-macos-arm64,node18-macos-x64,node18-linux-x64,node18-win-x64 --out-path binaries/ --no-bytecode --public"
   },
   "dependencies": {
     "@clack/prompts": "^0.7.0",
@@ -46,6 +47,10 @@
     "dist/",
     "commands/"
   ],
+  "pkg": {
+    "assets": ["dist/templates/**/*"],
+    "scripts": ["dist/cli.js"]
+  },
   "license": "MIT",
   "repository": {
     "type": "git",
