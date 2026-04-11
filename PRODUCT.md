@@ -1,4 +1,4 @@
-# PRODUCT.md — Brainlink Product Spec
+# PRODUCT.md — MindLink Product Spec
 
 > What we're building, who it's for, and why it matters.
 
@@ -26,7 +26,7 @@ Two developers running an AI agent in the same codebase have completely isolated
 
 ## Solution
 
-Brainlink creates a `.brain/` folder in your project that acts as a permanent, structured memory for any AI coding agent. Every session reads it on start and writes to it on end. Memory compounds over time instead of resetting.
+MindLink creates a `.brain/` folder in your project that acts as a permanent, structured memory for any AI coding agent. Every session reads it on start and writes to it on end. Memory compounds over time instead of resetting.
 
 **Tagline:** "Give your AI a permanent memory."
 
@@ -35,7 +35,7 @@ Brainlink creates a `.brain/` folder in your project that acts as a permanent, s
 ## Target Users
 
 **Primary:** Solo developers using AI coding agents daily
-- Already writing `CLAUDE.md` files manually — Brainlink automates and structures this
+- Already writing `CLAUDE.md` files manually — MindLink automates and structures this
 - Lose context every time they start a new session
 - Want their agent to "just know" the project without re-explaining
 
@@ -62,9 +62,9 @@ Brainlink creates a `.brain/` folder in your project that acts as a permanent, s
 
 ```
 # One-time setup
-npm install -g brainlink
+npm install -g mindlink
 cd my-project
-brainlink init
+mindlink init
 → Creates .brain/ with MEMORY.md, SESSION.md, SHARED.md, LOG.md
 → Creates CLAUDE.md (or appends to existing) with instruction to read .brain/
 
@@ -85,14 +85,14 @@ No bootstrapping. No re-explaining. Memory compounds.
 ## v1 Scope (MVP)
 
 **In scope:**
-- `brainlink init` — scaffold `.brain/` with well-structured template files
+- `mindlink init` — scaffold `.brain/` with well-structured template files
 - Agent instruction files — CLAUDE.md / CURSOR.md / AGENTS.md / GEMINI.md
-- `brainlink status` — show last session summary
-- `brainlink log` — print full session history
-- `brainlink clear` — reset SESSION.md for a fresh start
+- `mindlink status` — show last session summary
+- `mindlink log` — print full session history
+- `mindlink clear` — reset SESSION.md for a fresh start
 
 **Out of scope for v1:**
-- `brainlink sync` (concurrent session merging) — Problem 2, comes after Problem 1 is solid
+- `mindlink sync` (concurrent session merging) — Problem 2, comes after Problem 1 is solid
 - Cloud sync
 - GUI / editor plugin
 - Encryption
@@ -106,7 +106,7 @@ No bootstrapping. No re-explaining. Memory compounds.
 | Manual CLAUDE.md | Partial | ❌ manual | ❌ | ✅ | ✅ |
 | Mem0 | ✅ | ✅ | ✅ | ❌ | ❌ needs cloud |
 | Superpowers | Partial | Partial | ❌ | Partial | ✅ |
-| **Brainlink** | ✅ | ✅ automatic | ✅ v2 | ✅ | ✅ |
+| **MindLink** | ✅ | ✅ automatic | ✅ v2 | ✅ | ✅ |
 
 **Our moats:**
 1. **Zero infrastructure** — no account, no cloud, no API key. Just files.
