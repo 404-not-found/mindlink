@@ -107,6 +107,12 @@ brainlink reset       # scorched earth — wipe all memory, keep your settings
 brainlink config      # change agents, git tracking, or auto-sync
 ```
 
+**Share memory or back it up — run in your terminal:**
+```bash
+brainlink export      # zip your .brain/ — send to a teammate or save as backup
+brainlink import      # unzip into this project — merge or overwrite your existing memory
+```
+
 **Run in your terminal only — maintenance tasks:**
 ```bash
 brainlink update      # check for a newer version, never installs without asking

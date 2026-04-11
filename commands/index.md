@@ -41,6 +41,13 @@ These commands are interactive, change settings, or modify files. Keep human han
 | [reset](reset.md) | Wipe all `.brain/` memory back to blank templates |
 | [config](config.md) | Change agents, git tracking, or auto-sync after init |
 
+### Share and backup — run in your terminal
+
+| Command | Description |
+|---|---|
+| [export](export.md) | Export `.brain/` memory to a shareable zip |
+| [import](import.md) | Import a zip into the current project |
+
 ### Maintenance — run in your terminal only
 
 | Command | Description |
