@@ -8,10 +8,10 @@ This project uses [Brainlink](https://github.com/404-not-found/brainlink) for pe
 
 Read these files in this exact order before doing anything else:
 
-1. `.brain/MEMORY.md` — project identity, architecture, key decisions
-2. `.brain/LOG.md` — what happened in past sessions (last 5 entries only)
+1. `.brain/MEMORY.md` — read the **Core** section fully; read other sections (Architecture, Decisions, Conventions) only if the task touches that area
+2. `.brain/LOG.md` — last 5 entries only; ⭐-prefixed entries are always read regardless of position
 3. `.brain/SESSION.md` — current task state; pick up here if mid-task
-4. `.brain/SHARED.md` — context shared by concurrent sessions
+4. `.brain/SHARED.md` — context shared by other sessions in this project
 
 **Do not respond to the user until you have read all four files.**
 
@@ -60,6 +60,6 @@ Brainlink gives you a shared memory layer — here is how to use it honestly:
 
 ### At the end of the session (when the user wraps up)
 
-1. Append a summary to `.brain/LOG.md` — date, what was completed, decisions made, what's next
-2. Update `.brain/MEMORY.md` with any new permanent architectural decisions
-3. Update `.brain/SESSION.md` — set "Up Next" for the following session
+1. **Append to `.brain/LOG.md`** — use format `## [Apr 9, 2026]` with: what was completed, decisions made, what's next. For entries that must NEVER be forgotten regardless of log rotation, prefix with ⭐: `## ⭐ [Apr 9, 2026]` — these are always read.
+2. **Update `.brain/MEMORY.md`** — fill in the right section (Core, Architecture, Decisions, Conventions, Important Context). Do not append free text. If Core exceeds 50 lines, consolidate: merge related entries, remove redundant ones. A bloated memory is as useless as no memory.
+3. **Update `.brain/SESSION.md`** — set "Up Next" for the following session
