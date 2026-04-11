@@ -37,22 +37,22 @@ mindlink update
 
 **Update available:**
 ```
-Current version   : 1.0.5
-Latest version    : 1.2.0
+Current version   : x.y.z
+Latest version    : x.y.z+1
 
-❯ Update to 1.2.0
+❯ Update to x.y.z+1
   Skip this version
   Cancel
 
 [████████████████████] 100%
 
-✓  Updated to 1.2.0
-   See what's new: github.com/404-not-found/mindlink/releases/tag/v1.2.0
+✓  Updated to x.y.z+1
+   See what's new: github.com/404-not-found/mindlink/releases/tag/vx.y.z+1
 ```
 
 **Already up to date:**
 ```
-✓  You're on the latest version (1.0.5).
+✓  You're on the latest version (x.y.z).
 ```
 
 ---
