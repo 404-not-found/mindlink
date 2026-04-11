@@ -1,5 +1,6 @@
 import { Command } from 'commander';
 import chalk from 'chalk';
+import { VERSION } from './utils/version.js';
 import { initCommand } from './commands/init.js';
 import { statusCommand } from './commands/status.js';
 import { logCommand } from './commands/log.js';
@@ -13,13 +14,14 @@ import { uninstallCommand } from './commands/uninstall.js';
 import { exportCommand } from './commands/export.js';
 import { importCommand } from './commands/import.js';
 import { doctorCommand } from './commands/doctor.js';
+import { versionCommand } from './commands/version.js';
 
 const program = new Command();
 
 program
   .name('mindlink')
   .description('Give your AI a brain.')
-  .version('1.0.3', '-v, --version');
+  .version(VERSION, '-v, --version');
 
 program.addCommand(initCommand);
 program.addCommand(statusCommand);
@@ -34,11 +36,12 @@ program.addCommand(uninstallCommand);
 program.addCommand(exportCommand);
 program.addCommand(importCommand);
 program.addCommand(doctorCommand);
+program.addCommand(versionCommand);
 
 // "Did you mean?" on unknown commands
 program.on('command:*', (operands: string[]) => {
   const unknown = operands[0];
-  const known = ['init', 'status', 'log', 'clear', 'reset', 'config', 'sync', 'update', 'summary', 'uninstall', 'export', 'import', 'doctor'];
+  const known = ['init', 'status', 'log', 'clear', 'reset', 'config', 'sync', 'update', 'summary', 'uninstall', 'export', 'import', 'doctor', 'version'];
 
   // Simple Levenshtein-based suggestion
   function levenshtein(a: string, b: string): number {
