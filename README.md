@@ -60,11 +60,15 @@ brainlink init   # run this once — your AI will know everything from the next 
 
 The current session won't see it. The next one will wake up fully briefed. After that, you never have to run `init` again. That's the whole deal.
 
+Close any AI session whenever you want — Claude Code, Cursor, Codex, whatever you're using. Lose your train of thought. Switch agents. Take a week off. The next session picks up exactly where you left off — no re-explaining, no context dumps, no "wait, what were we doing?" moments.
+
 ---
 
 ## What It Does
 
 **No more goldfish brain** — every time you start a new AI session in your project, it already knows everything: what the project is, what decisions were made, what was built last session, what's broken, and what comes next. No briefing required.
+
+**Close any AI session whenever you want** — Claude Code, Cursor, Codex, it doesn't matter. Lose your train of thought, switch agents mid-task, take a week off. The next session — in any tool — picks up exactly where you left off. You'll never be afraid to close a session again.
 
 **Two sessions, one brain** — two AI sessions open in the same project? They share the same context automatically. What one learns, the other can see. No more running the same experiment twice because your two agents didn't know about each other.
 

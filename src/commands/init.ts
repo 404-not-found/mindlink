@@ -16,10 +16,78 @@ import {
   writeFileSync,
   appendFileSync,
 } from 'fs';
-import { join, resolve, dirname } from 'path';
+import { join, resolve, dirname, basename } from 'path';
 import { BRAIN_TEMPLATES_DIR, AGENT_TEMPLATES_DIR, HOOKS_TEMPLATES_DIR, BRAIN_DIR } from '../utils/paths.js';
 import { printBanner } from '../utils/banner.js';
 import { AGENTS } from '../utils/agents.js';
+
+interface ProjectInfo {
+  name: string;
+  description: string;
+  stack: string;
+  date: string;
+}
+
+function detectProjectInfo(projectPath: string): ProjectInfo {
+  const date = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+
+  let name = basename(projectPath);
+  let description = '';
+  let stack = '';
+
+  // Try package.json
+  const pkgPath = join(projectPath, 'package.json');
+  if (existsSync(pkgPath)) {
+    try {
+      const pkg = JSON.parse(readFileSync(pkgPath, 'utf8'));
+      if (pkg.name) name = pkg.name;
+      if (pkg.description) description = pkg.description;
+      stack = 'Node.js';
+    } catch {}
+  }
+
+  // Detect stack from manifest files (may override or extend)
+  if (!stack) {
+    if (existsSync(join(projectPath, 'Cargo.toml'))) stack = 'Rust';
+    else if (existsSync(join(projectPath, 'go.mod'))) stack = 'Go';
+    else if (existsSync(join(projectPath, 'pyproject.toml')) || existsSync(join(projectPath, 'requirements.txt'))) stack = 'Python';
+    else if (existsSync(join(projectPath, 'pom.xml'))) stack = 'Java (Maven)';
+    else if (existsSync(join(projectPath, 'build.gradle')) || existsSync(join(projectPath, 'build.gradle.kts'))) stack = 'Kotlin/Java (Gradle)';
+    else if (existsSync(join(projectPath, 'composer.json'))) stack = 'PHP';
+    else if (existsSync(join(projectPath, 'Gemfile'))) stack = 'Ruby';
+  }
+
+  return { name, description, stack, date };
+}
+
+function buildMemoryMd(templateContent: string, info: ProjectInfo): string {
+  let content = templateContent;
+
+  // Inject project name + description under "What this project is"
+  const whatLine = info.description
+    ? `**${info.name}** — ${info.description}`
+    : `**${info.name}**`;
+  content = content.replace(
+    /### What this project is\n<!--[^]*?-->/,
+    `### What this project is\n${whatLine}\n<!-- 2–3 lines: what it does, who it's for, what problem it solves -->`
+  );
+
+  // Inject detected stack under "Stack"
+  if (info.stack) {
+    content = content.replace(
+      /### Stack\n<!--[^]*?-->/,
+      `### Stack\n${info.stack}\n<!-- Add layers: Frontend, Backend, Infra, etc. -->`
+    );
+  }
+
+  // Inject init date under "Current focus"
+  content = content.replace(
+    /### Current focus\n<!--[^]*?-->/,
+    `### Current focus\n<!-- Initialized ${info.date} — ask your AI to fill this in after your first session -->`
+  );
+
+  return content;
+}
 
 const BRAIN_FILES = [
   { templateFile: 'MEMORY.md',  label: '.brain/MEMORY.md',  desc: 'permanent project facts'  },
@@ -159,10 +227,16 @@ Examples:
     try {
       mkdirSync(brainDir, { recursive: true });
 
+      const projectInfo = detectProjectInfo(projectPath);
+
       // .brain/ template files
       for (const file of BRAIN_FILES) {
         const dest = join(brainDir, file.templateFile);
-        writeFileSync(dest, readFileSync(join(BRAIN_TEMPLATES_DIR, file.templateFile), 'utf8'));
+        const templateContent = readFileSync(join(BRAIN_TEMPLATES_DIR, file.templateFile), 'utf8');
+        const content = file.templateFile === 'MEMORY.md'
+          ? buildMemoryMd(templateContent, projectInfo)
+          : templateContent;
+        writeFileSync(dest, content);
         created.push(`${file.label.padEnd(32)} ${chalk.dim(file.desc)}`);
       }
 

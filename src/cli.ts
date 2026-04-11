@@ -12,6 +12,7 @@ import { summaryCommand } from './commands/summary.js';
 import { uninstallCommand } from './commands/uninstall.js';
 import { exportCommand } from './commands/export.js';
 import { importCommand } from './commands/import.js';
+import { doctorCommand } from './commands/doctor.js';
 
 const program = new Command();
 
@@ -32,11 +33,12 @@ program.addCommand(summaryCommand);
 program.addCommand(uninstallCommand);
 program.addCommand(exportCommand);
 program.addCommand(importCommand);
+program.addCommand(doctorCommand);
 
 // "Did you mean?" on unknown commands
 program.on('command:*', (operands: string[]) => {
   const unknown = operands[0];
-  const known = ['init', 'status', 'log', 'clear', 'reset', 'config', 'sync', 'update', 'summary', 'uninstall', 'export', 'import'];
+  const known = ['init', 'status', 'log', 'clear', 'reset', 'config', 'sync', 'update', 'summary', 'uninstall', 'export', 'import', 'doctor'];
 
   // Simple Levenshtein-based suggestion
   function levenshtein(a: string, b: string): number {
