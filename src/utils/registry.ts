@@ -29,3 +29,9 @@ export function registerProject(projectPath: string): void {
 export function getRegisteredProjects(): string[] {
   return load();
 }
+
+export function pruneRegistry(isValid: (p: string) => boolean): void {
+  const paths = load();
+  const pruned = paths.filter(isValid);
+  if (pruned.length !== paths.length) save(pruned);
+}

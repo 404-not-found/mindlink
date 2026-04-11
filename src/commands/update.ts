@@ -6,7 +6,7 @@ import { join, dirname } from 'path';
 import { existsSync, readFileSync, writeFileSync, mkdirSync } from 'fs';
 import { AGENT_TEMPLATES_DIR, HOOKS_TEMPLATES_DIR, BRAIN_DIR } from '../utils/paths.js';
 import { AGENTS } from '../utils/agents.js';
-import { getRegisteredProjects } from '../utils/registry.js';
+import { getRegisteredProjects, pruneRegistry } from '../utils/registry.js';
 import { VERSION } from '../utils/version.js';
 
 async function latestVersion(): Promise<string | null> {
@@ -135,7 +135,15 @@ Examples:
     }
 
     // Always refresh agent instruction files across all registered projects
-    const projects = getRegisteredProjects().filter(p => existsSync(join(p, BRAIN_DIR, 'config.json')));
+    // Also include cwd if it has .brain/ — catches projects not in the registry (e.g. initialized before registry existed)
+    const cwd = process.cwd();
+    const validProjects = getRegisteredProjects().filter(p => existsSync(join(p, BRAIN_DIR, 'config.json')));
+    // Prune stale entries while we're here
+    pruneRegistry(p => existsSync(join(p, BRAIN_DIR, 'config.json')));
+    const cwdHasBrain = existsSync(join(cwd, BRAIN_DIR, 'config.json'));
+    const projects = cwdHasBrain && !validProjects.includes(cwd)
+      ? [cwd, ...validProjects]
+      : validProjects;
 
     if (projects.length > 0) {
       console.log('');
