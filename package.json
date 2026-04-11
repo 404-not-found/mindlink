@@ -1,7 +1,7 @@
 {
   "name": "brainlink",
-  "version": "0.1.0",
-  "description": "Give your AI a permanent memory.",
+  "version": "1.0.0",
+  "description": "Give your AI a brain. Session memory, cross-session sync, and cross-agent context — one command per project.",
   "type": "module",
   "bin": {
     "brainlink": "./dist/cli.js"
@@ -41,6 +41,10 @@
     "context",
     "coding-agent",
     "llm"
+  ],
+  "files": [
+    "dist/",
+    "commands/"
   ],
   "license": "MIT",
   "repository": {

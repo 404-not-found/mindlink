@@ -18,8 +18,8 @@ const program = new Command();
 
 program
   .name('brainlink')
-  .description('Give your AI a permanent memory.')
-  .version('0.1.0', '-v, --version');
+  .description('Give your AI a brain.')
+  .version('1.0.0', '-v, --version');
 
 program.addCommand(initCommand);
 program.addCommand(statusCommand);

@@ -19,7 +19,7 @@ Brainlink fixes all three. One command per project.
 ---
 
 > ### ◉ Latest — v1.0.0
-> **Session memory that never resets · Shared context across sessions · 8 AI agents supported**
+> **Session memory · Cross-session sync · Cross-agent · 8 AI agents supported**
 > [→ Full release notes](https://github.com/404-not-found/brainlink/releases/tag/v1.0.0)
 
 ---
@@ -162,6 +162,7 @@ brainlink import      # unzip into this project — merge or overwrite your exis
 
 **Run in your terminal only — maintenance tasks:**
 ```bash
+brainlink doctor      # health check — verify your setup is working correctly
 brainlink update      # check for a newer version, never installs without asking
 brainlink uninstall   # remove Brainlink from this project
 ```
