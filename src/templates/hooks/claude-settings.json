@@ -1,8 +1,8 @@
 {
   "permissions": {
     "allow": [
-      "Edit(.brain/**)",
-      "Write(.brain/**)",
+      "Edit(**/.brain/**)",
+      "Write(**/.brain/**)",
       "Bash(mindlink *)"
     ]
   },

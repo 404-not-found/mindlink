@@ -37,7 +37,7 @@ mindlink update
 
 **Update available:**
 ```
-Current version   : 1.0.2
+Current version   : 1.0.3
 Latest version    : 1.2.0
 
 ❯ Update to 1.2.0
@@ -52,7 +52,7 @@ Latest version    : 1.2.0
 
 **Already up to date:**
 ```
-✓  You're on the latest version (1.0.2).
+✓  You're on the latest version (1.0.3).
 ```
 
 ---
