@@ -2,9 +2,15 @@
 
 **Give your AI a permanent memory.**
 
-Your AI has goldfish memory. Every new session, it wakes up knowing absolutely nothing about your project — no context, no decisions, no "we tried that last week." You spend the first 10 minutes re-explaining everything. Every. Single. Time.
+Three things break AI-assisted development:
 
-Brainlink fixes that. One command per project, and your AI wakes up fully briefed every session.
+**Every new session starts blank.** No memory of what you built, what you decided, or what blew up last week. You spend the first 10 minutes re-explaining everything. Every. Single. Time.
+
+**Two sessions share nothing.** Two AI agents running in the same project are invisible to each other — they duplicate work, contradict decisions, run the same experiment twice.
+
+**Switch agents, lose everything.** Claude Code in the morning, Cursor in the afternoon — each tool has its own silo. What one learned, the other never knows.
+
+Brainlink fixes all three. One command per project.
 
 [![npm version](https://img.shields.io/npm/v/brainlink)](https://www.npmjs.com/package/brainlink)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
