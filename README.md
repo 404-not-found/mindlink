@@ -24,6 +24,20 @@ Brainlink fixes all three. One command per project.
 
 ---
 
+## Table of Contents
+
+- [Installation](#installation)
+- [Quick Start](#quick-start)
+- [What It Does](#what-it-does)
+- [Supported Agents](#supported-agents)
+- [Commands](#commands)
+- [Can My AI Run These Commands?](#can-my-ai-run-these-commands-itself)
+- [The Hook (Claude Code)](#the-hook-claude-code-users)
+- [License](#license)
+- [Contributing](#contributing)
+
+---
+
 ## Installation
 
 **npm**
@@ -80,9 +94,13 @@ Close any AI session whenever you want — Claude Code, Cursor, Codex, whatever 
 
 **One memory, every agent** — use Claude Code in the morning, switch to Cursor in the afternoon — both read the exact same `.brain/` folder. No syncing. No duplicating context. No "but I told the other AI this already." Every agent you use shares one brain, because the memory lives in your project, not inside any particular tool. This is something no AI vendor can replicate — they each only know their own product.
 
+**Team memory out of the box** — commit `.brain/` to git and your whole team shares the same AI context. New teammate joins, does `git pull`, and their AI agent is already fully briefed on the project. No onboarding session, no copying notes, no "let me catch you up."
+
 **Plug in, not lock in** — works with Claude Code, Cursor, Codex, Gemini CLI, GitHub Copilot, Windsurf, Cline, Aider, and more. Because Brainlink just writes files that agents read — no APIs, no SDKs, no version dependencies — it works with whatever version you have installed today and every version that comes after.
 
-**Your files, your rules** — memory lives in your project as plain Markdown in a `.brain/` folder. No account, no cloud, no surveillance. Commit it to git for shared team memory, or keep it local. Read it, edit it, delete it — it's just files.
+**Zero infrastructure** — no server, no account, no cloud, no pricing page. Brainlink can't be shut down, rate-limited, or go behind a paywall. It's a file and a CLI. Works completely offline.
+
+**Your files, your rules** — memory lives in your project as plain Markdown in a `.brain/` folder. No account, no cloud, no surveillance. Read it, edit it, delete it — it's just files. You own it completely.
 
 **Smart memory, like a real brain** — `MEMORY.md` holds the facts that matter forever (architecture, decisions, conventions) and is never cleared. `LOG.md` holds session history and quietly archives old entries when it gets long. Like any good brain, Brainlink remembers what matters and lets go of the stuff that hasn't come up in a while. Anything truly important belongs in `MEMORY.md` — promote it there and it lives forever.
 
