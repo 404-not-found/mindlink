@@ -13,6 +13,7 @@ build/
 .DS_Store
 
 # Internal dev files — not for public repo
+/.distribution/
 /PROGRESS.md
 /BOOTSTRAP.md
 /CX.md
