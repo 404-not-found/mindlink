@@ -20,6 +20,7 @@ import { join, resolve, dirname, basename } from 'path';
 import { BRAIN_TEMPLATES_DIR, AGENT_TEMPLATES_DIR, HOOKS_TEMPLATES_DIR, BRAIN_DIR } from '../utils/paths.js';
 import { printBanner } from '../utils/banner.js';
 import { AGENTS } from '../utils/agents.js';
+import { registerProject } from '../utils/registry.js';
 
 interface ProjectInfo {
   name: string;
@@ -226,6 +227,7 @@ Examples:
 
     try {
       mkdirSync(brainDir, { recursive: true });
+      registerProject(projectPath);
 
       const projectInfo = detectProjectInfo(projectPath);
 
