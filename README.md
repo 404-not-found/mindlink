@@ -70,11 +70,30 @@ The current session won't see it. The next one will wake up fully briefed. After
 
 **One memory, every agent** — use Claude Code in the morning, switch to Cursor in the afternoon — both read the exact same `.brain/` folder. No syncing. No duplicating context. No "but I told the other AI this already." Every agent you use shares one brain, because the memory lives in your project, not inside any particular tool. This is something no AI vendor can replicate — they each only know their own product.
 
-**Plug in, not lock in** — works with Claude Code, Cursor, Codex, Gemini CLI, GitHub Copilot, Windsurf, Cline, Aider, and more. Run `brainlink init`, pick your agents, and it generates the right setup file for each one. No config to write, no API to call.
+**Plug in, not lock in** — works with Claude Code, Cursor, Codex, Gemini CLI, GitHub Copilot, Windsurf, Cline, Aider, and more. Because Brainlink just writes files that agents read — no APIs, no SDKs, no version dependencies — it works with whatever version you have installed today and every version that comes after.
 
 **Your files, your rules** — memory lives in your project as plain Markdown in a `.brain/` folder. No account, no cloud, no surveillance. Commit it to git for shared team memory, or keep it local. Read it, edit it, delete it — it's just files.
 
-**Two kinds of memory, like a real brain** — `MEMORY.md` holds permanent facts (architecture, decisions, conventions) and never gets cleared. `LOG.md` holds recent session history; older entries get archived automatically when it grows too long. Like all human brains, Brainlink forgets old sessions that haven't come up in a while — that's by design. Anything that truly matters belongs in `MEMORY.md`, where it lives forever.
+**Smart memory, like a real brain** — `MEMORY.md` holds permanent facts (architecture, decisions, conventions) and is never cleared. `LOG.md` holds session history and quietly archives old entries when it gets long. Like any good brain, Brainlink remembers what matters and lets go of the stuff that hasn't come up in a while. Anything truly important belongs in `MEMORY.md` — promote it there and it lives forever.
+
+---
+
+## Supported Agents
+
+Brainlink works with any version of:
+
+| Agent | Instruction file |
+|---|---|
+| Claude Code | `CLAUDE.md` |
+| Cursor | `CURSOR.md` |
+| Codex / OpenAI | `AGENTS.md` |
+| Gemini CLI | `GEMINI.md` |
+| GitHub Copilot | `.github/copilot-instructions.md` |
+| Windsurf | `.windsurfrules` |
+| Cline | `.clinerules` |
+| Aider | `CONVENTIONS.md` |
+
+Brainlink works by writing instruction files that agents read at startup — no API calls, no SDKs, no version pinning. It works with whatever version you have today and any version released tomorrow. If your agent isn't listed, `brainlink init` lets you add a custom one.
 
 ---
 
@@ -129,7 +148,7 @@ Yes — and it should, for the read-only ones. Your AI has a terminal. Tell it t
 
 **AI can run:** `status`, `summary`, `log`, `sync --once`
 
-**Run yourself:** `init`, `clear`, `reset`, `config`, `update`, `uninstall` — these are interactive, change settings, or modify/remove files. Keep human hands on them.
+**Run yourself:** `init`, `clear`, `reset`, `config`, `export`, `import`, `update`, `uninstall` — these are interactive, change settings, or modify files. Keep human hands on them.
 
 The one exception: `brainlink sync` in watch mode runs continuously — keep it in a separate terminal tab.
 

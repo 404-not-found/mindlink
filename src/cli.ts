@@ -36,7 +36,7 @@ program.addCommand(importCommand);
 // "Did you mean?" on unknown commands
 program.on('command:*', (operands: string[]) => {
   const unknown = operands[0];
-  const known = ['init', 'status', 'log', 'clear', 'reset', 'config', 'sync', 'update'];
+  const known = ['init', 'status', 'log', 'clear', 'reset', 'config', 'sync', 'update', 'summary', 'uninstall', 'export', 'import'];
 
   // Simple Levenshtein-based suggestion
   function levenshtein(a: string, b: string): number {

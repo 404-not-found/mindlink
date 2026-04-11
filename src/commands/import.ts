@@ -129,9 +129,9 @@ Examples:
     if (written.length === 0) {
       console.log(`  ${chalk.dim('Nothing imported — all files already exist (merge mode).')}`);
     } else {
-      console.log(`  ${chalk.green('✓')}  Memory imported. Your AI will wake up fully briefed.`);
+      console.log(`  ${chalk.green('✓')}  Brain transplant complete. Your AI wakes up knowing everything.`);
       if (!existsSync(join(brainDir, '../CLAUDE.md')) && !existsSync(join(brainDir, '../CURSOR.md'))) {
-        console.log(`  ${chalk.dim('No agent instruction files found. Run brainlink init to set them up.')}`);
+        console.log(`  ${chalk.dim('No agent instruction files found — run brainlink init to wire them up.')}`);
       }
     }
     console.log('');

@@ -67,7 +67,7 @@ describe('brainlink import', () => {
     expect(result.code).toBe(0);
     expect(existsSync(join(destDir, '.brain/MEMORY.md'))).toBe(true);
     expect(existsSync(join(destDir, '.brain/LOG.md'))).toBe(true);
-    expect(result.stdout).toContain('imported');
+    expect(result.stdout).toContain('Brain transplant complete');
   });
 
   test('--yes overwrites existing .brain/', () => {

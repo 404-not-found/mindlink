@@ -225,7 +225,7 @@ Examples:
 
     console.log('');
     note(
-      `Your AI now has a permanent memory — and it never forgets.\n\nEvery new session wakes up fully briefed: project context,\npast decisions, current task, and what other sessions have shared.\nNo more goldfish brain. No more re-explaining.\n\nStart a new AI session — it will hit the ground running.\n\nRun ${chalk.cyan('brainlink help')} to see all commands.`,
+      `Your AI finally has a brain.\n\nEvery new session wakes up knowing the project, past decisions,\ncurrent task, and what other sessions have shared. No more\nre-explaining from scratch. No more goldfish moments.\n\nLike any good brain, it remembers what matters and quietly\nlets go of the old stuff — that's what MEMORY.md is for:\npromote anything important there and it stays forever.\n\nStart a new AI session — it'll hit the ground running.\n\nRun ${chalk.cyan('brainlink help')} to see all commands.`,
       '◉ Brainlink active'
     );
     console.log('');
