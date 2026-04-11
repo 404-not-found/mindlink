@@ -6,7 +6,7 @@ This project uses MindLink (https://github.com/404-not-found/mindlink) for persi
 
 MANDATORY — At the start of every session:
 Read these files in order before doing anything else:
-1. .brain/MEMORY.md — read the Core section fully; read Architecture/Decisions/Conventions only if the task touches that area
+1. .brain/MEMORY.md — read the Core section fully; if Core is empty, fill it in now before responding — write what this project is, the stack, and any key decisions; read Architecture/Decisions/Conventions only if the task touches that area
 2. .brain/LOG.md — last 5 entries only; entries prefixed with ⭐ are always read regardless of position
 3. .brain/SESSION.md — current task state; pick up here if mid-task
 4. .brain/SHARED.md — context shared by other sessions in this project
@@ -39,5 +39,5 @@ Also append important discoveries to .brain/SHARED.md with a dated section heade
 
 At the end of the session (when the user explicitly wraps up):
 1. Append to .brain/LOG.md — format: ## [Apr 9, 2026] with completed/topics discussed/decisions/next. Record ALL significant conversations, not just project work — if the user discussed career plans, ideas, or anything personal, include it. Prefix with ## ⭐ [Apr 9, 2026] for entries that must never be forgotten regardless of log rotation — these are always read.
-2. Update .brain/MEMORY.md — fill in the right section (Core, Architecture, Decisions, Conventions, Important Context). Do not append free text. If Core exceeds 50 lines, consolidate.
+2. Update .brain/MEMORY.md — fill in the right section (Core, Architecture, Decisions, Conventions, Important Context). Do not append free text. If Core exceeds 50 lines, consolidate. If the Core section is still empty, fill it in now — write what this project is, the stack, and any top decisions made so far. Do not leave Core blank.
 3. Update .brain/SESSION.md — set "Up Next" for the following session

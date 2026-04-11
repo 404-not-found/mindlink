@@ -90,7 +90,7 @@ Examples:
       const coreLines = coreSection.split('\n').filter(l => l.trim().length > 0 && !l.startsWith('<!--')).length;
 
       if (coreLines === 0) {
-        checks.push(warn('MEMORY.md Core is empty', 'Your AI has no permanent facts yet — ask it to fill in MEMORY.md after your next session.'));
+        checks.push(warn('MEMORY.md Core is empty', 'Your AI has no permanent facts yet. It will fill this in automatically at the start of the next session.'));
       } else if (coreLines >= CORE_LINE_LIMIT) {
         checks.push(warn(
           'MEMORY.md Core is getting too long',
