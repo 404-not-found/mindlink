@@ -13,7 +13,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "[ -d '.brain' ] && printf '\\n[MindLink] Persistent memory is active for this project.\\nIf your context was just compacted or you feel uncertain about project state:\\n  → Re-read .brain/MEMORY.md  (project identity, decisions)\\n  → Re-read .brain/SESSION.md  (current task, what is next)\\n  → Re-read .brain/SHARED.md   (what other sessions have written — may or may not be currently running)\\n  → Re-read .brain/LOG.md      (last 5 entries for recent session history)\\n  → Run: mindlink status\\nNote: SHARED.md shows what other sessions wrote, not whether they are active right now.\\n' || true"
+            "command": "[ -d '.brain' ] && printf '\\n[MindLink] After your response, immediately update .brain/SESSION.md with what was just discussed — do not wait until the end of the session. Sessions can end without warning.\\nIf your context was just compacted or you feel uncertain about project state:\\n  → Re-read .brain/MEMORY.md  (project identity, decisions)\\n  → Re-read .brain/SESSION.md  (current task, what is next)\\n  → Re-read .brain/SHARED.md   (what other sessions have written)\\n  → Re-read .brain/LOG.md      (last 5 entries for recent session history)\\n' || true"
           }
         ]
       }
