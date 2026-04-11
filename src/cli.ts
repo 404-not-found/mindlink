@@ -19,7 +19,7 @@ const program = new Command();
 program
   .name('mindlink')
   .description('Give your AI a brain.')
-  .version('1.0.0', '-v, --version');
+  .version('1.0.2', '-v, --version');
 
 program.addCommand(initCommand);
 program.addCommand(statusCommand);
