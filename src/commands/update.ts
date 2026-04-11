@@ -2,26 +2,12 @@ import { Command } from 'commander';
 import { select, isCancel, cancel, spinner } from '@clack/prompts';
 import chalk from 'chalk';
 import { execSync } from 'child_process';
-import { createRequire } from 'module';
-import { fileURLToPath } from 'url';
-import { dirname, join } from 'path';
+import { join, dirname } from 'path';
 import { existsSync, readFileSync, writeFileSync, mkdirSync } from 'fs';
 import { AGENT_TEMPLATES_DIR, HOOKS_TEMPLATES_DIR, BRAIN_DIR } from '../utils/paths.js';
 import { AGENTS } from '../utils/agents.js';
 import { getRegisteredProjects } from '../utils/registry.js';
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
-const require = createRequire(import.meta.url);
-
-function currentVersion(): string {
-  try {
-    const pkg = require(join(__dirname, '..', '..', 'package.json'));
-    return pkg.version;
-  } catch {
-    return '0.0.0';
-  }
-}
+import { VERSION } from '../utils/version.js';
 
 async function latestVersion(): Promise<string | null> {
   try {
@@ -68,7 +54,7 @@ Examples:
   mindlink update
   `)
   .action(async () => {
-    const current = currentVersion();
+    const current = VERSION;
 
     // Non-TTY: just check and report, don't prompt
     if (!process.stdin.isTTY) {

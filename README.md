@@ -18,9 +18,9 @@ MindLink fixes all three. One command per project.
 
 ---
 
-> ### ◉ Latest — v1.0.10
+> ### ◉ Latest — v1.1.0
 > **Session memory · Cross-session sync · Cross-agent · 8 AI agents supported · Auto-refresh templates on update**
-> [→ Full release notes](https://github.com/404-not-found/mindlink/releases/tag/v1.0.10)
+> [→ Full release notes](https://github.com/404-not-found/mindlink/releases/tag/v1.1.0)
 
 ---
 
