@@ -1,4 +1,11 @@
 {
+  "permissions": {
+    "allow": [
+      "Edit(.brain/**)",
+      "Write(.brain/**)",
+      "Bash(mindlink *)"
+    ]
+  },
   "hooks": {
     "UserPromptSubmit": [
       {

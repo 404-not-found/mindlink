@@ -5,6 +5,9 @@ on:
     tags:
       - 'v*'
 
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
 jobs:
   test:
     runs-on: ubuntu-latest
@@ -12,7 +15,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: '18'
+          node-version: '22'
           cache: 'npm'
       - run: npm ci
       - run: npm run build
@@ -24,23 +27,23 @@ jobs:
       matrix:
         include:
           - runner: macos-latest
-            target: node18-macos-arm64
+            target: node22-macos-arm64
             artifact: mindlink-macos-arm64
           - runner: macos-latest
-            target: node18-macos-x64
+            target: node22-macos-x64
             artifact: mindlink-macos-x64
           - runner: ubuntu-latest
-            target: node18-linux-x64
+            target: node22-linux-x64
             artifact: mindlink-linux-x64
           - runner: windows-latest
-            target: node18-win-x64
+            target: node22-win-x64
             artifact: mindlink-win-x64.exe
     runs-on: ${{ matrix.runner }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: '18'
+          node-version: '22'
           cache: 'npm'
       - run: npm ci
       - run: npm run build
