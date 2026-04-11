@@ -1,8 +1,8 @@
 # Current Session
 
 > Updated by your AI agent during each session.
-> Reflects current task state. Reset anytime with `brainlink clear`.
-> Managed by Brainlink — https://github.com/404-not-found/brainlink
+> Reflects current task state. Reset anytime with `mindlink clear`.
+> Managed by MindLink — https://github.com/404-not-found/mindlink
 
 ---
 

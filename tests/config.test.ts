@@ -18,11 +18,11 @@ function run(args: string, cwd: string): { stdout: string; stderr: string; code:
   }
 }
 
-describe('brainlink config', () => {
+describe('mindlink config', () => {
   let dir: string;
 
   beforeEach(() => {
-    dir = join(tmpdir(), `brainlink-test-${Date.now()}-${Math.random().toString(36).slice(2)}`);
+    dir = join(tmpdir(), `mindlink-test-${Date.now()}-${Math.random().toString(36).slice(2)}`);
     mkdirSync(dir, { recursive: true });
   });
 
@@ -94,7 +94,7 @@ describe('brainlink config', () => {
 
     expect(existsSync(join(dir, 'CLAUDE.md'))).toBe(true);
     const content = readFileSync(join(dir, 'CLAUDE.md'), 'utf8');
-    expect(content).toContain('Brainlink');
+    expect(content).toContain('MindLink');
   });
 
   test('init --yes creates .claude/settings.json for Claude Code hook', () => {

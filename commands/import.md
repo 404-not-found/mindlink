@@ -1,22 +1,22 @@
-# brainlink import
+# mindlink import
 
-Import a Brainlink memory zip into the current project.
+Import a MindLink memory zip into the current project.
 
-**Run in your terminal.** Takes a `.zip` exported by `brainlink export` and extracts it into `.brain/`.
+**Run in your terminal.** Takes a `.zip` exported by `mindlink export` and extracts it into `.brain/`.
 
 ---
 
 ## Synopsis
 
 ```bash
-brainlink import <file.zip> [--yes]
+mindlink import <file.zip> [--yes]
 ```
 
 ---
 
 ## Description
 
-Extracts a zip created by `brainlink export` into the current project's `.brain/` folder. If `.brain/` already exists, you choose whether to merge (keep your current memory, add what's missing) or overwrite (replace everything with the imported version).
+Extracts a zip created by `mindlink export` into the current project's `.brain/` folder. If `.brain/` already exists, you choose whether to merge (keep your current memory, add what's missing) or overwrite (replace everything with the imported version).
 
 ---
 
@@ -25,19 +25,19 @@ Extracts a zip created by `brainlink export` into the current project's `.brain/
 **Onboard on a new machine**
 ```bash
 # Copy the zip to the new machine, then:
-brainlink import my-app-brain-2026-04-10.zip
+mindlink import my-app-brain-2026-04-10.zip
 # Your AI agent wakes up fully briefed on the first session
 ```
 
 **Accept a colleague's memory**
 ```bash
-brainlink import colleague-brain-2026-04-10.zip
+mindlink import colleague-brain-2026-04-10.zip
 # Choose Merge to keep your work and add what they know
 ```
 
 **Restore from backup**
 ```bash
-brainlink import ~/backups/my-app-brain-2026-04-01.zip --yes
+mindlink import ~/backups/my-app-brain-2026-04-01.zip --yes
 ```
 
 ---
@@ -76,5 +76,5 @@ When `.brain/` already exists:
 
 ## Related Commands
 
-- [`brainlink export`](export.md) — create a zip to share or back up
-- [`brainlink init`](init.md) — set up agent instruction files after importing
+- [`mindlink export`](export.md) — create a zip to share or back up
+- [`mindlink init`](init.md) — set up agent instruction files after importing

@@ -18,11 +18,11 @@ function run(args: string, cwd: string): { stdout: string; stderr: string; code:
   }
 }
 
-describe('brainlink init', () => {
+describe('mindlink init', () => {
   let dir: string;
 
   beforeEach(() => {
-    dir = join(tmpdir(), `brainlink-test-${Date.now()}-${Math.random().toString(36).slice(2)}`);
+    dir = join(tmpdir(), `mindlink-test-${Date.now()}-${Math.random().toString(36).slice(2)}`);
     mkdirSync(dir, { recursive: true });
   });
 
@@ -77,15 +77,15 @@ describe('brainlink init', () => {
     expect(existsSync(join(dir, '.github/copilot-instructions.md'))).toBe(true);
   });
 
-  test('template files contain expected Brainlink content', () => {
+  test('template files contain expected MindLink content', () => {
     run('init --yes', dir);
 
     const memory = readFileSync(join(dir, '.brain/MEMORY.md'), 'utf8');
     expect(memory).toContain('Project Memory');
-    expect(memory).toContain('Brainlink');
+    expect(memory).toContain('MindLink');
 
     const claude = readFileSync(join(dir, 'CLAUDE.md'), 'utf8');
-    expect(claude).toContain('Brainlink');
+    expect(claude).toContain('MindLink');
     expect(claude).toContain('.brain/MEMORY.md');
     expect(claude).toContain('.brain/LOG.md');
   });
@@ -167,9 +167,9 @@ describe('brainlink init', () => {
 
   // ── Banner ─────────────────────────────────────────────────────────────────
 
-  test('displays the brainlink banner', () => {
+  test('displays the mindlink banner', () => {
     const result = run('init --yes', dir);
-    expect(result.stdout).toContain('B R A I N L I N K');
+    expect(result.stdout).toContain('M I N D L I N K');
   });
 });
 

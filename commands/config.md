@@ -1,4 +1,4 @@
-# brainlink config
+# mindlink config
 
 Change settings for the current project after init.
 
@@ -9,14 +9,14 @@ Change settings for the current project after init.
 ## Synopsis
 
 ```bash
-brainlink config
+mindlink config
 ```
 
 ---
 
 ## Description
 
-Opens an interactive menu to change any setting that was configured during `brainlink init`. All settings are stored in `.brain/` and scoped to the current project path.
+Opens an interactive menu to change any setting that was configured during `mindlink init`. All settings are stored in `.brain/` and scoped to the current project path.
 
 ---
 
@@ -33,16 +33,16 @@ Controls whether `.brain/` is committed to git or ignored.
 
 ### Auto-sync
 
-Controls whether `brainlink sync` runs automatically in the background.
+Controls whether `mindlink sync` runs automatically in the background.
 
 | Option | What it does |
 |---|---|
 | Enable | Sync runs automatically. Sessions stay in sync without manual intervention. |
-| Disable | You run `brainlink sync` manually when you want to sync. |
+| Disable | You run `mindlink sync` manually when you want to sync. |
 
 ### Agent instruction files
 
-Add or remove agent instruction files for this project. Same multi-select menu as `brainlink init`.
+Add or remove agent instruction files for this project. Same multi-select menu as `mindlink init`.
 
 Selecting an agent that isn't already set up generates its instruction file.
 Deselecting an agent that exists prompts you to confirm before deleting the file.
@@ -52,7 +52,7 @@ Deselecting an agent that exists prompts you to confirm before deleting the file
 ## Examples
 
 ```bash
-brainlink config
+mindlink config
 ```
 
 ---
@@ -77,5 +77,5 @@ Agent files    : CLAUDE.md, CURSOR.md, AGENTS.md ...
 
 ## Related Commands
 
-- [`brainlink init`](init.md) — initial setup (first time only)
-- [`brainlink sync`](sync.md) — manually run sync
+- [`mindlink init`](init.md) — initial setup (first time only)
+- [`mindlink sync`](sync.md) — manually run sync

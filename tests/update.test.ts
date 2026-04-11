@@ -15,16 +15,16 @@ function run(args: string): { stdout: string; stderr: string; code: number } {
   }
 }
 
-describe('brainlink update', () => {
+describe('mindlink update', () => {
   test('--help shows description', () => {
     const result = run('update --help');
     expect(result.code).toBe(0);
-    expect(result.stdout).toContain('Update brainlink');
+    expect(result.stdout).toContain('Update mindlink');
   });
 
   test('--help shows example', () => {
     const result = run('update --help');
     expect(result.code).toBe(0);
-    expect(result.stdout).toContain('brainlink update');
+    expect(result.stdout).toContain('mindlink update');
   });
 });

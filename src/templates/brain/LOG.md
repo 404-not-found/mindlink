@@ -2,12 +2,12 @@
 
 > Append-only history of every session in this project.
 > Your AI agent appends a summary at the end of each session.
-> Managed by Brainlink — https://github.com/404-not-found/brainlink
+> Managed by MindLink — https://github.com/404-not-found/mindlink
 
 ---
 
 <!--
-  Like all human brains, Brainlink will eventually forget old sessions that
+  Like all human brains, MindLink will eventually forget old sessions that
   haven't been brought up in a while — that's by design, not a bug.
   Your AI reads the most recent entries each session to stay oriented.
 

@@ -1,6 +1,6 @@
-# brainlink uninstall
+# mindlink uninstall
 
-Remove Brainlink from the current project.
+Remove MindLink from the current project.
 
 **Run in your terminal only** — this permanently removes files. Always prompts for confirmation first.
 
@@ -9,26 +9,26 @@ Remove Brainlink from the current project.
 ## Synopsis
 
 ```bash
-brainlink uninstall [--yes]
+mindlink uninstall [--yes]
 ```
 
 ---
 
 ## Description
 
-Removes everything Brainlink created in this project directory:
+Removes everything MindLink created in this project directory:
 
 - `.brain/` folder and all memory files inside it
-- Agent instruction files (`CLAUDE.md`, `CURSOR.md`, etc.) that were created during `brainlink init`
+- Agent instruction files (`CLAUDE.md`, `CURSOR.md`, etc.) that were created during `mindlink init`
 - `.claude/settings.json` hook (if Claude was one of the configured agents)
 
-The Brainlink CLI itself is **not** removed. To uninstall the CLI globally:
+The MindLink CLI itself is **not** removed. To uninstall the CLI globally:
 
 ```bash
-npm uninstall -g brainlink
+npm uninstall -g mindlink
 ```
 
-Brainlink reads `config.json` inside `.brain/` to know which agent files to remove. If config is unreadable, it removes all known agent files as a safe default.
+MindLink reads `config.json` inside `.brain/` to know which agent files to remove. If config is unreadable, it removes all known agent files as a safe default.
 
 ---
 
@@ -43,8 +43,8 @@ Brainlink reads `config.json` inside `.brain/` to know which agent files to remo
 ## Examples
 
 ```bash
-brainlink uninstall          # interactive — shows what will be removed, asks to confirm
-brainlink uninstall --yes    # skip confirmation (useful in scripts)
+mindlink uninstall          # interactive — shows what will be removed, asks to confirm
+mindlink uninstall --yes    # skip confirmation (useful in scripts)
 ```
 
 ---
@@ -68,8 +68,8 @@ CONVENTIONS.md          (if Aider was configured)
 
 ## What Stays
 
-- The brainlink CLI itself
-- Any files Brainlink did not create
+- The mindlink CLI itself
+- Any files MindLink did not create
 
 ---
 
@@ -84,5 +84,5 @@ CONVENTIONS.md          (if Aider was configured)
 
 ## Related Commands
 
-- [`brainlink init`](init.md) — set up memory for this project
-- [`brainlink reset`](reset.md) — wipe memory but keep Brainlink installed
+- [`mindlink init`](init.md) — set up memory for this project
+- [`mindlink reset`](reset.md) — wipe memory but keep MindLink installed

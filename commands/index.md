@@ -1,6 +1,6 @@
-# Brainlink CLI Reference
+# MindLink CLI Reference
 
-> Full command reference for the Brainlink CLI.
+> Full command reference for the MindLink CLI.
 > Each command page includes synopsis, options, output examples, and error cases.
 
 ---
@@ -20,7 +20,7 @@ Commands are grouped by when and how you run them.
 | Command | Description |
 |---|---|
 | [status](status.md) | Show last session summary and what's next |
-| [summary](summary.md) | Full briefing — everything Brainlink knows, in one view |
+| [summary](summary.md) | Full briefing — everything MindLink knows, in one view |
 | [log](log.md) | View full session history |
 
 ### Keep running in a background terminal tab (while sessions are active)
@@ -29,7 +29,7 @@ Commands are grouped by when and how you run them.
 |---|---|
 | [sync](sync.md) | Watch for changes from other sessions and surface them automatically |
 
-`brainlink sync` runs in **watch mode by default** — it stays alive and prints a notification whenever another session appends to `.brain/SHARED.md`. Use `--once` to check a single time and exit.
+`mindlink sync` runs in **watch mode by default** — it stays alive and prints a notification whenever another session appends to `.brain/SHARED.md`. Use `--once` to check a single time and exit.
 
 ### Run in your terminal between sessions — not via AI
 
@@ -53,7 +53,7 @@ These commands are interactive, change settings, or modify files. Keep human han
 | Command | Description |
 |---|---|
 | [update](update.md) | Check for a newer version — never installs without asking |
-| [uninstall](uninstall.md) | Remove Brainlink from the current project |
+| [uninstall](uninstall.md) | Remove MindLink from the current project |
 
 ---
 
@@ -74,8 +74,8 @@ These flags work on every command.
 ## Getting Help
 
 ```bash
-brainlink --help
-brainlink <command> --help
+mindlink --help
+mindlink <command> --help
 ```
 
 Every command's `--help` shows a synopsis, all flags, examples, and what gets removed/changed.

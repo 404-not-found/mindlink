@@ -1,6 +1,6 @@
-# brainlink doctor
+# mindlink doctor
 
-Check that your Brainlink setup is healthy.
+Check that your MindLink setup is healthy.
 
 **Run in your terminal.** Use this when something feels off, after a fresh `import`, or just to verify everything is wired up correctly.
 
@@ -9,14 +9,14 @@ Check that your Brainlink setup is healthy.
 ## Synopsis
 
 ```bash
-brainlink doctor
+mindlink doctor
 ```
 
 ---
 
 ## Description
 
-Runs a series of checks on your project's Brainlink setup and reports any problems. Exits with code 1 if any critical issues are found, 0 if everything is healthy (warnings are allowed).
+Runs a series of checks on your project's MindLink setup and reports any problems. Exits with code 1 if any critical issues are found, 0 if everything is healthy (warnings are allowed).
 
 ---
 
@@ -37,7 +37,7 @@ Runs a series of checks on your project's Brainlink setup and reports any proble
 ## Output
 
 ```
-  ◉ Brainlink Doctor
+  ◉ MindLink Doctor
   /Users/yuanhong/my-app
 
   ✓  .brain/ found
@@ -66,9 +66,9 @@ Runs a series of checks on your project's Brainlink setup and reports any proble
 
 ```
   ✗  MEMORY.md missing
-     Run brainlink init to recreate it.
+     Run mindlink init to recreate it.
 
-  1 problem found — fix the issues above and re-run brainlink doctor.
+  1 problem found — fix the issues above and re-run mindlink doctor.
 ```
 
 ---
@@ -84,7 +84,7 @@ Runs a series of checks on your project's Brainlink setup and reports any proble
 
 ## When to Run
 
-- After `brainlink import` — verify the import landed correctly
+- After `mindlink import` — verify the import landed correctly
 - When your AI seems confused or isn't reading context — check the agent files
 - On a new machine after cloning — make sure instruction files are in place
 - Periodically to catch drift before it becomes a problem
@@ -93,6 +93,6 @@ Runs a series of checks on your project's Brainlink setup and reports any proble
 
 ## Related Commands
 
-- [`brainlink init`](init.md) — set up Brainlink (fixes most failures doctor finds)
-- [`brainlink config`](config.md) — change agents or settings
-- [`brainlink status`](status.md) — see what your AI knows right now
+- [`mindlink init`](init.md) — set up MindLink (fixes most failures doctor finds)
+- [`mindlink config`](config.md) — change agents or settings
+- [`mindlink status`](status.md) — see what your AI knows right now

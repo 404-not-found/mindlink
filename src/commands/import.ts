@@ -7,8 +7,8 @@ import AdmZip from 'adm-zip';
 import { BRAIN_DIR } from '../utils/paths.js';
 
 export const importCommand = new Command('import')
-  .description('Import a Brainlink memory zip into the current project')
-  .argument('<file>', 'Path to the .zip file exported by brainlink export')
+  .description('Import a MindLink memory zip into the current project')
+  .argument('<file>', 'Path to the .zip file exported by mindlink export')
   .option('-y, --yes', 'Skip confirmation and overwrite existing memory')
   .addHelpText('after', `
 What gets imported:
@@ -22,13 +22,13 @@ If .brain/ already exists, you will be asked whether to:
   Cancel    — do nothing
 
 Use cases:
-  Onboard on a new machine — copy the zip, run: brainlink import brain.zip
-  Restore from backup      — brainlink import my-app-brain-2026-04-10.zip
+  Onboard on a new machine — copy the zip, run: mindlink import brain.zip
+  Restore from backup      — mindlink import my-app-brain-2026-04-10.zip
   Accept a colleague's brain — merge their context into your project
 
 Examples:
-  brainlink import my-app-brain-2026-04-10.zip
-  brainlink import ~/Desktop/my-app-brain-2026-04-10.zip --yes
+  mindlink import my-app-brain-2026-04-10.zip
+  mindlink import ~/Desktop/my-app-brain-2026-04-10.zip --yes
   `)
   .action(async (file, opts) => {
     const projectPath = resolve(process.cwd());
@@ -64,7 +64,7 @@ Examples:
 
     if (brainEntries.length === 0) {
       console.log(`  ${chalk.red('✗')}  This zip doesn't contain any .brain/ files.`);
-      console.log(`     Make sure it was created with ${chalk.cyan('brainlink export')}.`);
+      console.log(`     Make sure it was created with ${chalk.cyan('mindlink export')}.`);
       console.log('');
       process.exit(1);
     }
@@ -131,7 +131,7 @@ Examples:
     } else {
       console.log(`  ${chalk.green('✓')}  Brain transplant complete. Your AI wakes up knowing everything.`);
       if (!existsSync(join(brainDir, '../CLAUDE.md')) && !existsSync(join(brainDir, '../CURSOR.md'))) {
-        console.log(`  ${chalk.dim('No agent instruction files found — run brainlink init to wire them up.')}`);
+        console.log(`  ${chalk.dim('No agent instruction files found — run mindlink init to wire them up.')}`);
       }
     }
     console.log('');

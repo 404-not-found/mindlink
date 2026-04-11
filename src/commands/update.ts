@@ -24,8 +24,8 @@ async function latestVersion(): Promise<string | null> {
     const { default: https } = await import('https');
     return new Promise((resolve) => {
       const req = https.get(
-        'https://registry.npmjs.org/brainlink/latest',
-        { headers: { 'User-Agent': 'brainlink-cli' } },
+        'https://registry.npmjs.org/mindlink/latest',
+        { headers: { 'User-Agent': 'mindlink-cli' } },
         (res) => {
           let data = '';
           res.on('data', (chunk: Buffer) => { data += chunk; });
@@ -58,10 +58,10 @@ function semverGt(a: string, b: string): boolean {
 }
 
 export const updateCommand = new Command('update')
-  .description('Update brainlink to the latest version')
+  .description('Update mindlink to the latest version')
   .addHelpText('after', `
 Examples:
-  brainlink update
+  mindlink update
   `)
   .action(async () => {
     const current = currentVersion();
@@ -88,7 +88,7 @@ Examples:
       s.stop('Could not reach npm registry.');
       console.log('');
       console.log(`  ${chalk.red('✗')}  Could not check for updates. Check your internet connection.`);
-      console.log(`     ${chalk.dim('Latest releases: github.com/404-not-found/brainlink/releases')}`);
+      console.log(`     ${chalk.dim('Latest releases: github.com/404-not-found/mindlink/releases')}`);
       console.log('');
       process.exit(1);
     }
@@ -116,7 +116,7 @@ Examples:
 
     if (isCancel(action) || action === 'cancel' || action === 'skip') {
       if (action === 'skip') {
-        console.log(`  ${chalk.dim('Skipped. Run brainlink update again to install later.')}`);
+        console.log(`  ${chalk.dim('Skipped. Run mindlink update again to install later.')}`);
       } else {
         cancel('Cancelled.');
       }
@@ -126,21 +126,21 @@ Examples:
 
     // Install
     const s2 = spinner();
-    s2.start(`Installing brainlink@${latest}...`);
+    s2.start(`Installing mindlink@${latest}...`);
 
     try {
-      execSync(`npm install -g brainlink@${latest}`, { stdio: 'pipe' });
+      execSync(`npm install -g mindlink@${latest}`, { stdio: 'pipe' });
       s2.stop('Done.');
       console.log('');
       console.log(`  ${chalk.green('✓')}  Updated to ${latest}.`);
-      console.log(`     ${chalk.dim('See what\'s new: github.com/404-not-found/brainlink/releases')}`);
+      console.log(`     ${chalk.dim('See what\'s new: github.com/404-not-found/mindlink/releases')}`);
     } catch (err: unknown) {
       s2.stop('Failed.');
       console.log('');
       console.log(`  ${chalk.red('✗')}  Update failed.`);
-      console.log(`     ${chalk.dim('Try: npm install -g brainlink@' + latest)}`);
+      console.log(`     ${chalk.dim('Try: npm install -g mindlink@' + latest)}`);
       if (err instanceof Error && err.message.includes('EACCES')) {
-        console.log(`     ${chalk.dim('Permission error — try: sudo npm install -g brainlink@' + latest)}`);
+        console.log(`     ${chalk.dim('Permission error — try: sudo npm install -g mindlink@' + latest)}`);
       }
       process.exit(1);
     }

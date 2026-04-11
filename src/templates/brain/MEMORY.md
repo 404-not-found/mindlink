@@ -1,7 +1,7 @@
 # Project Memory
 
 > Permanent facts about this project. Your AI reads this at the start of every session.
-> Managed by Brainlink — https://github.com/404-not-found/brainlink
+> Managed by MindLink — https://github.com/404-not-found/mindlink
 
 ---
 

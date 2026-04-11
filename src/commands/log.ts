@@ -13,11 +13,11 @@ export const logCommand = new Command('log')
   .option('--json', 'Output as JSON')
   .addHelpText('after', `
 Examples:
-  brainlink log
-  brainlink log --all
-  brainlink log --limit 20
-  brainlink log --since "Apr 1"
-  brainlink log --json
+  mindlink log
+  mindlink log --all
+  mindlink log --limit 20
+  mindlink log --since "Apr 1"
+  mindlink log --json
   `)
   .action((opts) => {
     const projectPath = resolve(process.cwd());
@@ -25,7 +25,7 @@ Examples:
 
     if (!existsSync(brainDir)) {
       console.log(`  ${chalk.red('✗')}  No .brain/ found in this directory.`);
-      console.log(`     Run ${chalk.cyan('brainlink init')} to get started.`);
+      console.log(`     Run ${chalk.cyan('mindlink init')} to get started.`);
       console.log('');
       process.exit(1);
     }
@@ -65,9 +65,9 @@ Examples:
 
     if (!opts.all) {
       const rest = total - shown.length;
-      const hint = rest > 0 ? `  ${chalk.dim(`${rest} more — run brainlink log --all to see everything`)}` : '';
+      const hint = rest > 0 ? `  ${chalk.dim(`${rest} more — run mindlink log --all to see everything`)}` : '';
       console.log(`  ${chalk.dim(`Showing last ${shown.length} of ${total} session${total !== 1 ? 's' : ''}`)}${hint ? '' : ''}`);
-      if (rest > 0) console.log(`  ${chalk.dim(`${rest} more — run brainlink log --all to see everything`)}`);
+      if (rest > 0) console.log(`  ${chalk.dim(`${rest} more — run mindlink log --all to see everything`)}`);
       console.log('');
     }
 
@@ -86,7 +86,7 @@ Examples:
     const archiveFiles = readdirSync(brainDir).filter(f => /^LOG-\d{4}-\d{2}-\d{2}\.md$/.test(f)).sort();
     if (archiveFiles.length > 0) {
       console.log(`  ${chalk.dim('─'.repeat(44))}`);
-      console.log(`  ${chalk.dim('Like all human brains, Brainlink forgets old sessions')}`);
+      console.log(`  ${chalk.dim('Like all human brains, MindLink forgets old sessions')}`);
       console.log(`  ${chalk.dim('that haven\'t come up in a while — that\'s by design.')}`);
       console.log(`  ${chalk.dim(`Older entries archived to: ${archiveFiles.join(', ')}`)}`);
       console.log(`  ${chalk.dim('Anything that truly matters belongs in MEMORY.md.')}`);

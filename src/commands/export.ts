@@ -20,15 +20,15 @@ What gets exported:
   - .brain/config.json — settings (excluded by default; use --include-agents for agent files)
 
 Use cases:
-  Onboard a new teammate  — send them the zip; they run: brainlink import brain.zip
-  Back up before reset    — export first, then brainlink reset
+  Onboard a new teammate  — send them the zip; they run: mindlink import brain.zip
+  Back up before reset    — export first, then mindlink reset
   Share project context   — hand off to a consultant without giving repo access
 
 Examples:
-  brainlink export
-  brainlink export --output ~/Desktop
-  brainlink export --output ~/Desktop/my-app-brain.zip
-  brainlink export --include-agents
+  mindlink export
+  mindlink export --output ~/Desktop
+  mindlink export --output ~/Desktop/my-app-brain.zip
+  mindlink export --include-agents
   `)
   .action(async (opts) => {
     const projectPath = resolve(process.cwd());
@@ -37,7 +37,7 @@ Examples:
     if (!existsSync(brainDir)) {
       console.log('');
       console.log(`  ${chalk.red('✗')}  No .brain/ found in this directory.`);
-      console.log(`     Run ${chalk.cyan('brainlink init')} to get started.`);
+      console.log(`     Run ${chalk.cyan('mindlink init')} to get started.`);
       console.log('');
       process.exit(1);
     }
@@ -137,6 +137,6 @@ Examples:
     console.log(`  ${chalk.green('✓')}  Exported to: ${chalk.bold(outputPath)}`);
     console.log('');
     console.log(`  ${chalk.dim('To import on another machine or project:')}`);
-    console.log(`  ${chalk.cyan(`brainlink import ${basename(outputPath)}`)}`);
+    console.log(`  ${chalk.cyan(`mindlink import ${basename(outputPath)}`)}`);
     console.log('');
   });

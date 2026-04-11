@@ -1,4 +1,4 @@
-# brainlink export
+# mindlink export
 
 Export your project's AI memory to a shareable zip file.
 
@@ -9,16 +9,16 @@ Export your project's AI memory to a shareable zip file.
 ## Synopsis
 
 ```bash
-brainlink export [--output <path>] [--include-agents]
+mindlink export [--output <path>] [--include-agents]
 ```
 
 ---
 
 ## Description
 
-Packages your `.brain/` folder into a zip file named `{project}-brain-{date}.zip`. You can share this zip with anyone — they import it with `brainlink import` and their AI agent wakes up knowing everything your project knows.
+Packages your `.brain/` folder into a zip file named `{project}-brain-{date}.zip`. You can share this zip with anyone — they import it with `mindlink import` and their AI agent wakes up knowing everything your project knows.
 
-If you run this interactively (no `--output` flag), Brainlink asks where to save the file.
+If you run this interactively (no `--output` flag), MindLink asks where to save the file.
 
 ---
 
@@ -26,20 +26,20 @@ If you run this interactively (no `--output` flag), Brainlink asks where to save
 
 **Onboard a new teammate**
 ```bash
-brainlink export --output ~/Desktop
+mindlink export --output ~/Desktop
 # Send them: my-app-brain-2026-04-10.zip
-# They run:  brainlink import my-app-brain-2026-04-10.zip
+# They run:  mindlink import my-app-brain-2026-04-10.zip
 ```
 
 **Back up before a reset**
 ```bash
-brainlink export --output ~/backups
-brainlink reset
+mindlink export --output ~/backups
+mindlink reset
 ```
 
 **Share context with a consultant**
 ```bash
-brainlink export --include-agents --output ~/Desktop
+mindlink export --include-agents --output ~/Desktop
 # They get the memory AND the agent instruction files
 ```
 
@@ -79,12 +79,12 @@ brainlink export --include-agents --output ~/Desktop
   ✓  Exported to: /Users/yuanhong/Desktop/my-app-brain-2026-04-10.zip
 
   To import on another machine or project:
-  brainlink import my-app-brain-2026-04-10.zip
+  mindlink import my-app-brain-2026-04-10.zip
 ```
 
 ---
 
 ## Related Commands
 
-- [`brainlink import`](import.md) — import a zip into the current project
-- [`brainlink reset`](reset.md) — wipe memory (export first if you want a backup)
+- [`mindlink import`](import.md) — import a zip into the current project
+- [`mindlink reset`](reset.md) — wipe memory (export first if you want a backup)

@@ -1,4 +1,4 @@
-# brainlink clear
+# mindlink clear
 
 Reset current session state for a fresh start.
 
@@ -9,7 +9,7 @@ Reset current session state for a fresh start.
 ## Synopsis
 
 ```bash
-brainlink clear [--yes]
+mindlink clear [--yes]
 ```
 
 ---
@@ -21,8 +21,8 @@ Resets `.brain/SESSION.md` so your AI agent starts the next session with a clean
 Use this when you want to start a genuinely new task and don't want the agent picking up mid-task state from a previous session.
 
 Not what you need? See:
-- [`brainlink reset`](reset.md) — wipe ALL memory back to blank (scorched earth)
-- [`brainlink uninstall`](uninstall.md) — remove Brainlink from this project entirely
+- [`mindlink reset`](reset.md) — wipe ALL memory back to blank (scorched earth)
+- [`mindlink uninstall`](uninstall.md) — remove MindLink from this project entirely
 
 ---
 
@@ -48,8 +48,8 @@ Not what you need? See:
 ## Examples
 
 ```bash
-brainlink clear
-brainlink clear --yes
+mindlink clear
+mindlink clear --yes
 ```
 
 ---
@@ -70,5 +70,5 @@ brainlink clear --yes
 
 ## Related Commands
 
-- [`brainlink status`](status.md) — check what's currently in SESSION.md before clearing
-- [`brainlink log`](log.md) — view past session history
+- [`mindlink status`](status.md) — check what's currently in SESSION.md before clearing
+- [`mindlink log`](log.md) — view past session history

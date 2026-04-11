@@ -18,11 +18,11 @@ function run(args: string, cwd: string, timeoutMs = 8000): { stdout: string; std
   }
 }
 
-describe('brainlink sync', () => {
+describe('mindlink sync', () => {
   let dir: string;
 
   beforeEach(() => {
-    dir = join(tmpdir(), `brainlink-test-${Date.now()}-${Math.random().toString(36).slice(2)}`);
+    dir = join(tmpdir(), `mindlink-test-${Date.now()}-${Math.random().toString(36).slice(2)}`);
     mkdirSync(dir, { recursive: true });
   });
 

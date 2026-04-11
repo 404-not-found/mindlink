@@ -16,10 +16,10 @@ export const summaryCommand = new Command('summary')
   .option('--json', 'Output as JSON')
   .addHelpText('after', `
 Examples:
-  brainlink summary
-  brainlink summary --json
+  mindlink summary
+  mindlink summary --json
 
-Tip: your AI agent can run this itself — ask it to run "brainlink summary"
+Tip: your AI agent can run this itself — ask it to run "mindlink summary"
 to get a full briefing on the current project state.
   `)
   .action((opts) => {
@@ -28,7 +28,7 @@ to get a full briefing on the current project state.
 
     if (!existsSync(brainDir)) {
       console.log(`  ${chalk.red('✗')}  No .brain/ found in this directory.`);
-      console.log(`     Run ${chalk.cyan('brainlink init')} to get started.`);
+      console.log(`     Run ${chalk.cyan('mindlink init')} to get started.`);
       console.log('');
       process.exit(1);
     }
@@ -85,7 +85,7 @@ to get a full briefing on the current project state.
 
     // ── Human ─────────────────────────────────────────────────────────────────
     console.log('');
-    console.log(`  ${chalk.bold('◉ Brainlink Memory Summary')}  ${chalk.dim('·')}  ${chalk.dim(projectPath)}`);
+    console.log(`  ${chalk.bold('◉ MindLink Memory Summary')}  ${chalk.dim('·')}  ${chalk.dim(projectPath)}`);
     console.log('');
 
     // Project
@@ -155,6 +155,6 @@ to get a full briefing on the current project state.
     }
 
     console.log(`  ${chalk.dim('─────────────────────────────────────────────────')}`);
-    console.log(`  ${chalk.dim('Powered by Brainlink — github.com/404-not-found/brainlink')}`);
+    console.log(`  ${chalk.dim('Powered by MindLink — github.com/404-not-found/mindlink')}`);
     console.log('');
   });

@@ -1,4 +1,4 @@
-# brainlink log
+# mindlink log
 
 View full session history.
 
@@ -7,7 +7,7 @@ View full session history.
 ## Synopsis
 
 ```bash
-brainlink log [--all] [--limit <n>] [--since <date>] [--json]
+mindlink log [--all] [--limit <n>] [--since <date>] [--json]
 ```
 
 ---
@@ -32,11 +32,11 @@ Prints the contents of `.brain/LOG.md` in a readable format. Shows the last 10 s
 ## Examples
 
 ```bash
-brainlink log                     # last 10 sessions
-brainlink log --all               # full history
-brainlink log --limit 20          # last 20 sessions
-brainlink log --since "Apr 1"     # sessions from April 1 onward
-brainlink log --json              # machine-readable output
+mindlink log                     # last 10 sessions
+mindlink log --all               # full history
+mindlink log --limit 20          # last 20 sessions
+mindlink log --since "Apr 1"     # sessions from April 1 onward
+mindlink log --json              # machine-readable output
 ```
 
 ---
@@ -44,7 +44,7 @@ brainlink log --json              # machine-readable output
 ## Output
 
 ```
-Showing last 10 sessions  ·  brainlink log --all to see everything
+Showing last 10 sessions  ·  mindlink log --all to see everything
 
 ── Apr 9, 2026 ──────────────────────────────────
 Scaffolded auth module, fixed login redirect bug,
@@ -61,5 +61,5 @@ decided on Postgres over MySQL.
 
 ## Related Commands
 
-- [`brainlink status`](status.md) — quick summary of the last session only
-- [`brainlink clear`](clear.md) — reset current session state
+- [`mindlink status`](status.md) — quick summary of the last session only
+- [`mindlink clear`](clear.md) — reset current session state

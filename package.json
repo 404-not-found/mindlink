@@ -1,10 +1,10 @@
 {
-  "name": "brainlink",
+  "name": "mindlink",
   "version": "1.0.0",
   "description": "Give your AI a brain. Session memory, cross-session sync, and cross-agent context — one command per project.",
   "type": "module",
   "bin": {
-    "brainlink": "dist/cli.js"
+    "mindlink": "dist/cli.js"
   },
   "scripts": {
     "build": "tsup",
@@ -58,7 +58,7 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/404-not-found/brainlink.git"
+    "url": "git+https://github.com/404-not-found/mindlink.git"
   },
-  "homepage": "https://github.com/404-not-found/brainlink"
+  "homepage": "https://github.com/404-not-found/mindlink"
 }

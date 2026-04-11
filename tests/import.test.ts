@@ -18,16 +18,16 @@ function run(args: string, cwd: string): { stdout: string; code: number } {
   }
 }
 
-describe('brainlink import', () => {
+describe('mindlink import', () => {
   let srcDir: string;
   let destDir: string;
   let outDir: string;
 
   beforeEach(() => {
     const suffix = `${Date.now()}-${Math.random().toString(36).slice(2)}`;
-    srcDir  = join(tmpdir(), `brainlink-src-${suffix}`);
-    destDir = join(tmpdir(), `brainlink-dst-${suffix}`);
-    outDir  = join(tmpdir(), `brainlink-out-${suffix}`);
+    srcDir  = join(tmpdir(), `mindlink-src-${suffix}`);
+    destDir = join(tmpdir(), `mindlink-dst-${suffix}`);
+    outDir  = join(tmpdir(), `mindlink-out-${suffix}`);
     mkdirSync(srcDir,  { recursive: true });
     mkdirSync(destDir, { recursive: true });
     mkdirSync(outDir,  { recursive: true });

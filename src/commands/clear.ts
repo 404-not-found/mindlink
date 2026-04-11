@@ -13,12 +13,12 @@ What it does:
   blockers, and up-next. MEMORY.md, LOG.md, and SHARED.md are untouched.
 
 Not what you need?
-  brainlink reset     — wipe ALL memory files back to blank (scorched earth)
-  brainlink uninstall — remove Brainlink from this project entirely
+  mindlink reset     — wipe ALL memory files back to blank (scorched earth)
+  mindlink uninstall — remove MindLink from this project entirely
 
 Examples:
-  brainlink clear
-  brainlink clear --yes
+  mindlink clear
+  mindlink clear --yes
   `)
   .action(async (_opts) => {
     const projectPath = resolve(process.cwd());
@@ -27,7 +27,7 @@ Examples:
     if (!existsSync(brainDir)) {
       console.log('');
       console.log(`  ${chalk.red('✗')}  No .brain/ found in this directory.`);
-      console.log(`     Run ${chalk.cyan('brainlink init')} to get started.`);
+      console.log(`     Run ${chalk.cyan('mindlink init')} to get started.`);
       console.log('');
       process.exit(1);
     }

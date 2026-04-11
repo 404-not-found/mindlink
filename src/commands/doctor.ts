@@ -32,7 +32,7 @@ function icon(status: CheckStatus): string {
 }
 
 export const doctorCommand = new Command('doctor')
-  .description('Check that your Brainlink setup is healthy')
+  .description('Check that your MindLink setup is healthy')
   .addHelpText('after', `
 What gets checked:
   .brain/        — exists and contains all expected files
@@ -43,14 +43,14 @@ What gets checked:
   Hook           — .claude/settings.json exists (if Claude Code is configured)
 
 Examples:
-  brainlink doctor
+  mindlink doctor
   `)
   .action(() => {
     const projectPath = resolve(process.cwd());
     const brainDir = join(projectPath, BRAIN_DIR);
 
     console.log('');
-    console.log(`  ${chalk.bold('◉ Brainlink Doctor')}`);
+    console.log(`  ${chalk.bold('◉ MindLink Doctor')}`);
     console.log(`  ${chalk.dim(projectPath)}`);
     console.log('');
 
@@ -60,7 +60,7 @@ Examples:
 
     // ── 1. .brain/ exists ───────────────────────────────────────────────────
     if (!existsSync(brainDir)) {
-      checks.push(fail('.brain/ missing', `Run ${chalk.cyan('brainlink init')} to get started.`));
+      checks.push(fail('.brain/ missing', `Run ${chalk.cyan('mindlink init')} to get started.`));
       printChecks(checks);
       process.exit(1);
     }
@@ -70,20 +70,20 @@ Examples:
     const configPath = join(brainDir, 'config.json');
     let config: { agents?: string[]; gitTracking?: boolean; autoSync?: boolean; maxLogEntries?: number } = {};
     if (!existsSync(configPath)) {
-      checks.push(warn('config.json missing', `Run ${chalk.cyan('brainlink config')} to repair.`));
+      checks.push(warn('config.json missing', `Run ${chalk.cyan('mindlink config')} to repair.`));
     } else {
       try {
         config = JSON.parse(readFileSync(configPath, 'utf8'));
         checks.push(ok('config.json valid'));
       } catch {
-        checks.push(warn('config.json unreadable', 'File may be corrupted — delete and re-run brainlink init.'));
+        checks.push(warn('config.json unreadable', 'File may be corrupted — delete and re-run mindlink init.'));
       }
     }
 
     // ── 3. MEMORY.md ────────────────────────────────────────────────────────
     const memoryPath = join(brainDir, 'MEMORY.md');
     if (!existsSync(memoryPath)) {
-      checks.push(fail('MEMORY.md missing', `Run ${chalk.cyan('brainlink init')} to recreate it.`));
+      checks.push(fail('MEMORY.md missing', `Run ${chalk.cyan('mindlink init')} to recreate it.`));
     } else {
       const memoryMd = readFileSync(memoryPath, 'utf8');
       const coreSection = extractSection(memoryMd, 'Core');
@@ -109,7 +109,7 @@ Examples:
     // ── 4. SESSION.md ───────────────────────────────────────────────────────
     const sessionPath = join(brainDir, 'SESSION.md');
     if (!existsSync(sessionPath)) {
-      checks.push(fail('SESSION.md missing', `Run ${chalk.cyan('brainlink init')} to recreate it.`));
+      checks.push(fail('SESSION.md missing', `Run ${chalk.cyan('mindlink init')} to recreate it.`));
     } else {
       const sessionMd = readFileSync(sessionPath, 'utf8');
       const hasContent = sessionMd.split('\n').some(l => l.trim().length > 0 && !l.startsWith('<!--') && !l.startsWith('#'));
@@ -126,7 +126,7 @@ Examples:
     // ── 5. LOG.md ───────────────────────────────────────────────────────────
     const logPath = join(brainDir, 'LOG.md');
     if (!existsSync(logPath)) {
-      checks.push(fail('LOG.md missing', `Run ${chalk.cyan('brainlink init')} to recreate it.`));
+      checks.push(fail('LOG.md missing', `Run ${chalk.cyan('mindlink init')} to recreate it.`));
     } else {
       const logMd = readFileSync(logPath, 'utf8');
       const entries = parseLogEntries(logMd);
@@ -166,14 +166,14 @@ Examples:
     // ── 6. Agent instruction files ──────────────────────────────────────────
     const configuredAgents: string[] = config.agents ?? [];
     if (configuredAgents.length === 0) {
-      checks.push(warn('No agents configured', `Run ${chalk.cyan('brainlink config')} → Agent instruction files.`));
+      checks.push(warn('No agents configured', `Run ${chalk.cyan('mindlink config')} → Agent instruction files.`));
     } else {
       for (const agentValue of configuredAgents) {
         const agent = AGENTS.find(a => a.value === agentValue);
         if (!agent) continue;
         const destPath = join(projectPath, agent.destFile);
         if (!existsSync(destPath)) {
-          checks.push(fail(`${agent.destFile} missing`, `Run ${chalk.cyan('brainlink config')} → Agent instruction files to recreate.`));
+          checks.push(fail(`${agent.destFile} missing`, `Run ${chalk.cyan('mindlink config')} → Agent instruction files to recreate.`));
         } else {
           checks.push(ok(`${agent.destFile} — ${agent.label}`));
         }
@@ -186,14 +186,14 @@ Examples:
       if (!existsSync(hookPath)) {
         checks.push(warn(
           '.claude/settings.json missing',
-          `Claude Code won't auto-reload after context compaction. Run ${chalk.cyan('brainlink config')} → Agent instruction files to restore.`
+          `Claude Code won't auto-reload after context compaction. Run ${chalk.cyan('mindlink config')} → Agent instruction files to restore.`
         ));
       } else {
         try {
           const settings = JSON.parse(readFileSync(hookPath, 'utf8'));
           const hasHook = settings?.hooks?.UserPromptSubmit != null;
           if (!hasHook) {
-            checks.push(warn('.claude/settings.json exists but Brainlink hook not found', 'Hook may have been removed — check the file manually.'));
+            checks.push(warn('.claude/settings.json exists but MindLink hook not found', 'Hook may have been removed — check the file manually.'));
           } else {
             checks.push(ok('.claude/settings.json — UserPromptSubmit hook active'));
           }
@@ -219,7 +219,7 @@ Examples:
     printChecks(checks);
 
     if (failCount > 0) {
-      console.log(`  ${chalk.red.bold(`${failCount} problem${failCount !== 1 ? 's' : ''} found`)} — fix the issues above and re-run ${chalk.cyan('brainlink doctor')}.`);
+      console.log(`  ${chalk.red.bold(`${failCount} problem${failCount !== 1 ? 's' : ''} found`)} — fix the issues above and re-run ${chalk.cyan('mindlink doctor')}.`);
     } else if (warnCount > 0) {
       console.log(`  ${chalk.yellow.bold(`${warnCount} warning${warnCount !== 1 ? 's' : ''}`)}, no critical issues. Your AI will still work.`);
     } else {

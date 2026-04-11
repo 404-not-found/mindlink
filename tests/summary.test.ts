@@ -18,11 +18,11 @@ function run(args: string, cwd: string): { stdout: string; code: number } {
   }
 }
 
-describe('brainlink summary', () => {
+describe('mindlink summary', () => {
   let dir: string;
 
   beforeEach(() => {
-    dir = join(tmpdir(), `brainlink-test-${Date.now()}-${Math.random().toString(36).slice(2)}`);
+    dir = join(tmpdir(), `mindlink-test-${Date.now()}-${Math.random().toString(36).slice(2)}`);
     mkdirSync(dir, { recursive: true });
   });
 
@@ -40,7 +40,7 @@ describe('brainlink summary', () => {
     run('init --yes', dir);
     const result = run('summary', dir);
     expect(result.code).toBe(0);
-    expect(result.stdout).toContain('Brainlink');
+    expect(result.stdout).toContain('MindLink');
   });
 
   test('shows project overview when MEMORY.md has content', () => {

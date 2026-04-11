@@ -1,4 +1,4 @@
-# brainlink init
+# mindlink init
 
 Set up memory for the current project.
 
@@ -7,14 +7,14 @@ Set up memory for the current project.
 ## Synopsis
 
 ```bash
-brainlink init [--yes]
+mindlink init [--yes]
 ```
 
 ---
 
 ## Description
 
-Creates a `.brain/` folder in the current directory and generates agent instruction files for the AI agents you select. Memory is scoped to the **absolute path** of this directory — run `brainlink init` separately in each project you want to give memory.
+Creates a `.brain/` folder in the current directory and generates agent instruction files for the AI agents you select. Memory is scoped to the **absolute path** of this directory — run `mindlink init` separately in each project you want to give memory.
 
 **Run this before starting your AI session.** The agent reads the instruction files on startup. If you init after a session has already started, the current session won't see it — the next one will.
 
@@ -40,11 +40,11 @@ your-project/
 
 ## Interactive Prompts
 
-`brainlink init` walks you through three choices.
+`mindlink init` walks you through three choices.
 
 ### 1. Which AI agents do you use?
 
-Select the agents you use in this project. Brainlink generates the right instruction file for each one.
+Select the agents you use in this project. MindLink generates the right instruction file for each one.
 
 | Agent | File generated |
 |---|---|
@@ -58,7 +58,7 @@ Select the agents you use in this project. Brainlink generates the right instruc
 | Aider | `CONVENTIONS.md` |
 | Add custom agent | file name of your choice |
 
-**To change this later:** `brainlink config` → Agent instruction files
+**To change this later:** `mindlink config` → Agent instruction files
 
 ### 2. Should .brain/ be tracked by git?
 
@@ -67,16 +67,16 @@ Select the agents you use in this project. Brainlink generates the right instruc
 | Enable (commit to git) | Your whole team shares the same AI memory. Decisions, context, and history are tracked alongside code. |
 | Disable (add to .gitignore) | Memory stays on your machine only. Teammates don't see it. |
 
-**To change this later:** `brainlink config` → Git tracking
+**To change this later:** `mindlink config` → Git tracking
 
 ### 3. Auto-sync between sessions?
 
 | Choice | What it means |
 |---|---|
-| Enable (watch mode) | `brainlink sync` runs automatically in the background, keeping all sessions in sync as they write. |
-| Disable (manual) | Run `brainlink sync` yourself when you want to sync. |
+| Enable (watch mode) | `mindlink sync` runs automatically in the background, keeping all sessions in sync as they write. |
+| Disable (manual) | Run `mindlink sync` yourself when you want to sync. |
 
-**To change this later:** `brainlink config` → Auto-sync
+**To change this later:** `mindlink config` → Auto-sync
 
 ---
 
@@ -93,32 +93,32 @@ Select the agents you use in this project. Brainlink generates the right instruc
 **Standard setup with interactive prompts:**
 ```bash
 cd my-project
-brainlink init
+mindlink init
 ```
 
 **Non-interactive setup (CI or scripting):**
 ```bash
-brainlink init --yes
+mindlink init --yes
 ```
 
 ---
 
 ## Already Initialized
 
-If `.brain/` already exists, `brainlink init` shows a recovery menu instead of an error:
+If `.brain/` already exists, `mindlink init` shows a recovery menu instead of an error:
 
 ```
 .brain/ already exists at this path. What would you like to do?
-❯ Change settings       brainlink config
-  View current status   brainlink status
+❯ Change settings       mindlink config
+  View current status   mindlink status
   Nothing — exit
 ```
 
-With `--yes`, exits immediately and tells you to run `brainlink config` to change settings.
+With `--yes`, exits immediately and tells you to run `mindlink config` to change settings.
 
 ---
 
 ## Related Commands
 
-- [`brainlink config`](config.md) — change any setting made during init
-- [`brainlink status`](status.md) — check current memory state
+- [`mindlink config`](config.md) — change any setting made during init
+- [`mindlink status`](status.md) — check current memory state

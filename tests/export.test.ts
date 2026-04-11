@@ -18,14 +18,14 @@ function run(args: string, cwd: string): { stdout: string; code: number } {
   }
 }
 
-describe('brainlink export', () => {
+describe('mindlink export', () => {
   let dir: string;
   let outDir: string;
 
   beforeEach(() => {
     const suffix = `${Date.now()}-${Math.random().toString(36).slice(2)}`;
-    dir = join(tmpdir(), `brainlink-test-${suffix}`);
-    outDir = join(tmpdir(), `brainlink-out-${suffix}`);
+    dir = join(tmpdir(), `mindlink-test-${suffix}`);
+    outDir = join(tmpdir(), `mindlink-out-${suffix}`);
     mkdirSync(dir, { recursive: true });
     mkdirSync(outDir, { recursive: true });
   });
@@ -73,7 +73,7 @@ describe('brainlink export', () => {
     run('init --yes', dir);
     const result = run(`export --output ${outDir}`, dir);
     expect(result.code).toBe(0);
-    expect(result.stdout).toContain('brainlink import');
+    expect(result.stdout).toContain('mindlink import');
   });
 
   test('--output with explicit zip path works', () => {

@@ -1,4 +1,4 @@
-# brainlink reset
+# mindlink reset
 
 Wipe all `.brain/` memory files and start completely fresh.
 
@@ -9,7 +9,7 @@ Wipe all `.brain/` memory files and start completely fresh.
 ## Synopsis
 
 ```bash
-brainlink reset [--yes]
+mindlink reset [--yes]
 ```
 
 ---
@@ -18,11 +18,11 @@ brainlink reset [--yes]
 
 Resets all four `.brain/` memory files — `MEMORY.md`, `SESSION.md`, `SHARED.md`, and `LOG.md` — back to blank templates. Your settings (`config.json`) and agent instruction files (e.g. `CLAUDE.md`, `CURSOR.md`) are untouched.
 
-Use this when the project direction has fundamentally changed and you want your AI to start with no prior context. For simply starting a new work session, use [`brainlink clear`](clear.md) instead.
+Use this when the project direction has fundamentally changed and you want your AI to start with no prior context. For simply starting a new work session, use [`mindlink clear`](clear.md) instead.
 
 Not what you need? See:
-- [`brainlink clear`](clear.md) — reset SESSION.md only (lighter option, keeps all history)
-- [`brainlink uninstall`](uninstall.md) — remove Brainlink from this project entirely
+- [`mindlink clear`](clear.md) — reset SESSION.md only (lighter option, keeps all history)
+- [`mindlink uninstall`](uninstall.md) — remove MindLink from this project entirely
 
 ---
 
@@ -50,8 +50,8 @@ Not what you need? See:
 ## Examples
 
 ```bash
-brainlink reset
-brainlink reset --yes
+mindlink reset
+mindlink reset --yes
 ```
 
 ---
@@ -76,6 +76,6 @@ brainlink reset --yes
 
 ## Related Commands
 
-- [`brainlink clear`](clear.md) — lighter reset, SESSION.md only
-- [`brainlink init`](init.md) — set up a project from scratch
-- [`brainlink status`](status.md) — check current memory before resetting
+- [`mindlink clear`](clear.md) — lighter reset, SESSION.md only
+- [`mindlink init`](init.md) — set up a project from scratch
+- [`mindlink status`](status.md) — check current memory before resetting

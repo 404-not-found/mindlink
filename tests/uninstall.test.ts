@@ -18,11 +18,11 @@ function run(args: string, cwd: string): { stdout: string; code: number } {
   }
 }
 
-describe('brainlink uninstall', () => {
+describe('mindlink uninstall', () => {
   let dir: string;
 
   beforeEach(() => {
-    dir = join(tmpdir(), `brainlink-test-${Date.now()}-${Math.random().toString(36).slice(2)}`);
+    dir = join(tmpdir(), `mindlink-test-${Date.now()}-${Math.random().toString(36).slice(2)}`);
     mkdirSync(dir, { recursive: true });
   });
 
@@ -66,7 +66,7 @@ describe('brainlink uninstall', () => {
 
     expect(result.code).toBe(0);
     expect(result.stdout).toContain('removed');
-    expect(result.stdout).toContain('npm uninstall -g brainlink');
+    expect(result.stdout).toContain('npm uninstall -g mindlink');
   });
 
   test('--help shows what gets removed', () => {

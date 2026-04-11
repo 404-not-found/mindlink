@@ -1,4 +1,4 @@
-# brainlink status
+# mindlink status
 
 Show last session summary and what's next.
 
@@ -7,7 +7,7 @@ Show last session summary and what's next.
 ## Synopsis
 
 ```bash
-brainlink status [--json]
+mindlink status [--json]
 ```
 
 ---
@@ -39,7 +39,7 @@ Memory stats
    Decisions made  : 7
    Last updated    : 2 hours ago
 
-Run brainlink log to see full history.
+Run mindlink log to see full history.
 ```
 
 ---
@@ -55,8 +55,8 @@ Run brainlink log to see full history.
 ## Examples
 
 ```bash
-brainlink status
-brainlink status --json
+mindlink status
+mindlink status --json
 ```
 
 ---
@@ -65,12 +65,12 @@ brainlink status --json
 
 ```
 ✗  No .brain/ found in this directory.
-   Run brainlink init to get started.
+   Run mindlink init to get started.
 ```
 
 ---
 
 ## Related Commands
 
-- [`brainlink log`](log.md) — view full session history
-- [`brainlink init`](init.md) — set up memory for this project
+- [`mindlink log`](log.md) — view full session history
+- [`mindlink init`](init.md) — set up memory for this project

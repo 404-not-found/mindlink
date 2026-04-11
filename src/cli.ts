@@ -17,7 +17,7 @@ import { doctorCommand } from './commands/doctor.js';
 const program = new Command();
 
 program
-  .name('brainlink')
+  .name('mindlink')
   .description('Give your AI a brain.')
   .version('1.0.0', '-v, --version');
 
@@ -63,9 +63,9 @@ program.on('command:*', (operands: string[]) => {
   console.log('');
   console.log(`  ${chalk.red('✗')}  Unknown command: ${chalk.bold(unknown)}`);
   if (closest && closest.dist <= 3) {
-    console.log(`     Did you mean ${chalk.cyan('brainlink ' + closest.cmd)}?`);
+    console.log(`     Did you mean ${chalk.cyan('mindlink ' + closest.cmd)}?`);
   }
-  console.log(`     Run ${chalk.cyan('brainlink --help')} to see all commands.`);
+  console.log(`     Run ${chalk.cyan('mindlink --help')} to see all commands.`);
   console.log('');
   process.exit(1);
 });

@@ -22,11 +22,11 @@ function initProject(dir: string) {
   run('init --yes', dir);
 }
 
-describe('brainlink status', () => {
+describe('mindlink status', () => {
   let dir: string;
 
   beforeEach(() => {
-    dir = join(tmpdir(), `brainlink-test-${Date.now()}-${Math.random().toString(36).slice(2)}`);
+    dir = join(tmpdir(), `mindlink-test-${Date.now()}-${Math.random().toString(36).slice(2)}`);
     mkdirSync(dir, { recursive: true });
   });
 
@@ -42,9 +42,9 @@ describe('brainlink status', () => {
     expect(result.stdout).toContain('No .brain/ found');
   });
 
-  test('error output tells user to run brainlink init', () => {
+  test('error output tells user to run mindlink init', () => {
     const result = run('status', dir);
-    expect(result.stdout).toContain('brainlink init');
+    expect(result.stdout).toContain('mindlink init');
   });
 
   // ── Fresh project (no sessions yet) ───────────────────────────────────────
@@ -185,11 +185,11 @@ Build auth
     expect(result.stdout).toContain('Apr 9, 2026');
   });
 
-  test('shows brainlink log hint at the bottom', () => {
+  test('shows mindlink log hint at the bottom', () => {
     initProject(dir);
     writeFileSync(join(dir, '.brain/SESSION.md'), `# Current Session\n## Current Task\nSomething\n## In Progress\n## Decisions Made This Session\n## Blockers\n## Up Next\n`);
     const result = run('status', dir);
-    expect(result.stdout).toContain('brainlink log');
+    expect(result.stdout).toContain('mindlink log');
   });
 
   // ── JSON output ────────────────────────────────────────────────────────────
@@ -242,7 +242,7 @@ Write the payment module
   test('--help exits successfully', () => {
     const result = run('status --help', dir);
     expect(result.code).toBe(0);
-    expect(result.stdout).toContain('brainlink status');
+    expect(result.stdout).toContain('mindlink status');
   });
 });
 

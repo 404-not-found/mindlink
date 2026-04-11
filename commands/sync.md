@@ -1,4 +1,4 @@
-# brainlink sync
+# mindlink sync
 
 Watch for shared context written by other sessions and surface it automatically.
 
@@ -9,20 +9,20 @@ Watch for shared context written by other sessions and surface it automatically.
 ## Synopsis
 
 ```bash
-brainlink sync [--once] [--no-progress]
+mindlink sync [--once] [--no-progress]
 ```
 
 ---
 
 ## What "watch mode" means
 
-**Watch mode is the default** — when you run `brainlink sync` with no flags, the process stays alive. It watches `.brain/SHARED.md` for any new content written by other sessions in this project. The moment another session appends a discovery or decision, sync detects the change and prints a notification so you know to tell your AI to check `SHARED.md`.
+**Watch mode is the default** — when you run `mindlink sync` with no flags, the process stays alive. It watches `.brain/SHARED.md` for any new content written by other sessions in this project. The moment another session appends a discovery or decision, sync detects the change and prints a notification so you know to tell your AI to check `SHARED.md`.
 
 This is designed to run in a separate terminal tab alongside your AI session, not as a one-shot command.
 
 **`--once`** runs a single check and exits — useful when you just want to see what's been shared so far without keeping a watcher running.
 
-If you enabled auto-sync during `brainlink init`, sync runs automatically in the background — you don't need to run this manually.
+If you enabled auto-sync during `mindlink init`, sync runs automatically in the background — you don't need to run this manually.
 
 ---
 
@@ -39,12 +39,12 @@ If you enabled auto-sync during `brainlink init`, sync runs automatically in the
 
 **Watch mode (default) — runs until you stop it:**
 ```bash
-brainlink sync
+mindlink sync
 ```
 
 **Sync once and exit:**
 ```bash
-brainlink sync --once
+mindlink sync --once
 ```
 
 ---
@@ -80,10 +80,10 @@ Session B  →  1 new entry
 
 ## Changing Auto-Sync Setting
 
-To enable or disable auto-sync (set during `brainlink init`):
+To enable or disable auto-sync (set during `mindlink init`):
 
 ```bash
-brainlink config
+mindlink config
 ```
 
 Select **Auto-sync** from the menu.
@@ -92,5 +92,5 @@ Select **Auto-sync** from the menu.
 
 ## Related Commands
 
-- [`brainlink config`](config.md) — enable or disable auto-sync
-- [`brainlink status`](status.md) — check current session state
+- [`mindlink config`](config.md) — enable or disable auto-sync
+- [`mindlink status`](status.md) — check current session state

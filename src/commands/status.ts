@@ -17,8 +17,8 @@ export const statusCommand = new Command('status')
   .option('--json', 'Output as JSON')
   .addHelpText('after', `
 Examples:
-  brainlink status
-  brainlink status --json
+  mindlink status
+  mindlink status --json
   `)
   .action((opts) => {
     const projectPath = resolve(process.cwd());
@@ -27,7 +27,7 @@ Examples:
     // Not initialized?
     if (!existsSync(brainDir)) {
       console.log(`  ${chalk.red('✗')}  No .brain/ found in this directory.`);
-      console.log(`     Run ${chalk.cyan('brainlink init')} to get started.`);
+      console.log(`     Run ${chalk.cyan('mindlink init')} to get started.`);
       console.log('');
       process.exit(1);
     }
@@ -146,6 +146,6 @@ Examples:
     console.log(`  ${chalk.dim('Decisions made')}   ${String(decisionCount).padStart(4)}`);
     console.log(`  ${chalk.dim('Last updated')}     ${lastUpdated}`);
     console.log('');
-    console.log(`  Run ${chalk.cyan('brainlink log')} to see full history.`);
+    console.log(`  Run ${chalk.cyan('mindlink log')} to see full history.`);
     console.log('');
   });

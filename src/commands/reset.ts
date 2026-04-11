@@ -16,12 +16,12 @@ What it does:
   Your settings (config.json) and agent instruction files are untouched.
 
 Not what you need?
-  brainlink clear     — reset SESSION.md only (lighter option)
-  brainlink uninstall — remove Brainlink from this project entirely
+  mindlink clear     — reset SESSION.md only (lighter option)
+  mindlink uninstall — remove MindLink from this project entirely
 
 Examples:
-  brainlink reset
-  brainlink reset --yes
+  mindlink reset
+  mindlink reset --yes
   `)
   .action(async (opts) => {
     const projectPath = resolve(process.cwd());
@@ -29,7 +29,7 @@ Examples:
 
     if (!existsSync(brainDir)) {
       console.log(`  ${chalk.red('✗')}  No .brain/ found in this directory.`);
-      console.log(`     Run ${chalk.cyan('brainlink init')} to get started.`);
+      console.log(`     Run ${chalk.cyan('mindlink init')} to get started.`);
       console.log('');
       process.exit(1);
     }
@@ -41,8 +41,8 @@ Examples:
       console.log(`     ${chalk.dim('MEMORY.md, SESSION.md, SHARED.md, and LOG.md → reset to blank templates.')}`);
       console.log(`     ${chalk.dim('Settings and agent instruction files are untouched.')}`);
       console.log('');
-      console.log(`  ${chalk.dim('Lighter option: brainlink clear  — resets SESSION.md only')}`);
-      console.log(`  ${chalk.dim('Remove entirely: brainlink uninstall  — removes Brainlink from this project')}`);
+      console.log(`  ${chalk.dim('Lighter option: mindlink clear  — resets SESSION.md only')}`);
+      console.log(`  ${chalk.dim('Remove entirely: mindlink uninstall  — removes MindLink from this project')}`);
       console.log('');
 
       const confirmed = await confirm({

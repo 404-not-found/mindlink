@@ -7,25 +7,25 @@ import { BRAIN_DIR } from '../utils/paths.js';
 import { AGENTS } from '../utils/agents.js';
 
 export const uninstallCommand = new Command('uninstall')
-  .description('Remove Brainlink from the current project')
+  .description('Remove MindLink from the current project')
   .option('-y, --yes', 'Skip confirmation and remove all project files')
   .addHelpText('after', `
 What gets removed:
   - .brain/ folder (all memory files)
   - Agent instruction files (CLAUDE.md, CURSOR.md, etc.)
-  - .claude/settings.json hook (if it was created by Brainlink)
+  - .claude/settings.json hook (if it was created by MindLink)
 
 What stays:
-  - The brainlink CLI itself (run: npm uninstall -g brainlink)
-  - Any files Brainlink did not create
+  - The mindlink CLI itself (run: npm uninstall -g mindlink)
+  - Any files MindLink did not create
 
 Not what you need?
-  brainlink clear  — reset SESSION.md only (fresh session, keep everything else)
-  brainlink reset  — wipe memory back to blank (keep Brainlink installed)
+  mindlink clear  — reset SESSION.md only (fresh session, keep everything else)
+  mindlink reset  — wipe memory back to blank (keep MindLink installed)
 
 Examples:
-  brainlink uninstall
-  brainlink uninstall --yes
+  mindlink uninstall
+  mindlink uninstall --yes
   `)
   .action(async (opts) => {
     const projectPath = resolve(process.cwd());
@@ -51,7 +51,7 @@ Examples:
     console.log('');
 
     if (!opts.yes) {
-      console.log(`  ${chalk.yellow('!')}  This will remove Brainlink from this project:`);
+      console.log(`  ${chalk.yellow('!')}  This will remove MindLink from this project:`);
       console.log(`     ${chalk.dim('· .brain/              (all memory files)')}`);
       for (const v of agents) {
         const agent = AGENTS.find(a => a.value === v);
@@ -61,16 +61,16 @@ Examples:
         console.log(`     ${chalk.dim('· .claude/settings.json  (hook)')}`);
       }
       console.log('');
-      console.log(`  ${chalk.dim('The brainlink CLI itself is NOT removed.')}`);
-      console.log(`  ${chalk.dim('To remove the CLI: npm uninstall -g brainlink')}`);
+      console.log(`  ${chalk.dim('The mindlink CLI itself is NOT removed.')}`);
+      console.log(`  ${chalk.dim('To remove the CLI: npm uninstall -g mindlink')}`);
       console.log('');
       console.log(`  ${chalk.dim('Lighter options:')}`);
-      console.log(`  ${chalk.dim('  brainlink clear  — fresh session only (keeps all memory)')}`);
-      console.log(`  ${chalk.dim('  brainlink reset  — wipe memory (keeps Brainlink installed)')}`);
+      console.log(`  ${chalk.dim('  mindlink clear  — fresh session only (keeps all memory)')}`);
+      console.log(`  ${chalk.dim('  mindlink reset  — wipe memory (keeps MindLink installed)')}`);
       console.log('');
 
       const action = await select({
-        message: 'Remove Brainlink from this project?',
+        message: 'Remove MindLink from this project?',
         options: [
           { value: 'remove', label: 'Yes, remove everything listed above' },
           { value: 'cancel', label: 'Cancel' },
@@ -128,7 +128,7 @@ Examples:
     for (const e of errors)  console.log(`  ${chalk.red('✗')}  ${e}`);
 
     console.log('');
-    console.log(`  ${chalk.dim('Brainlink removed from this project.')}`);
-    console.log(`  ${chalk.dim('To remove the CLI itself: npm uninstall -g brainlink')}`);
+    console.log(`  ${chalk.dim('MindLink removed from this project.')}`);
+    console.log(`  ${chalk.dim('To remove the CLI itself: npm uninstall -g mindlink')}`);
     console.log('');
   });

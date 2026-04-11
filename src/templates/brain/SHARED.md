@@ -2,8 +2,8 @@
 
 > Readable and writable by any session in this project.
 > Use this to share discoveries, insights, and context across sessions.
-> Synced automatically by `brainlink sync`.
-> Managed by Brainlink — https://github.com/404-not-found/brainlink
+> Synced automatically by `mindlink sync`.
+> Managed by MindLink — https://github.com/404-not-found/mindlink
 
 ---
 

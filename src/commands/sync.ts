@@ -36,8 +36,8 @@ export const syncCommand = new Command('sync')
   .option('--once', 'Sync once and exit (default: watch mode)')
   .addHelpText('after', `
 Examples:
-  brainlink sync
-  brainlink sync --once
+  mindlink sync
+  mindlink sync --once
   `)
   .action(async (opts) => {
     const projectPath = resolve(process.cwd());
@@ -45,7 +45,7 @@ Examples:
 
     if (!existsSync(brainDir)) {
       console.log(`  ${chalk.red('✗')}  No .brain/ found in this directory.`);
-      console.log(`     Run ${chalk.cyan('brainlink init')} to get started.`);
+      console.log(`     Run ${chalk.cyan('mindlink init')} to get started.`);
       console.log('');
       process.exit(1);
     }

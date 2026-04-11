@@ -32,16 +32,16 @@ function enableGitTracking(projectPath: string): void {
   const gitignorePath = join(projectPath, '.gitignore');
   if (!existsSync(gitignorePath)) return;
   const content = readFileSync(gitignorePath, 'utf8');
-  // Remove the brainlink .brain/ block
+  // Remove the mindlink .brain/ block
   const cleaned = content
-    .replace(/\n# Brainlink memory[^\n]*\n\.brain\/\n?/g, '')
+    .replace(/\n# MindLink memory[^\n]*\n\.brain\/\n?/g, '')
     .replace(/\n?\.brain\/\n?/g, '\n');
   writeFileSync(gitignorePath, cleaned.trimEnd() + '\n');
 }
 
 function disableGitTracking(projectPath: string): void {
   const gitignorePath = join(projectPath, '.gitignore');
-  const entry = '\n# Brainlink memory (personal — not shared with team)\n.brain/\n';
+  const entry = '\n# MindLink memory (personal — not shared with team)\n.brain/\n';
   if (existsSync(gitignorePath)) {
     const content = readFileSync(gitignorePath, 'utf8');
     if (!content.includes('.brain/')) appendFileSync(gitignorePath, entry);
@@ -81,7 +81,7 @@ export const configCommand = new Command('config')
   .description('Change settings for the current project')
   .addHelpText('after', `
 Examples:
-  brainlink config
+  mindlink config
   `)
   .action(async () => {
     const projectPath = resolve(process.cwd());
@@ -89,7 +89,7 @@ Examples:
 
     if (!existsSync(brainDir)) {
       console.log(`  ${chalk.red('✗')}  No .brain/ found in this directory.`);
-      console.log(`     Run ${chalk.cyan('brainlink init')} to get started.`);
+      console.log(`     Run ${chalk.cyan('mindlink init')} to get started.`);
       console.log('');
       process.exit(1);
     }
@@ -112,7 +112,7 @@ Examples:
       console.log(`  ${chalk.bold('Current settings')}  ${chalk.dim('·')}  ${chalk.dim(projectPath)}`);
       console.log('');
       console.log(`  Git tracking   : ${config.gitTracking ? chalk.green('enabled') : chalk.dim('disabled')}   ${chalk.dim(config.gitTracking ? '(team shares memory)' : '(.brain/ excluded from git)')}`);
-      console.log(`  Auto-sync      : ${config.autoSync ? chalk.green('enabled') : chalk.dim('disabled')}   ${chalk.dim(config.autoSync ? '(watch mode)' : '(run brainlink sync manually)')}`);
+      console.log(`  Auto-sync      : ${config.autoSync ? chalk.green('enabled') : chalk.dim('disabled')}   ${chalk.dim(config.autoSync ? '(watch mode)' : '(run mindlink sync manually)')}`);
       console.log(`  Max log entries: ${chalk.dim(String(config.maxLogEntries))}   ${chalk.dim('(archive rotation threshold)')}`);
 
       const agentLabels = config.agents
@@ -164,7 +164,7 @@ Examples:
 
         config.gitTracking = newValue;
         saveConfig(brainDir, config);
-        console.log(`  ${chalk.dim('↩  Change anytime: brainlink config → Git tracking')}`);
+        console.log(`  ${chalk.dim('↩  Change anytime: mindlink config → Git tracking')}`);
       }
 
       // ── Auto-sync ──────────────────────────────────────────────────────────
@@ -173,7 +173,7 @@ Examples:
           message: 'Auto-sync mode',
           options: [
             { value: 'enable',  label: 'Enable',  hint: 'watch for changes, sync automatically' },
-            { value: 'disable', label: 'Disable', hint: 'run brainlink sync manually' },
+            { value: 'disable', label: 'Disable', hint: 'run mindlink sync manually' },
             { value: 'back',    label: '↩  Back' },
           ],
           initialValue: config.autoSync ? 'enable' : 'disable',
@@ -190,7 +190,7 @@ Examples:
         config.autoSync = newValue;
         saveConfig(brainDir, config);
         console.log(`  ${chalk.green('✓')}  Auto-sync ${newValue ? 'enabled' : 'disabled'}.`);
-        console.log(`  ${chalk.dim('↩  Change anytime: brainlink config → Auto-sync')}`);
+        console.log(`  ${chalk.dim('↩  Change anytime: mindlink config → Auto-sync')}`);
       }
 
       // ── Memory settings ───────────────────────────────────────────────────
@@ -221,7 +221,7 @@ Examples:
         config.maxLogEntries = newValue;
         saveConfig(brainDir, config);
         console.log(`  ${chalk.green('✓')}  Max log entries set to ${newValue}.`);
-        console.log(`  ${chalk.dim('↩  Change anytime: brainlink config → Memory settings')}`);
+        console.log(`  ${chalk.dim('↩  Change anytime: mindlink config → Memory settings')}`);
       }
 
       // ── Agent files ────────────────────────────────────────────────────────
@@ -270,7 +270,7 @@ Examples:
           for (const f of addedFiles)   console.log(`  ${chalk.green('✓')}  ${f} added.`);
           for (const f of removedFiles) console.log(`  ${chalk.dim('✗')}  ${f} removed.`);
         }
-        console.log(`  ${chalk.dim('↩  Change anytime: brainlink config → Agent instruction files')}`);
+        console.log(`  ${chalk.dim('↩  Change anytime: mindlink config → Agent instruction files')}`);
       }
     }
 

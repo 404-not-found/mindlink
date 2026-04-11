@@ -104,8 +104,8 @@ export const initCommand = new Command('init')
   .option('-y, --yes', 'Skip all prompts, use defaults')
   .addHelpText('after', `
 Examples:
-  brainlink init
-  brainlink init --yes
+  mindlink init
+  mindlink init --yes
   `)
   .action(async (opts) => {
     const projectPath = resolve(process.cwd());
@@ -117,7 +117,7 @@ Examples:
     if (existsSync(brainDir)) {
       if (opts.yes) {
         console.log(`  ${chalk.red('✗')}  Already initialized at this path.`);
-        console.log(`     Run ${chalk.cyan('brainlink config')} to change settings.`);
+        console.log(`     Run ${chalk.cyan('mindlink config')} to change settings.`);
         console.log('');
         process.exit(1);
       }
@@ -125,8 +125,8 @@ Examples:
       const action = await select({
         message: '.brain/ already exists at this path. What would you like to do?',
         options: [
-          { value: 'config', label: 'Change settings',     hint: 'brainlink config' },
-          { value: 'status', label: 'View current status', hint: 'brainlink status' },
+          { value: 'config', label: 'Change settings',     hint: 'mindlink config' },
+          { value: 'status', label: 'View current status', hint: 'mindlink status' },
           { value: 'exit',   label: 'Nothing — exit',      hint: ''                 },
         ],
       });
@@ -136,10 +136,10 @@ Examples:
       }
       if (action === 'status') {
         const { execSync } = await import('child_process');
-        try { execSync('brainlink status', { stdio: 'inherit' }); } catch {}
+        try { execSync('mindlink status', { stdio: 'inherit' }); } catch {}
       }
       if (action === 'config') {
-        console.log(`  Run ${chalk.cyan('brainlink config')} to change settings.`);
+        console.log(`  Run ${chalk.cyan('mindlink config')} to change settings.`);
       }
       console.log('');
       process.exit(0);
@@ -148,7 +148,7 @@ Examples:
     intro(chalk.bold('Initializing memory for this project:'));
     console.log(`  ${chalk.dim(projectPath)}`);
     console.log(`  ${chalk.dim('This creates a .brain/ folder scoped to this project only.')}`);
-    console.log(`  ${chalk.dim('Run brainlink init once per project — never needs to be run again.')}`);
+    console.log(`  ${chalk.dim('Run mindlink init once per project — never needs to be run again.')}`);
     console.log('');
 
     // --- Prompt 1: Agent selection ---
@@ -172,7 +172,7 @@ Examples:
 
       if (isCancel(agentResult)) { cancel('Cancelled.'); process.exit(0); }
       selectedAgents = agentResult as string[];
-      console.log(`  ${chalk.dim('↩  Add or remove agents anytime: brainlink config → Agent instruction files')}`);
+      console.log(`  ${chalk.dim('↩  Add or remove agents anytime: mindlink config → Agent instruction files')}`);
       console.log('');
     }
 
@@ -194,7 +194,7 @@ Examples:
       });
       if (isCancel(gitResult)) { cancel('Cancelled.'); process.exit(0); }
       gitTracking = gitResult === 'enable';
-      console.log(`  ${chalk.dim('↩  Change anytime: brainlink config → Git tracking')}`);
+      console.log(`  ${chalk.dim('↩  Change anytime: mindlink config → Git tracking')}`);
       console.log('');
     }
 
@@ -208,12 +208,12 @@ Examples:
         message: 'Auto-sync between sessions?',
         options: [
           { value: 'enable',  label: 'Enable',  hint: 'watch for changes, sync automatically (recommended)' },
-          { value: 'disable', label: 'Disable', hint: 'run brainlink sync manually when needed' },
+          { value: 'disable', label: 'Disable', hint: 'run mindlink sync manually when needed' },
         ],
       });
       if (isCancel(syncResult)) { cancel('Cancelled.'); process.exit(0); }
       autoSync = syncResult === 'enable';
-      console.log(`  ${chalk.dim('↩  Change anytime: brainlink config → Auto-sync')}`);
+      console.log(`  ${chalk.dim('↩  Change anytime: mindlink config → Auto-sync')}`);
       console.log('');
     }
 
@@ -263,7 +263,7 @@ Examples:
       // .gitignore
       if (!gitTracking) {
         const gitignorePath = join(projectPath, '.gitignore');
-        const entry = '\n# Brainlink memory (personal — not shared with team)\n.brain/\n';
+        const entry = '\n# MindLink memory (personal — not shared with team)\n.brain/\n';
         if (existsSync(gitignorePath)) {
           const current = readFileSync(gitignorePath, 'utf8');
           if (!current.includes('.brain/')) appendFileSync(gitignorePath, entry);
@@ -299,8 +299,8 @@ Examples:
 
     console.log('');
     note(
-      `Your AI finally has a brain.\n\nEvery new session wakes up knowing the project, past decisions,\ncurrent task, and what other sessions have shared. No more\nre-explaining from scratch. No more goldfish moments.\n\nLike any good brain, it remembers what matters and quietly\nlets go of the old stuff — that's what MEMORY.md is for:\npromote anything important there and it stays forever.\n\nStart a new AI session — it'll hit the ground running.\n\nRun ${chalk.cyan('brainlink help')} to see all commands.`,
-      '◉ Brainlink active'
+      `Your AI finally has a brain.\n\nEvery new session wakes up knowing the project, past decisions,\ncurrent task, and what other sessions have shared. No more\nre-explaining from scratch. No more goldfish moments.\n\nLike any good brain, it remembers what matters and quietly\nlets go of the old stuff — that's what MEMORY.md is for:\npromote anything important there and it stays forever.\n\nStart a new AI session — it'll hit the ground running.\n\nRun ${chalk.cyan('mindlink help')} to see all commands.`,
+      '◉ MindLink active'
     );
     console.log('');
   });

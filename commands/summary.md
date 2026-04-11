@@ -1,13 +1,13 @@
-# brainlink summary
+# mindlink summary
 
-Show a full briefing of everything Brainlink knows about this project.
+Show a full briefing of everything MindLink knows about this project.
 
 ---
 
 ## Synopsis
 
 ```bash
-brainlink summary [--json]
+mindlink summary [--json]
 ```
 
 ---
@@ -16,14 +16,14 @@ brainlink summary [--json]
 
 Reads all four `.brain/` files and surfaces everything in one view: project identity, architecture, decisions, current session state, what other sessions have shared, and recent history.
 
-Your AI agent can run this itself — just tell it `brainlink summary` and it reads the output directly. This is the cleanest way to brief a mid-session agent without copying files around.
+Your AI agent can run this itself — just tell it `mindlink summary` and it reads the output directly. This is the cleanest way to brief a mid-session agent without copying files around.
 
 ---
 
 ## Output
 
 ```
-◉ Brainlink — Full Briefing
+◉ MindLink — Full Briefing
 
 Project Overview
 ────────────────
@@ -46,7 +46,7 @@ Recent History (last 3 sessions)
 [Apr 8] Set up database schema. Added migrations.
 [Apr 7] Project started. Chose Next.js + Postgres stack.
 
-Powered by Brainlink — github.com/404-not-found/brainlink
+Powered by MindLink — github.com/404-not-found/mindlink
 ```
 
 ---
@@ -62,13 +62,13 @@ Powered by Brainlink — github.com/404-not-found/brainlink
 ## Examples
 
 ```bash
-brainlink summary
-brainlink summary --json
+mindlink summary
+mindlink summary --json
 ```
 
 Ask your AI agent to run it:
 ```
-Run brainlink summary and brief me on where we left off.
+Run mindlink summary and brief me on where we left off.
 ```
 
 ---
@@ -77,13 +77,13 @@ Run brainlink summary and brief me on where we left off.
 
 ```
 ✗  No .brain/ found in this directory.
-   Run brainlink init to get started.
+   Run mindlink init to get started.
 ```
 
 ---
 
 ## Related Commands
 
-- [`brainlink status`](status.md) — lighter-weight last-session view
-- [`brainlink log`](log.md) — full session history
-- [`brainlink init`](init.md) — set up memory for this project
+- [`mindlink status`](status.md) — lighter-weight last-session view
+- [`mindlink log`](log.md) — full session history
+- [`mindlink init`](init.md) — set up memory for this project
