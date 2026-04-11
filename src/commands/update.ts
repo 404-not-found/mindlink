@@ -92,100 +92,90 @@ Examples:
     if (!semverGt(latest, current)) {
       console.log(`  ${chalk.green('✓')}  You're on the latest version (${current}).`);
       console.log('');
-      return;
-    }
+    } else {
+      const action = await select({
+        message: `Update to ${latest}?`,
+        options: [
+          { value: 'update', label: `Update to ${latest}` },
+          { value: 'skip',   label: 'Skip this version' },
+          { value: 'cancel', label: 'Cancel' },
+        ],
+      });
 
-    const action = await select({
-      message: `Update to ${latest}?`,
-      options: [
-        { value: 'update', label: `Update to ${latest}` },
-        { value: 'skip',   label: 'Skip this version' },
-        { value: 'cancel', label: 'Cancel' },
-      ],
-    });
-
-    if (isCancel(action) || action === 'cancel' || action === 'skip') {
-      if (action === 'skip') {
-        console.log(`  ${chalk.dim('Skipped. Run mindlink update again to install later.')}`);
-      } else {
-        cancel('Cancelled.');
+      if (isCancel(action) || action === 'cancel' || action === 'skip') {
+        if (action === 'skip') {
+          console.log(`  ${chalk.dim('Skipped. Run mindlink update again to install later.')}`);
+        } else {
+          cancel('Cancelled.');
+        }
+        console.log('');
+        return;
       }
-      console.log('');
-      return;
-    }
 
-    // Install
-    const s2 = spinner();
-    s2.start(`Installing mindlink@${latest}...`);
+      // Install
+      const s2 = spinner();
+      s2.start(`Installing mindlink@${latest}...`);
 
-    try {
-      execSync(`npm install -g mindlink@${latest}`, { stdio: 'pipe' });
-      s2.stop('Done.');
-      console.log('');
-      console.log(`  ${chalk.green('✓')}  Updated to ${latest}.`);
-      console.log(`     ${chalk.dim('See what\'s new: github.com/404-not-found/mindlink/releases')}`);
-    } catch (err: unknown) {
-      s2.stop('Failed.');
-      console.log('');
-      console.log(`  ${chalk.red('✗')}  Update failed.`);
-      console.log(`     ${chalk.dim('Try: npm install -g mindlink@' + latest)}`);
-      if (err instanceof Error && err.message.includes('EACCES')) {
-        console.log(`     ${chalk.dim('Permission error — try: sudo npm install -g mindlink@' + latest)}`);
+      try {
+        execSync(`npm install -g mindlink@${latest}`, { stdio: 'pipe' });
+        s2.stop('Done.');
+        console.log('');
+        console.log(`  ${chalk.green('✓')}  Updated to ${latest}.`);
+        console.log(`     ${chalk.dim('See what\'s new: github.com/404-not-found/mindlink/releases')}`);
+      } catch (err: unknown) {
+        s2.stop('Failed.');
+        console.log('');
+        console.log(`  ${chalk.red('✗')}  Update failed.`);
+        console.log(`     ${chalk.dim('Try: npm install -g mindlink@' + latest)}`);
+        if (err instanceof Error && err.message.includes('EACCES')) {
+          console.log(`     ${chalk.dim('Permission error — try: sudo npm install -g mindlink@' + latest)}`);
+        }
+        process.exit(1);
       }
-      process.exit(1);
     }
 
-    // Refresh agent instruction files across all registered projects
+    // Always refresh agent instruction files across all registered projects
     const projects = getRegisteredProjects().filter(p => existsSync(join(p, BRAIN_DIR, 'config.json')));
 
     if (projects.length > 0) {
       console.log('');
-      const refresh = await select({
-        message: `Refresh agent instruction files in ${projects.length} project${projects.length > 1 ? 's' : ''}?`,
-        options: [
-          { value: 'yes', label: 'Yes — update CLAUDE.md, CURSOR.md, etc. in all projects', hint: 'safe, no memory data is touched' },
-          { value: 'no',  label: 'No — keep existing files' },
-        ],
-      });
+      console.log(`  Refreshing agent files in ${projects.length} project${projects.length > 1 ? 's' : ''}...`);
+      console.log('');
+      for (const projectPath of projects) {
+        const configPath = join(projectPath, BRAIN_DIR, 'config.json');
+        let config: { agents?: string[] } = {};
+        try { config = JSON.parse(readFileSync(configPath, 'utf8')); } catch {}
 
-      if (!isCancel(refresh) && refresh === 'yes') {
-        console.log('');
-        for (const projectPath of projects) {
-          const configPath = join(projectPath, BRAIN_DIR, 'config.json');
-          let config: { agents?: string[] } = {};
-          try { config = JSON.parse(readFileSync(configPath, 'utf8')); } catch {}
+        const agentValues: string[] = config.agents ?? AGENTS.filter(a => a.selected).map(a => a.value);
+        const refreshed: string[] = [];
 
-          const agentValues: string[] = config.agents ?? AGENTS.filter(a => a.selected).map(a => a.value);
-          const refreshed: string[] = [];
-
-          for (const agentValue of agentValues) {
-            const agent = AGENTS.find(a => a.value === agentValue);
-            if (!agent) continue;
-            const destPath = join(projectPath, agent.destFile);
-            try {
-              mkdirSync(dirname(destPath), { recursive: true });
-              writeFileSync(destPath, readFileSync(join(AGENT_TEMPLATES_DIR, agent.templateFile), 'utf8'));
-              refreshed.push(agent.destFile);
-            } catch {}
-          }
-
-          if (agentValues.includes('claude')) {
-            const hookDest = join(projectPath, '.claude', 'settings.json');
-            try {
-              mkdirSync(join(projectPath, '.claude'), { recursive: true });
-              writeFileSync(hookDest, readFileSync(join(HOOKS_TEMPLATES_DIR, 'claude-settings.json'), 'utf8'));
-              refreshed.push('.claude/settings.json');
-            } catch {}
-          }
-
-          console.log(`  ${chalk.bold(projectPath)}`);
-          for (const f of refreshed) {
-            console.log(`    ${chalk.green('✓')}  ${f}`);
-          }
+        for (const agentValue of agentValues) {
+          const agent = AGENTS.find(a => a.value === agentValue);
+          if (!agent) continue;
+          const destPath = join(projectPath, agent.destFile);
+          try {
+            mkdirSync(dirname(destPath), { recursive: true });
+            writeFileSync(destPath, readFileSync(join(AGENT_TEMPLATES_DIR, agent.templateFile), 'utf8'));
+            refreshed.push(agent.destFile);
+          } catch {}
         }
-        console.log('');
-        console.log(`  ${chalk.dim('All agent files are up to date.')}`);
+
+        if (agentValues.includes('claude')) {
+          const hookDest = join(projectPath, '.claude', 'settings.json');
+          try {
+            mkdirSync(join(projectPath, '.claude'), { recursive: true });
+            writeFileSync(hookDest, readFileSync(join(HOOKS_TEMPLATES_DIR, 'claude-settings.json'), 'utf8'));
+            refreshed.push('.claude/settings.json');
+          } catch {}
+        }
+
+        console.log(`  ${chalk.bold(projectPath)}`);
+        for (const f of refreshed) {
+          console.log(`    ${chalk.green('✓')}  ${f}`);
+        }
       }
+      console.log('');
+      console.log(`  ${chalk.dim('All agent files are up to date.')}`);
     }
 
     console.log('');
