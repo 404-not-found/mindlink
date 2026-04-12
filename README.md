@@ -12,15 +12,17 @@ Three things break AI-assisted development:
 
 MindLink fixes all three. One command per project.
 
+Git gave every developer a shared version history. MindLink gives your AI team a shared memory — persistent, version-controlled, and not locked inside any one tool.
+
 [![npm version](https://img.shields.io/npm/v/mindlink)](https://www.npmjs.com/package/mindlink)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Platform](https://img.shields.io/badge/platform-macOS%20%7C%20Linux%20%7C%20Windows-lightgrey)](#installation)
 
 ---
 
-> ### ◉ Latest — v1.1.4
-> **Session memory · Cross-session sync · Cross-agent · 8 AI agents supported · Auto-refresh agent files on every update**
-> [→ Full release notes](https://github.com/404-not-found/mindlink/releases/tag/v1.1.4)
+> ### ◉ Latest — v1.1.5
+> **Stronger memory enforcement · MEMORY.md trigger checklist · mtime-based session verification · "git for AI memory" positioning · Claude Code best-in-class section**
+> [→ Full release notes](https://github.com/404-not-found/mindlink/releases/tag/v1.1.5)
 
 ---
 
@@ -32,7 +34,7 @@ MindLink fixes all three. One command per project.
 - [Supported Agents](#supported-agents)
 - [Commands](#commands)
 - [Can My AI Run These Commands?](#can-my-ai-run-these-commands-itself)
-- [The Hook (Claude Code)](#the-hook-claude-code-users)
+- [Best with Claude Code](#best-with-claude-code)
 - [License](#license)
 - [Contributing](#contributing)
 
@@ -90,7 +92,7 @@ Close any AI session whenever you want — Claude Code, Cursor, Codex, whatever 
 
 **One memory, every agent** — use Claude Code in the morning, switch to Cursor in the afternoon — both read the exact same `.brain/` folder. No syncing. No duplicating context. No "but I told the other AI this already." Every agent you use shares one brain, because the memory lives in your project, not inside any particular tool. This is something no AI vendor can replicate — they each only know their own product.
 
-**Team memory out of the box** — commit `.brain/` to git and your whole team shares the same AI context. New teammate joins, does `git pull`, and their AI agent is already fully briefed on the project. No onboarding session, no copying notes, no "let me catch you up."
+**Team memory, like git** — commit `.brain/` to git and your whole team shares the same AI context, automatically. New developer joins, does `git pull` — their AI is already fully briefed. Two developers in the same project? Their agents share context in real time, just like working off the same branch. No onboarding session, no copying notes, no "let me catch you up." This is what git did for code history — MindLink does for AI memory.
 
 **Plug in, not lock in** — works with Claude Code, Cursor, Codex, Gemini CLI, GitHub Copilot, Windsurf, Cline, Aider, and more. Because MindLink just writes files that agents read — no APIs, no SDKs, no version dependencies — it works with whatever version you have installed today and every version that comes after.
 
@@ -179,9 +181,28 @@ The one exception: `mindlink sync` in watch mode runs continuously — keep it i
 
 ---
 
-## The Hook (Claude Code users)
+## Best with Claude Code
 
-Claude Code users get an extra layer: a `UserPromptSubmit` hook in `.claude/settings.json` that fires on every message, reminding your agent to re-read `.brain/` if its context was just compacted. Other agents rely on their instruction files — Claude Code gets both because it supports OS-level hooks. Same protection, different delivery.
+MindLink works with every agent listed above. But Claude Code users get something the others don't: **a second enforcement layer**.
+
+Every other agent reads the instruction file at startup and follows it as best it can. That's the instruction layer — guidance, not guarantees. The agent can skip a step, misread a section, or forget to write after a long session.
+
+Claude Code gets both the instruction file **and** an OS-level hook that fires before every single message — outside the AI's control. This hook:
+
+- Scans for memory triggers and reminds the agent to write `MEMORY.md` before answering
+- Forces `SESSION.md` to be updated as the last action of every response
+- Runs a shell-level check after every response: if `MEMORY.md` still contains only placeholders, the agent is immediately flagged and must fill it in before continuing
+
+**The practical difference:**
+
+| | All other agents | Claude Code |
+|---|---|---|
+| Persistent memory | ✓ instruction file | ✓ instruction file + hook |
+| Enforced on every message | ✗ | ✓ OS-level hook |
+| Post-response memory verification | ✗ | ✓ shell check |
+| Context compaction recovery | ✓ instruction | ✓ instruction + hook |
+
+If you're choosing an agent specifically to use with MindLink, Claude Code gives you the most reliable memory behavior. Other agents work well — Claude Code works harder.
 
 ---
 

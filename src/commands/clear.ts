@@ -1,6 +1,6 @@
 import { Command } from 'commander';
 import chalk from 'chalk';
-import { existsSync, readFileSync, writeFileSync } from 'fs';
+import { existsSync, readFileSync, writeFileSync, unlinkSync } from 'fs';
 import { join, resolve } from 'path';
 import { BRAIN_DIR, BRAIN_TEMPLATES_DIR } from '../utils/paths.js';
 
@@ -38,6 +38,9 @@ Examples:
       const templatePath = join(BRAIN_TEMPLATES_DIR, 'SESSION.md');
       const destPath = join(brainDir, 'SESSION.md');
       writeFileSync(destPath, readFileSync(templatePath, 'utf8'));
+      // Clean up ephemeral session timestamp used by Stop hook
+      const tsDest = join(brainDir, '.session_ts');
+      if (existsSync(tsDest)) unlinkSync(tsDest);
     } catch (err: unknown) {
       console.log(`  ${chalk.red('✗')}  ${err instanceof Error ? err.message : String(err)}`);
       console.log('');

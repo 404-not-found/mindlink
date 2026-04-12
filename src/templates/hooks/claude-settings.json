@@ -1,6 +1,7 @@
 {
   "permissions": {
     "allow": [
+      "Read(**/.brain/**)",
       "Edit(**/.brain/**)",
       "Write(**/.brain/**)",
       "Bash(mindlink *)"
@@ -13,7 +14,18 @@
         "hooks": [
           {
             "type": "command",
-            "command": "[ -d '.brain' ] && printf '\\n[MindLink] After your response, immediately update .brain/SESSION.md with what was just discussed — do not wait until the end of the session. Sessions can end without warning.\\nIf your context was just compacted or you feel uncertain about project state:\\n  → Re-read .brain/MEMORY.md  (project identity, decisions)\\n  → Re-read .brain/SESSION.md  (current task, what is next)\\n  → Re-read .brain/SHARED.md   (what other sessions have written)\\n  → Re-read .brain/LOG.md      (last 5 entries for recent session history)\\n' || true"
+            "command": "[ -d '.brain' ] && { [ ! -f '.brain/.session_ts' ] && date +%s > .brain/.session_ts || true; printf '\\n[MindLink — MANDATORY]\\nStep 1: Scan the entire exchange — both the user message AND your own response — for MEMORY.md triggers: personal info (role/age/health/immigration/opinions), goals/plans, project decisions, evaluations/recommendations, business context, preferences. If any are present in either, invoke Edit or Write to update .brain/MEMORY.md NOW — before answering. Noting intent does not count as writing.\\nStep 2: If your context was compacted or project state feels unclear, re-read .brain/MEMORY.md and .brain/SESSION.md now.\\nStep 3: Compose and deliver your answer.\\nStep 4 (LAST — after your full answer is written): Invoke Edit or Write to update .brain/SESSION.md with a summary of this exchange — what was asked, what you answered, any decisions made.\\n'; } || true"
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "[ -d '.brain' ] && [ -f '.brain/MEMORY.md' ] && { SESSION_TS=$(cat .brain/.session_ts 2>/dev/null || echo 0); MEMORY_TS=$(stat -f %m .brain/MEMORY.md 2>/dev/null || stat -c %Y .brain/MEMORY.md 2>/dev/null || echo 1); [ \"$MEMORY_TS\" -lt \"$SESSION_TS\" ] && printf '\\n[MindLink VERIFY] MEMORY.md has not been updated this session. If important information was discussed, invoke Edit or Write on .brain/MEMORY.md now before continuing.\\n' || true; } || true"
           }
         ]
       }

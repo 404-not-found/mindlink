@@ -177,6 +177,27 @@ Examples:
           } catch {}
         }
 
+        // Inject ## User Profile section into MEMORY.md if missing
+        const memoryPath = join(projectPath, BRAIN_DIR, 'MEMORY.md');
+        if (existsSync(memoryPath)) {
+          try {
+            const content = readFileSync(memoryPath, 'utf8');
+            if (!content.includes('## User Profile') && content.includes('## Important Context')) {
+              const userProfileBlock =
+                `## User Profile  <!-- READ EVERY SESSION — personal facts about the user -->\n\n` +
+                `<!-- Job, company, level, years of experience, immigration status -->\n` +
+                `<!-- Age, health, physical details -->\n` +
+                `<!-- Family, relationships, major life events -->\n` +
+                `<!-- Long-term goals: career, financial, personal -->\n` +
+                `<!-- Strong opinions, values, preferences -->\n` +
+                `<!-- Update in place — do not append; consolidate when it grows -->\n\n\n` +
+                `---\n\n`;
+              writeFileSync(memoryPath, content.replace('## Important Context', userProfileBlock + '## Important Context'));
+              refreshed.push('.brain/MEMORY.md');
+            }
+          } catch {}
+        }
+
         console.log(`  ${chalk.bold(projectPath)}`);
         for (const f of refreshed) {
           console.log(`    ${chalk.green('✓')}  ${f}`);

@@ -73,6 +73,18 @@
 
 ---
 
+## User Profile  <!-- READ EVERY SESSION — personal facts about the user -->
+
+<!-- Job, company, level, years of experience, immigration status -->
+<!-- Age, health, physical details -->
+<!-- Family, relationships, major life events -->
+<!-- Long-term goals: career, financial, personal -->
+<!-- Strong opinions, values, preferences -->
+<!-- Update in place — do not append; consolidate when it grows -->
+
+
+---
+
 ## Important Context  <!-- Read when something feels off or context is missing -->
 
 <!-- Anything else your AI should know: known gotchas, legacy landmines,

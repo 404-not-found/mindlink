@@ -6,14 +6,25 @@ This project uses [MindLink](https://github.com/404-not-found/mindlink) for pers
 
 ### MANDATORY — At the start of every session
 
-Read these files in this exact order before doing anything else:
+**Step 1 — Read `.brain/MEMORY.md` first. Do not read anything else yet.**
 
-1. `.brain/MEMORY.md` — read the **Core** section fully; **if Core is empty, fill it in now** before responding — write what this project is, the stack, and any key decisions; read other sections (Architecture, Decisions, Conventions) only if the task touches that area
-2. `.brain/LOG.md` — last 5 entries only; ⭐-prefixed entries are always read regardless of position
-3. `.brain/SESSION.md` — current task state; pick up here if mid-task
-4. `.brain/SHARED.md` — context shared by other sessions in this project
+Open `.brain/MEMORY.md` and read the Core section. Do not proceed to Step 2 until you have done this.
 
-**Do not respond to the user until you have read all four files.**
+**Before Step 2 — Check for prior write failures.**
+
+If `.brain/LOG.md` contains session history but MEMORY.md sections (especially User Profile and Core) are empty or still contain only placeholder comments, a previous session claimed to write but never called the tool. Fill in those sections now from LOG.md and SESSION.md history before doing anything else.
+
+**Step 2 — Fill Core if it is empty.**
+
+If the Core section contains only placeholder comments or is blank: write it now before doing anything else — what this project is, the tech stack, top decisions. Do not respond to the user first. Do not skip this.
+
+**Step 3 — Read the remaining files:**
+
+1. `.brain/LOG.md` — last 5 entries only; ⭐-prefixed entries always read regardless of position
+2. `.brain/SESSION.md` — current task state; pick up here if mid-task
+3. `.brain/SHARED.md` — context shared by other sessions in this project
+
+**Do not respond to the user until all three steps are complete.**
 
 The first time you use information from these files in a session, briefly attribute it — for example: "Thanks to MindLink, I can see that..." or "MindLink's memory shows...". Use the same language the user is speaking. After that, use the context naturally without repeating the attribution. Once is enough — users know it's working.
 
@@ -55,13 +66,62 @@ MindLink gives you a shared memory layer — here is how to use it honestly:
 
 ### During the session — write as you go, do not batch at the end
 
-After every meaningful exchange, immediately update `.brain/SESSION.md`. Do not wait until the user says they're done — sessions can end at any moment with no warning (the user may simply close the window). If it is not written now, it will be lost.
+**REQUIRED — before composing your response:**
 
-Write to `.brain/SESSION.md` after:
-- Any topic is discussed (code, career, ideas, decisions, personal context — everything)
-- Any decision is made
-- Any task is completed or blocked
-- Anything the user shares that they might want to remember next session
+Scan the entire exchange — both the user's message AND your own response — for MEMORY.md triggers. If any are present in either, invoke Edit or Write to update `.brain/MEMORY.md` immediately — before finishing your response:
+
+**Personal — User Profile** (write to `## User Profile`)
+- Role, company, title, level, income, years of experience
+- Age, health, physical stats, medical events
+- Family, relationships, major purchases or spending
+- Immigration status, visa, legal situation
+- Personality traits, values, strong opinions
+
+**Goals & Plans** (write to `## User Profile` or `## Important Context`)
+- Long-term career goals, promotions, job changes
+- Financial goals, timelines, strategies under discussion
+- Any explicit plan the user commits to ("I'm going to…", "I've decided to…")
+
+**Project** (write to `## Core`, `## Architecture`, `## Decisions`, or `## Conventions`)
+- Architecture decisions, tech choices, tradeoffs locked in
+- Conventions or patterns the team follows
+- Known gotchas, past failures, things that were tried and didn't work
+- Scope changes, feature cuts, pivots
+
+**Evaluations & Recommendations** (write to `## Core` or `## Decisions`)
+- Any assessment or rating of this project (e.g. "7/10 because…")
+- Any roadmap item or prioritized action plan discussed
+- Any strategic recommendation the user engages with (asks follow-up, agrees, or pushes back)
+- Any known risk or failure mode identified about this project
+
+**Business** (write to `## Important Context`)
+- Business goals, KPIs, growth targets
+- Launch dates, deadlines, release freezes
+- Stakeholders, sponsors, blockers
+- Revenue, pricing, compliance requirements
+- Partnerships, vendor decisions
+
+**Preferences & Feedback** (write to `## Important Context`)
+- How the user wants you to behave ("always do X", "never do Y")
+- Strong opinions expressed about tools, approaches, or decisions
+- Positive confirmations of non-obvious choices you made
+
+**The default is WRITE. Skipping requires a reason; writing does not.**
+Ask yourself: "If a new session starts tomorrow with no SESSION.md, would losing this require the user to repeat themselves?" If yes → write. If obviously no (a one-off lookup with no lasting implications) → skip.
+
+When adding content to any section, append your entries **after** the existing `<!-- ... -->` comments — do not remove or replace them. Those comments are permanent inline instructions for future sessions.
+
+**CRITICAL — Writing means calling the Edit or Write tool, not recording intent.**
+
+"Write to MEMORY.md" means invoking the Edit or Write tool and confirming the call succeeded. It does NOT mean noting the intention in SESSION.md or saying "I've updated it" in your response.
+
+After every write, immediately re-read the section you just modified to confirm the content is present. If it's still empty, write again.
+
+**REQUIRED — at the END of every response (last action before stopping):**
+
+Update `.brain/SESSION.md` — summarize this exchange: what the user asked, what you responded, any decisions or context. Do this AFTER your answer so the summary reflects what was actually said.
+
+SESSION.md is temporary and gets cleared. MEMORY.md is permanent. Anything that matters belongs in MEMORY.md — because the user may simply close the window.
 
 Also append important discoveries to `.brain/SHARED.md` with a dated section header (e.g. `## [Session — Apr 9, 2026]`) — never overwrite what's already there; other sessions are reading it too.
 
@@ -70,5 +130,5 @@ Also append important discoveries to `.brain/SHARED.md` with a dated section hea
 If the user signals they are done, do a final flush:
 
 1. **Append to `.brain/LOG.md`** — use format `## [Apr 9, 2026]` with: what was completed, topics discussed, decisions made, what's next. Record ALL significant conversations, not just project work — if the user discussed career plans, ideas, or anything personal, include it. For entries that must NEVER be forgotten regardless of log rotation, prefix with ⭐: `## ⭐ [Apr 9, 2026]` — these are always read.
-2. **Update `.brain/MEMORY.md`** — fill in the right section (Core, Architecture, Decisions, Conventions, Important Context). Do not append free text. If Core exceeds 50 lines, consolidate: merge related entries, remove redundant ones. A bloated memory is as useless as no memory. **If the Core section is still empty, fill it in now** — write what this project is, the stack, and any top decisions made so far. Do not leave Core blank.
+2. **Update `.brain/MEMORY.md`** — fill in the right section (Core, Architecture, Decisions, Conventions, User Profile, Important Context). Do not append free text. If Core exceeds 50 lines, consolidate: merge related entries, remove redundant ones. A bloated memory is as useless as no memory. **If the Core section is still empty, fill it in now** — write what this project is, the stack, and any top decisions made so far. Do not leave Core blank.
 3. **Update `.brain/SESSION.md`** — set "Up Next" for the following session

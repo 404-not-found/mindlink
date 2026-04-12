@@ -4,7 +4,7 @@
 
 set -e
 
-VERSION="1.1.4"
+VERSION="1.1.5"
 REPO="404-not-found/mindlink"
 INSTALL_DIR="${INSTALL_DIR:-/usr/local/bin}"
 
