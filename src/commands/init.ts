@@ -15,7 +15,9 @@ import {
   readFileSync,
   writeFileSync,
   appendFileSync,
+  readdirSync,
 } from 'fs';
+import { execSync } from 'child_process';
 import { join, resolve, dirname, basename } from 'path';
 import { BRAIN_TEMPLATES_DIR, AGENT_TEMPLATES_DIR, HOOKS_TEMPLATES_DIR, BRAIN_DIR } from '../utils/paths.js';
 import { printBanner } from '../utils/banner.js';
@@ -26,6 +28,8 @@ interface ProjectInfo {
   name: string;
   description: string;
   stack: string;
+  recentActivity: string;
+  topDirs: string;
   date: string;
 }
 
@@ -35,6 +39,8 @@ function detectProjectInfo(projectPath: string): ProjectInfo {
   let name = basename(projectPath);
   let description = '';
   let stack = '';
+  let recentActivity = '';
+  let topDirs = '';
 
   // Try package.json
   const pkgPath = join(projectPath, 'package.json');
@@ -43,11 +49,18 @@ function detectProjectInfo(projectPath: string): ProjectInfo {
       const pkg = JSON.parse(readFileSync(pkgPath, 'utf8'));
       if (pkg.name) name = pkg.name;
       if (pkg.description) description = pkg.description;
-      stack = 'Node.js';
+      // Derive stack from package.json deps
+      const deps = { ...pkg.dependencies, ...pkg.devDependencies };
+      const layers: string[] = ['Node.js'];
+      if (deps['typescript'] || deps['ts-node'] || deps['tsup']) layers.push('TypeScript');
+      if (deps['react'] || deps['next']) layers.push(deps['next'] ? 'Next.js' : 'React');
+      if (deps['express'] || deps['fastify'] || deps['koa']) layers.push('Express/Fastify');
+      if (deps['vite']) layers.push('Vite');
+      stack = layers.join(' + ');
     } catch {}
   }
 
-  // Detect stack from manifest files (may override or extend)
+  // Detect stack from manifest files (if no package.json)
   if (!stack) {
     if (existsSync(join(projectPath, 'Cargo.toml'))) stack = 'Rust';
     else if (existsSync(join(projectPath, 'go.mod'))) stack = 'Go';
@@ -58,7 +71,57 @@ function detectProjectInfo(projectPath: string): ProjectInfo {
     else if (existsSync(join(projectPath, 'Gemfile'))) stack = 'Ruby';
   }
 
-  return { name, description, stack, date };
+  // Read README for description if not found yet
+  if (!description) {
+    const readmePath = join(projectPath, 'README.md');
+    if (existsSync(readmePath)) {
+      try {
+        const lines = readFileSync(readmePath, 'utf8').split('\n');
+        // Find first non-heading, non-empty line as description
+        for (const line of lines.slice(0, 30)) {
+          const trimmed = line.trim();
+          if (trimmed && !trimmed.startsWith('#') && !trimmed.startsWith('!') && !trimmed.startsWith('<') && trimmed.length > 10) {
+            description = trimmed.replace(/\*\*/g, '').slice(0, 120);
+            break;
+          }
+        }
+      } catch {}
+    }
+  }
+
+  // Get recent git activity
+  try {
+    const log = execSync('git log --oneline -5', { cwd: projectPath, encoding: 'utf8', stdio: ['pipe','pipe','pipe'] }).trim();
+    if (log) {
+      recentActivity = log.split('\n').slice(0, 3).join(' · ');
+    }
+  } catch {}
+
+  // Top-level dirs (skip hidden, node_modules, dist, etc.)
+  const SKIP_DIRS = new Set(['.git', 'node_modules', 'dist', 'build', '.brain', 'binaries', '.cache', 'coverage', '.next', 'out']);
+  try {
+    const entries = readdirSync(projectPath, { withFileTypes: true });
+    const dirs = entries
+      .filter(e => e.isDirectory() && !SKIP_DIRS.has(e.name) && !e.name.startsWith('.'))
+      .map(e => e.name)
+      .slice(0, 6);
+    if (dirs.length > 0) topDirs = dirs.join(', ');
+  } catch {}
+
+  return { name, description, stack, recentActivity, topDirs, date };
+}
+
+/** Returns true if MEMORY.md has at least one real (non-comment, non-heading, non-empty) line */
+function memoryHasRealContent(memoryPath: string): boolean {
+  try {
+    const lines = readFileSync(memoryPath, 'utf8').split('\n');
+    return lines.some(line => {
+      const t = line.trim();
+      return t.length > 0 && !t.startsWith('#') && !t.startsWith('<!--') && !t.startsWith('>') && !t.startsWith('|') && t !== '---';
+    });
+  } catch {
+    return false;
+  }
 }
 
 function buildMemoryMd(templateContent: string, info: ProjectInfo): string {
@@ -81,10 +144,16 @@ function buildMemoryMd(templateContent: string, info: ProjectInfo): string {
     );
   }
 
-  // Inject init date under "Current focus"
+  // Inject top dirs and recent activity under "Current focus"
+  const focusLines: string[] = [];
+  if (info.topDirs) focusLines.push(`Directories: ${info.topDirs}`);
+  if (info.recentActivity) focusLines.push(`Recent commits: ${info.recentActivity}`);
+  const focusBlock = focusLines.length > 0
+    ? focusLines.join('\n') + `\n<!-- Initialized ${info.date} — update to reflect the current active focus -->`
+    : `<!-- Initialized ${info.date} — ask your AI to fill this in after your first session -->`;
   content = content.replace(
     /### Current focus\n<!--[^]*?-->/,
-    `### Current focus\n<!-- Initialized ${info.date} — ask your AI to fill this in after your first session -->`
+    `### Current focus\n${focusBlock}`
   );
 
   return content;
@@ -114,36 +183,147 @@ Examples:
 
     printBanner();
 
-    // --- Already initialized? Show recovery menu ---
+    // --- Already initialized? ---
     if (existsSync(brainDir)) {
-      if (opts.yes) {
+      const memoryPath = join(brainDir, 'MEMORY.md');
+      const hasMemory = existsSync(memoryPath) && memoryHasRealContent(memoryPath);
+
+      // Team onboarding mode: .brain/ exists with real content but no agent files for this user
+      if (!opts.yes && hasMemory) {
+        const hasAnyAgentFile = AGENTS.some(a => existsSync(join(projectPath, a.destFile)));
+        if (!hasAnyAgentFile) {
+          console.log('');
+          console.log(`  ${chalk.cyan('◉')}  MindLink memory found in this project.`);
+          console.log(`     ${chalk.dim('MEMORY.md has content — this looks like a team project.')}`);
+          console.log('');
+
+          const action = await select({
+            message: 'What would you like to do?',
+            options: [
+              { value: 'restore', label: 'Set up agent files',  hint: 'recommended for new team members — writes CLAUDE.md, .cursorrules, etc.' },
+              { value: 'reinit',  label: 'Full re-init',        hint: 'recreate everything, reconfigure settings'                                },
+              { value: 'exit',    label: 'Cancel',              hint: ''                                                                          },
+            ],
+          });
+
+          if (isCancel(action) || action === 'exit') { process.exit(0); }
+
+          if (action === 'restore') {
+            // Just write agent instruction files — skip all config prompts
+            const agentChoices = AGENTS.map(a => ({
+              value: a.value,
+              label: `${a.label.padEnd(18)} ${chalk.dim(a.hint)}`,
+              hint: a.selected ? 'recommended' : undefined,
+            }));
+            const agentResult = await multiselect({
+              message: 'Which AI agents do you use?',
+              options: agentChoices,
+              initialValues: AGENTS.filter(a => a.selected).map(a => a.value),
+              required: false,
+            });
+            if (isCancel(agentResult)) { cancel('Cancelled.'); process.exit(0); }
+
+            const toRestore = agentResult as string[];
+            const restored: string[] = [];
+            for (const agentValue of toRestore) {
+              const agent = AGENTS.find(a => a.value === agentValue);
+              if (!agent) continue;
+              const destPath = join(projectPath, agent.destFile);
+              mkdirSync(dirname(destPath), { recursive: true });
+              writeFileSync(destPath, readFileSync(join(AGENT_TEMPLATES_DIR, agent.templateFile), 'utf8'));
+              restored.push(agent.destFile);
+            }
+            if (toRestore.includes('claude')) {
+              const hookDest = join(projectPath, '.claude', 'settings.json');
+              if (!existsSync(hookDest)) {
+                mkdirSync(dirname(hookDest), { recursive: true });
+                writeFileSync(hookDest, readFileSync(join(HOOKS_TEMPLATES_DIR, 'claude-settings.json'), 'utf8'));
+                restored.push('.claude/settings.json');
+              }
+            }
+
+            // Write config.json if missing — needed so mindlink update tracks this project
+            const configPath = join(brainDir, 'config.json');
+            if (!existsSync(configPath)) {
+              const config = {
+                gitTracking: true,
+                autoSync: true,
+                agents: toRestore,
+                maxLogEntries: DEFAULT_MAX_LOG_ENTRIES,
+              };
+              writeFileSync(configPath, JSON.stringify(config, null, 2));
+              restored.push('.brain/config.json');
+            }
+
+            // Register with project registry so update/sync can find it
+            try { registerProject(projectPath); } catch {}
+
+            console.log('');
+            for (const f of restored) console.log(`  ${chalk.green('✓')}  ${f}`);
+            console.log('');
+            console.log(`  ${chalk.green('✓')}  Agent files ready. Start a new session — your AI is already briefed.`);
+            console.log('');
+            process.exit(0);
+          }
+
+          // action === 'reinit' — fall through to normal init flow below
+          // Remove brainDir so the rest of init proceeds fresh
+          // (we don't remove it — we'll overwrite files in place)
+        } else {
+          // Already fully initialized for this user
+          if (opts.yes) {
+            console.log(`  ${chalk.red('✗')}  Already initialized at this path.`);
+            console.log(`     Run ${chalk.cyan('mindlink config')} to change settings.`);
+            console.log('');
+            process.exit(1);
+          }
+
+          const action = await select({
+            message: '.brain/ already exists at this path. What would you like to do?',
+            options: [
+              { value: 'config', label: 'Change settings',     hint: 'mindlink config' },
+              { value: 'status', label: 'View current status', hint: 'mindlink status' },
+              { value: 'exit',   label: 'Nothing — exit',      hint: ''                },
+            ],
+          });
+
+          if (isCancel(action) || action === 'exit') { process.exit(0); }
+          if (action === 'status') {
+            try { execSync('mindlink status', { cwd: projectPath, stdio: 'inherit' }); } catch {}
+          }
+          if (action === 'config') {
+            console.log(`  Run ${chalk.cyan('mindlink config')} to change settings.`);
+          }
+          console.log('');
+          process.exit(0);
+        }
+      } else if (opts.yes) {
+        // --yes flag on already-initialized project: error out
         console.log(`  ${chalk.red('✗')}  Already initialized at this path.`);
         console.log(`     Run ${chalk.cyan('mindlink config')} to change settings.`);
         console.log('');
         process.exit(1);
-      }
-
-      const action = await select({
-        message: '.brain/ already exists at this path. What would you like to do?',
-        options: [
-          { value: 'config', label: 'Change settings',     hint: 'mindlink config' },
-          { value: 'status', label: 'View current status', hint: 'mindlink status' },
-          { value: 'exit',   label: 'Nothing — exit',      hint: ''                 },
-        ],
-      });
-
-      if (isCancel(action) || action === 'exit') {
+      } else if (!hasMemory) {
+        // .brain/ exists but is empty — treat as re-init, fall through
+      } else {
+        const action = await select({
+          message: '.brain/ already exists at this path. What would you like to do?',
+          options: [
+            { value: 'config', label: 'Change settings',     hint: 'mindlink config' },
+            { value: 'status', label: 'View current status', hint: 'mindlink status' },
+            { value: 'exit',   label: 'Nothing — exit',      hint: ''                },
+          ],
+        });
+        if (isCancel(action) || action === 'exit') { process.exit(0); }
+        if (action === 'status') {
+          try { execSync('mindlink status', { cwd: projectPath, stdio: 'inherit' }); } catch {}
+        }
+        if (action === 'config') {
+          console.log(`  Run ${chalk.cyan('mindlink config')} to change settings.`);
+        }
+        console.log('');
         process.exit(0);
       }
-      if (action === 'status') {
-        const { execSync } = await import('child_process');
-        try { execSync('mindlink status', { stdio: 'inherit' }); } catch {}
-      }
-      if (action === 'config') {
-        console.log(`  Run ${chalk.cyan('mindlink config')} to change settings.`);
-      }
-      console.log('');
-      process.exit(0);
     }
 
     intro(chalk.bold('Initializing memory for this project:'));
@@ -151,6 +331,15 @@ Examples:
     console.log(`  ${chalk.dim('This creates a .brain/ folder scoped to this project only.')}`);
     console.log(`  ${chalk.dim('Run mindlink init once per project — never needs to be run again.')}`);
     console.log('');
+
+    // Windows warning: hooks are bash scripts, won't run on Windows
+    if (process.platform === 'win32') {
+      console.log(`  ${chalk.yellow('⚠')}  ${chalk.bold('Windows detected')}`);
+      console.log(`     Claude Code hooks use bash and won't run on Windows.`);
+      console.log(`     Memory enforcement (Stop hook, session timestamps) will be disabled.`);
+      console.log(`     All other features work normally.`);
+      console.log('');
+    }
 
     // --- Prompt 1: Agent selection ---
     let selectedAgents: string[];

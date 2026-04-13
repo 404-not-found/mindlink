@@ -4,10 +4,14 @@ import chalk from 'chalk';
 import { execSync } from 'child_process';
 import { join, dirname } from 'path';
 import { existsSync, readFileSync, writeFileSync, mkdirSync } from 'fs';
-import { AGENT_TEMPLATES_DIR, HOOKS_TEMPLATES_DIR, BRAIN_DIR } from '../utils/paths.js';
+import { AGENT_TEMPLATES_DIR, HOOKS_TEMPLATES_DIR, BRAIN_TEMPLATES_DIR, BRAIN_DIR } from '../utils/paths.js';
 import { AGENTS } from '../utils/agents.js';
 import { getRegisteredProjects, pruneRegistry } from '../utils/registry.js';
 import { VERSION } from '../utils/version.js';
+
+// Brain files that must exist in every initialized project.
+// If a future version adds a new brain file, add it here — update will create it for existing projects.
+const REQUIRED_BRAIN_FILES = ['MEMORY.md', 'SESSION.md', 'SHARED.md', 'LOG.md'];
 
 async function latestVersion(): Promise<string | null> {
   try {
@@ -157,6 +161,20 @@ Examples:
         const agentValues: string[] = config.agents ?? AGENTS.filter(a => a.selected).map(a => a.value);
         const refreshed: string[] = [];
 
+        // Ensure all required brain files exist (forward compat: creates new files added in future versions)
+        for (const brainFile of REQUIRED_BRAIN_FILES) {
+          const dest = join(projectPath, BRAIN_DIR, brainFile);
+          if (!existsSync(dest)) {
+            try {
+              const template = join(BRAIN_TEMPLATES_DIR, brainFile);
+              if (existsSync(template)) {
+                writeFileSync(dest, readFileSync(template, 'utf8'));
+                refreshed.push(`.brain/${brainFile}`);
+              }
+            } catch {}
+          }
+        }
+
         for (const agentValue of agentValues) {
           const agent = AGENTS.find(a => a.value === agentValue);
           if (!agent) continue;
@@ -177,22 +195,43 @@ Examples:
           } catch {}
         }
 
-        // Inject ## User Profile section into MEMORY.md if missing
+        // Apply MEMORY.md migrations — non-destructively inject any new sections added in this version
         const memoryPath = join(projectPath, BRAIN_DIR, 'MEMORY.md');
         if (existsSync(memoryPath)) {
           try {
-            const content = readFileSync(memoryPath, 'utf8');
-            if (!content.includes('## User Profile') && content.includes('## Important Context')) {
-              const userProfileBlock =
-                `## User Profile  <!-- READ EVERY SESSION — personal facts about the user -->\n\n` +
-                `<!-- Job, company, level, years of experience, immigration status -->\n` +
-                `<!-- Age, health, physical details -->\n` +
-                `<!-- Family, relationships, major life events -->\n` +
-                `<!-- Long-term goals: career, financial, personal -->\n` +
-                `<!-- Strong opinions, values, preferences -->\n` +
-                `<!-- Update in place — do not append; consolidate when it grows -->\n\n\n` +
-                `---\n\n`;
-              writeFileSync(memoryPath, content.replace('## Important Context', userProfileBlock + '## Important Context'));
+            let content = readFileSync(memoryPath, 'utf8');
+            let memoryChanged = false;
+
+            // Each migration: { marker: string to check for presence, inject: content to add, before: anchor string }
+            // Applied in order — all are non-destructive (only run if marker is absent)
+            const migrations: Array<{ marker: string; block: string; before: string }> = [
+              {
+                // v1.1.5: Add ## User Profile section
+                marker: '## User Profile',
+                block:
+                  `## User Profile  <!-- READ EVERY SESSION — personal facts about the user -->\n\n` +
+                  `<!-- Job, company, level, years of experience, immigration status -->\n` +
+                  `<!-- Age, health, physical details -->\n` +
+                  `<!-- Family, relationships, major life events -->\n` +
+                  `<!-- Long-term goals: career, financial, personal -->\n` +
+                  `<!-- Strong opinions, values, preferences -->\n` +
+                  `<!-- Update in place — do not append; consolidate when it grows -->\n\n\n` +
+                  `---\n\n`,
+                before: '## Important Context',
+              },
+              // Future migrations go here — same pattern:
+              // { marker: '## New Section', block: '## New Section\n\n<!-- ... -->\n\n\n---\n\n', before: '## Some Existing Section' },
+            ];
+
+            for (const m of migrations) {
+              if (!content.includes(m.marker) && content.includes(m.before)) {
+                content = content.replace(m.before, m.block + m.before);
+                memoryChanged = true;
+              }
+            }
+
+            if (memoryChanged) {
+              writeFileSync(memoryPath, content);
               refreshed.push('.brain/MEMORY.md');
             }
           } catch {}

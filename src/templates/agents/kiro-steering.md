@@ -1,4 +1,6 @@
-# Conventions
+---
+inclusion: always
+---
 
 ## MindLink — Persistent Memory
 
@@ -68,7 +70,7 @@ CRITICAL — Writing means calling your file-write tool, not recording intent.
 REQUIRED — at the END of every response (last action before stopping):
 Update .brain/SESSION.md — summarize this exchange after your answer so the summary reflects what was actually said.
 
-Sessions end without warning. SESSION.md is temporary. MEMORY.md is permanent. Do not defer this.
+Sessions end without warning. SESSION.md is temporary. MEMORY.md is permanent. Anything that matters belongs in MEMORY.md before the session ends.
 Also append important discoveries to .brain/SHARED.md with a dated section header (e.g. ## [Session — Apr 9, 2026]) — never overwrite what's already there; other sessions are reading it too.
 
 At the end of the session (when the user explicitly wraps up):

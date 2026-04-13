@@ -123,9 +123,67 @@ describe('mindlink init', () => {
     expect(config.gitTracking).toBe(true); // --yes defaults to enabled
   });
 
+  // ── Auto-bootstrap ─────────────────────────────────────────────────────────
+
+  test('auto-populates MEMORY.md project name from package.json', () => {
+    writeFileSync(join(dir, 'package.json'), JSON.stringify({
+      name: 'my-awesome-project',
+      description: 'A test project for validation',
+      dependencies: { typescript: '^5.0.0' },
+    }));
+    run('init --yes', dir);
+    const memory = readFileSync(join(dir, '.brain/MEMORY.md'), 'utf8');
+    expect(memory).toContain('my-awesome-project');
+    expect(memory).toContain('A test project for validation');
+  });
+
+  test('auto-populates stack from package.json deps', () => {
+    writeFileSync(join(dir, 'package.json'), JSON.stringify({
+      name: 'test-app',
+      dependencies: {},
+      devDependencies: { typescript: '^5.0.0', tsup: '^8.0.0' },
+    }));
+    run('init --yes', dir);
+    const memory = readFileSync(join(dir, '.brain/MEMORY.md'), 'utf8');
+    expect(memory).toContain('TypeScript');
+  });
+
+  test('auto-populates top-level directories', () => {
+    mkdirSync(join(dir, 'src'), { recursive: true });
+    mkdirSync(join(dir, 'tests'), { recursive: true });
+    run('init --yes', dir);
+    const memory = readFileSync(join(dir, '.brain/MEMORY.md'), 'utf8');
+    // Should mention src or tests in Current focus
+    expect(memory).toMatch(/src|tests/);
+  });
+
+  test('detects Go stack from go.mod', () => {
+    writeFileSync(join(dir, 'go.mod'), 'module example.com/myapp\n\ngo 1.21\n');
+    run('init --yes', dir);
+    const memory = readFileSync(join(dir, '.brain/MEMORY.md'), 'utf8');
+    expect(memory).toContain('Go');
+  });
+
+  // ── Team onboarding ────────────────────────────────────────────────────────
+
+  test('team onboarding: --yes fails on already-initialized project with agent files', () => {
+    run('init --yes', dir);
+    const result = run('init --yes', dir);
+    expect(result.code).not.toBe(0);
+    expect(result.stdout).toContain('Already initialized');
+  });
+
+  // ── Windows warning ────────────────────────────────────────────────────────
+
+  test('init completes successfully on current platform', () => {
+    const result = run('init --yes', dir);
+    expect(result.code).toBe(0);
+    expect(existsSync(join(dir, '.brain/MEMORY.md'))).toBe(true);
+  });
+
   // ── Already initialized ────────────────────────────────────────────────────
 
-  test('exits with error when .brain/ already exists', () => {
+  test('exits with error when .brain/ already exists with agent files', () => {
     run('init --yes', dir);
     const result = run('init --yes', dir);
 

@@ -65,7 +65,7 @@ Examples:
         message: 'Where should the zip be saved?',
         placeholder: projectPath,
         initialValue: projectPath,
-        hint: `default filename: ${defaultFilename}`,
+
       });
 
       if (isCancel(answer)) { cancel('Cancelled.'); process.exit(0); }

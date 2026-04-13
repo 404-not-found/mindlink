@@ -111,6 +111,8 @@ Ask yourself: "If a new session starts tomorrow with no SESSION.md, would losing
 
 When adding content to any section, append your entries **after** the existing `<!-- ... -->` comments — do not remove or replace them. Those comments are permanent inline instructions for future sessions.
 
+When adding a new fact or decision, append `<!-- added: YYYY-MM-DD -->` on the same line or the line immediately after. This timestamps entries so stale ones can be identified later. Example: `TypeScript + Node.js <!-- added: 2026-04-12 -->`
+
 **CRITICAL — Writing means calling the Edit or Write tool, not recording intent.**
 
 "Write to MEMORY.md" means invoking the Edit or Write tool and confirming the call succeeded. It does NOT mean noting the intention in SESSION.md or saying "I've updated it" in your response.

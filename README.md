@@ -20,9 +20,9 @@ Git gave every developer a shared version history. MindLink gives your AI team a
 
 ---
 
-> ### ◉ Latest — v1.1.5
-> **Stronger memory enforcement · MEMORY.md trigger checklist · mtime-based session verification · "git for AI memory" positioning · Claude Code best-in-class section**
-> [→ Full release notes](https://github.com/404-not-found/mindlink/releases/tag/v1.1.5)
+> ### ◉ Latest — v1.2.0
+> **Auto-bootstrap on init · `mindlink diff` · Team onboarding mode · Memory timestamps · Windows hook warning · Propagating update system**
+> [→ Full release notes](https://github.com/404-not-found/mindlink/releases/tag/v1.2.0)
 
 ---
 
@@ -34,6 +34,7 @@ Git gave every developer a shared version history. MindLink gives your AI team a
 - [Supported Agents](#supported-agents)
 - [Commands](#commands)
 - [Can My AI Run These Commands?](#can-my-ai-run-these-commands-itself)
+- [What's New in v1.2](#whats-new-in-v12)
 - [Best with Claude Code](#best-with-claude-code)
 - [License](#license)
 - [Contributing](#contributing)
@@ -118,6 +119,10 @@ MindLink works with any version of:
 | Windsurf | `.windsurfrules` |
 | Cline | `.clinerules` |
 | Aider | `CONVENTIONS.md` |
+| Zed | `.rules` |
+| Kiro | `.kiro/steering/mindlink.md` |
+| Continue.dev | `.continue/rules/mindlink.md` |
+| Trae | `.trae/rules/mindlink.md` |
 
 MindLink works by writing instruction files that agents read at startup — no API calls, no SDKs, no version pinning. It works with whatever version you have today and any version released tomorrow. If your agent isn't listed, `mindlink init` lets you add a custom one.
 
@@ -128,7 +133,7 @@ MindLink works by writing instruction files that agents read at startup — no A
 **Run once per project — in your terminal, inside the project directory:**
 ```bash
 cd my-project
-mindlink init        # creates .brain/ here — this is where your AI's memory lives
+mindlink init        # creates .brain/ here — pre-filled from your project on day 1
 ```
 
 **Ask your AI to run these, or run them yourself in any terminal:**
@@ -136,6 +141,7 @@ mindlink init        # creates .brain/ here — this is where your AI's memory l
 mindlink status      # what happened last session, what's next
 mindlink summary     # full briefing — everything your AI knows, in one view
 mindlink log         # complete session history
+mindlink diff        # what changed in .brain/ since last session
 mindlink sync --once # check what other sessions have shared
 ```
 
@@ -161,7 +167,7 @@ mindlink import      # unzip into this project — merge or overwrite your exist
 **Run in your terminal only — maintenance tasks:**
 ```bash
 mindlink doctor      # health check — verify your setup is working correctly
-mindlink update      # check for a newer version, never installs without asking
+mindlink update      # check for a newer version, refreshes agent files in all projects
 mindlink uninstall   # remove MindLink from this project
 ```
 
@@ -173,7 +179,7 @@ Every command supports `--help`. Full CLI reference: [commands/](commands/index.
 
 Yes — and it should, for the read-only ones. Your AI has a terminal. Tell it to run `mindlink summary` or `mindlink status` and it reads the output directly. This is the cleanest way to brief a mid-session agent without copying files around.
 
-**AI can run:** `status`, `summary`, `log`, `sync --once`
+**AI can run:** `status`, `summary`, `log`, `diff`, `sync --once`
 
 **Run yourself:** `init`, `clear`, `reset`, `config`, `export`, `import`, `update`, `uninstall` — these are interactive, change settings, or modify files. Keep human hands on them.
 
@@ -203,6 +209,20 @@ Claude Code gets both the instruction file **and** an OS-level hook that fires b
 | Context compaction recovery | ✓ instruction | ✓ instruction + hook |
 
 If you're choosing an agent specifically to use with MindLink, Claude Code gives you the most reliable memory behavior. Other agents work well — Claude Code works harder.
+
+---
+
+## What's New in v1.2
+
+**`mindlink init` now pre-fills your memory on day 1.** It scans your project — `package.json`, `README.md`, recent git commits, top-level directories — and writes a populated Core section into `MEMORY.md` before your first session. No more blank slate.
+
+**Team onboarding mode.** When a teammate runs `mindlink init` in a project that already has `.brain/` memory, MindLink detects it and offers "set up agent files only" — writing just the instruction files without touching memory or config. One command, AI fully briefed.
+
+**`mindlink diff` — see what your AI learned this session.** Shows which `.brain/` files changed since the session started. If `.brain/` is git-tracked, shows line-level additions and removals.
+
+**Memory timestamps.** Agent instruction files now tell the AI to append `<!-- added: YYYY-MM-DD -->` to every new entry — so you can see how old a fact is and spot stale decisions.
+
+**`mindlink update` now propagates everything.** When a new version adds a section to MEMORY.md or changes a template, running `mindlink update` applies those changes to all your initialized projects — without touching your existing memory content.
 
 ---
 

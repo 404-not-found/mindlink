@@ -22,6 +22,7 @@ Commands are grouped by when and how you run them.
 | [status](status.md) | Show last session summary and what's next |
 | [summary](summary.md) | Full briefing — everything MindLink knows, in one view |
 | [log](log.md) | View full session history |
+| [diff](diff.md) | Show what changed in `.brain/` since the current session started |
 
 ### Keep running in a background terminal tab (while sessions are active)
 
