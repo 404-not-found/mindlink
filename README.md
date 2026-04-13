@@ -18,6 +18,8 @@ Git gave every developer a shared version history. MindLink gives your AI team a
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Platform](https://img.shields.io/badge/platform-macOS%20%7C%20Linux%20%7C%20Windows-lightgrey)](#installation)
 
+![MindLink demo](demo.gif)
+
 ---
 
 > ### ◉ Latest — v1.2.0
