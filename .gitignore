@@ -23,6 +23,8 @@ binaries/
 /PATENT.md
 /TECH.md
 /LAUNCH.md
+/DESIGN-v1.md
+/DESIGN-v2.md
 
 # MindLink memory (if dogfooding on this repo)
 .brain/

@@ -7,6 +7,12 @@
       "Bash(mindlink *)"
     ]
   },
+  "mcpServers": {
+    "mindlink": {
+      "command": "mindlink",
+      "args": ["mcp"]
+    }
+  },
   "hooks": {
     "UserPromptSubmit": [
       {

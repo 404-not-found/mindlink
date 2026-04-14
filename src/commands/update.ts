@@ -4,7 +4,8 @@ import chalk from 'chalk';
 import { execSync } from 'child_process';
 import { join, dirname } from 'path';
 import { existsSync, readFileSync, writeFileSync, mkdirSync } from 'fs';
-import { AGENT_TEMPLATES_DIR, HOOKS_TEMPLATES_DIR, BRAIN_TEMPLATES_DIR, BRAIN_DIR } from '../utils/paths.js';
+import { AGENT_TEMPLATES_DIR, HOOKS_TEMPLATES_DIR, BRAIN_TEMPLATES_DIR, BRAIN_DIR, GLOBAL_USER_PROFILE_PATH, GLOBAL_WINDSURF_MCP_PATH } from '../utils/paths.js';
+import { replaceSection } from '../utils/content.js';
 import { AGENTS } from '../utils/agents.js';
 import { getRegisteredProjects, pruneRegistry } from '../utils/registry.js';
 import { VERSION } from '../utils/version.js';
@@ -60,81 +61,86 @@ Examples:
   .action(async () => {
     const current = VERSION;
 
-    // Non-TTY: just check and report, don't prompt
+    // Deferred exit code for non-TTY mode — set here, applied after agent refresh below
+    let nonTtyExitCode: number | null = null;
+
     if (!process.stdin.isTTY) {
+      // Non-TTY: check version and report JSON, then fall through to agent refresh below
       const latest = await latestVersion();
       if (!latest) {
         console.log(JSON.stringify({ current, latest: null, upToDate: null }));
-        process.exit(1);
+        nonTtyExitCode = 1; // registry unreachable — still refresh agents
+      } else {
+        const upToDate = !semverGt(latest, current);
+        console.log(JSON.stringify({ current, latest, upToDate }));
+        if (!upToDate) nonTtyExitCode = 2; // exit 2 = update available
       }
-      const upToDate = !semverGt(latest, current);
-      console.log(JSON.stringify({ current, latest, upToDate }));
-      if (!upToDate) process.exit(2); // exit 2 = update available
-      return;
-    }
-
-    const s = spinner();
-    s.start('Checking for updates...');
-
-    const latest = await latestVersion();
-
-    if (!latest) {
-      s.stop('Could not reach npm registry.');
-      console.log('');
-      console.log(`  ${chalk.red('✗')}  Could not check for updates. Check your internet connection.`);
-      console.log(`     ${chalk.dim('Latest releases: github.com/404-not-found/mindlink/releases')}`);
-      console.log('');
-      process.exit(1);
-    }
-
-    s.stop('Done.');
-    console.log('');
-    console.log(`  Current version   : ${chalk.dim(current)}`);
-    console.log(`  Latest version    : ${semverGt(latest, current) ? chalk.green(latest) : chalk.dim(latest)}`);
-    console.log('');
-
-    if (!semverGt(latest, current)) {
-      console.log(`  ${chalk.green('✓')}  You're on the latest version (${current}).`);
-      console.log('');
+      // fall through to refresh agent files
     } else {
-      const action = await select({
-        message: `Update to ${latest}?`,
-        options: [
-          { value: 'update', label: `Update to ${latest}` },
-          { value: 'skip',   label: 'Skip this version' },
-          { value: 'cancel', label: 'Cancel' },
-        ],
-      });
+      // TTY: interactive version check + optional install
+      const s = spinner();
+      s.start('Checking for updates...');
 
-      if (isCancel(action) || action === 'cancel' || action === 'skip') {
-        if (action === 'skip') {
-          console.log(`  ${chalk.dim('Skipped. Run mindlink update again to install later.')}`);
-        } else {
-          cancel('Cancelled.');
-        }
+      const latest = await latestVersion();
+
+      if (!latest) {
+        s.stop('Could not reach npm registry.');
         console.log('');
-        return;
+        console.log(`  ${chalk.red('✗')}  Could not check for updates. Check your internet connection.`);
+        console.log(`     ${chalk.dim('Latest releases: github.com/404-not-found/mindlink/releases')}`);
+        console.log('');
+        process.exit(1);
       }
 
-      // Install
-      const s2 = spinner();
-      s2.start(`Installing mindlink@${latest}...`);
+      s.stop('Done.');
+      console.log('');
+      console.log(`  Current version   : ${chalk.dim(current)}`);
+      console.log(`  Latest version    : ${semverGt(latest, current) ? chalk.green(latest) : chalk.dim(latest)}`);
+      console.log('');
 
-      try {
-        execSync(`npm install -g mindlink@${latest}`, { stdio: 'pipe' });
-        s2.stop('Done.');
+      if (!semverGt(latest, current)) {
+        console.log(`  ${chalk.green('✓')}  You're on the latest version (${current}).`);
         console.log('');
-        console.log(`  ${chalk.green('✓')}  Updated to ${latest}.`);
-        console.log(`     ${chalk.dim('See what\'s new: github.com/404-not-found/mindlink/releases')}`);
-      } catch (err: unknown) {
-        s2.stop('Failed.');
-        console.log('');
-        console.log(`  ${chalk.red('✗')}  Update failed.`);
-        console.log(`     ${chalk.dim('Try: npm install -g mindlink@' + latest)}`);
-        if (err instanceof Error && err.message.includes('EACCES')) {
-          console.log(`     ${chalk.dim('Permission error — try: sudo npm install -g mindlink@' + latest)}`);
+      } else {
+        const action = await select({
+          message: `Update to ${latest}?`,
+          options: [
+            { value: 'update', label: `Update to ${latest}` },
+            { value: 'skip',   label: 'Skip this version' },
+            { value: 'cancel', label: 'Cancel' },
+          ],
+        });
+
+        if (isCancel(action) || action === 'cancel' || action === 'skip') {
+          if (action === 'skip') {
+            console.log(`  ${chalk.dim('Skipped. Run mindlink update again to install later.')}`);
+          } else {
+            cancel('Cancelled.');
+          }
+          console.log('');
+          return;
         }
-        process.exit(1);
+
+        // Install
+        const s2 = spinner();
+        s2.start(`Installing mindlink@${latest}...`);
+
+        try {
+          execSync(`npm install -g mindlink@${latest}`, { stdio: 'pipe' });
+          s2.stop('Done.');
+          console.log('');
+          console.log(`  ${chalk.green('✓')}  Updated to ${latest}.`);
+          console.log(`     ${chalk.dim('See what\'s new: github.com/404-not-found/mindlink/releases')}`);
+        } catch (err: unknown) {
+          s2.stop('Failed.');
+          console.log('');
+          console.log(`  ${chalk.red('✗')}  Update failed.`);
+          console.log(`     ${chalk.dim('Try: npm install -g mindlink@' + latest)}`);
+          if (err instanceof Error && err.message.includes('EACCES')) {
+            console.log(`     ${chalk.dim('Permission error — try: sudo npm install -g mindlink@' + latest)}`);
+          }
+          process.exit(1);
+        }
       }
     }
 
@@ -190,8 +196,122 @@ Examples:
           const hookDest = join(projectPath, '.claude', 'settings.json');
           try {
             mkdirSync(join(projectPath, '.claude'), { recursive: true });
-            writeFileSync(hookDest, readFileSync(join(HOOKS_TEMPLATES_DIR, 'claude-settings.json'), 'utf8'));
+            const template = JSON.parse(readFileSync(join(HOOKS_TEMPLATES_DIR, 'claude-settings.json'), 'utf8'));
+            // Merge with existing settings (preserve user's custom mcpServers entries)
+            let existing: Record<string, unknown> = {};
+            if (existsSync(hookDest)) {
+              try { existing = JSON.parse(readFileSync(hookDest, 'utf8')); } catch {}
+            }
+            const merged = {
+              ...template,
+              ...existing,
+              // Always refresh hooks and permissions from template
+              hooks: template.hooks,
+              permissions: template.permissions,
+              // Merge mcpServers: keep user's other servers, update mindlink entry
+              mcpServers: {
+                ...(typeof existing.mcpServers === 'object' && existing.mcpServers !== null
+                  ? existing.mcpServers as Record<string, unknown>
+                  : {}),
+                mindlink: { command: 'mindlink', args: ['mcp'], env: { MINDLINK_PROJECT_PATH: projectPath } },
+              },
+            };
+            writeFileSync(hookDest, JSON.stringify(merged, null, 2));
             refreshed.push('.claude/settings.json');
+          } catch {}
+        }
+
+        // Cursor: refresh .cursor/mcp.json (merge — preserve user's other servers)
+        if (agentValues.includes('cursor')) {
+          const cursorMcpDest = join(projectPath, '.cursor', 'mcp.json');
+          try {
+            mkdirSync(join(projectPath, '.cursor'), { recursive: true });
+            let existing: Record<string, unknown> = {};
+            if (existsSync(cursorMcpDest)) {
+              try { existing = JSON.parse(readFileSync(cursorMcpDest, 'utf8')); } catch {}
+            }
+            const merged = {
+              ...existing,
+              mcpServers: {
+                ...(typeof existing.mcpServers === 'object' && existing.mcpServers !== null ? existing.mcpServers as Record<string, unknown> : {}),
+                mindlink: { command: 'mindlink', args: ['mcp'], env: { MINDLINK_PROJECT_PATH: projectPath } },
+              },
+            };
+            writeFileSync(cursorMcpDest, JSON.stringify(merged, null, 2));
+            refreshed.push('.cursor/mcp.json');
+          } catch {}
+        }
+
+        // Continue.dev: refresh .continue/mcpServers/mindlink.json
+        if (agentValues.includes('continue')) {
+          const continueMcpDest = join(projectPath, '.continue', 'mcpServers', 'mindlink.json');
+          try {
+            mkdirSync(join(projectPath, '.continue', 'mcpServers'), { recursive: true });
+            const continueMcp = { mcpServers: { mindlink: { command: 'mindlink', args: ['mcp'], env: { MINDLINK_PROJECT_PATH: projectPath } } } };
+            writeFileSync(continueMcpDest, JSON.stringify(continueMcp, null, 2));
+            refreshed.push('.continue/mcpServers/mindlink.json');
+          } catch {}
+        }
+
+        // GitHub Copilot: refresh .vscode/mcp.json (merge — preserve user's other servers)
+        if (agentValues.includes('copilot')) {
+          const copilotMcpDest = join(projectPath, '.vscode', 'mcp.json');
+          try {
+            mkdirSync(join(projectPath, '.vscode'), { recursive: true });
+            let existing: Record<string, unknown> = {};
+            if (existsSync(copilotMcpDest)) {
+              try { existing = JSON.parse(readFileSync(copilotMcpDest, 'utf8')); } catch {}
+            }
+            const merged = {
+              ...existing,
+              mcpServers: {
+                ...(typeof existing.mcpServers === 'object' && existing.mcpServers !== null ? existing.mcpServers as Record<string, unknown> : {}),
+                mindlink: { command: 'mindlink', args: ['mcp'], env: { MINDLINK_PROJECT_PATH: projectPath } },
+              },
+            };
+            writeFileSync(copilotMcpDest, JSON.stringify(merged, null, 2));
+            refreshed.push('.vscode/mcp.json');
+          } catch {}
+        }
+
+        // Kiro: refresh .kiro/settings/mcp.json (merge — preserve user's other servers)
+        if (agentValues.includes('kiro')) {
+          const kiroMcpDest = join(projectPath, '.kiro', 'settings', 'mcp.json');
+          try {
+            mkdirSync(join(projectPath, '.kiro', 'settings'), { recursive: true });
+            let existing: Record<string, unknown> = {};
+            if (existsSync(kiroMcpDest)) {
+              try { existing = JSON.parse(readFileSync(kiroMcpDest, 'utf8')); } catch {}
+            }
+            const merged = {
+              ...existing,
+              mcpServers: {
+                ...(typeof existing.mcpServers === 'object' && existing.mcpServers !== null ? existing.mcpServers as Record<string, unknown> : {}),
+                mindlink: { command: 'mindlink', args: ['mcp'], env: { MINDLINK_PROJECT_PATH: projectPath } },
+              },
+            };
+            writeFileSync(kiroMcpDest, JSON.stringify(merged, null, 2));
+            refreshed.push('.kiro/settings/mcp.json');
+          } catch {}
+        }
+
+        // Windsurf: refresh ~/.codeium/windsurf/mcp_config.json (global, no project path)
+        if (agentValues.includes('windsurf')) {
+          try {
+            mkdirSync(dirname(GLOBAL_WINDSURF_MCP_PATH), { recursive: true });
+            let existing: Record<string, unknown> = {};
+            if (existsSync(GLOBAL_WINDSURF_MCP_PATH)) {
+              try { existing = JSON.parse(readFileSync(GLOBAL_WINDSURF_MCP_PATH, 'utf8')); } catch {}
+            }
+            const merged = {
+              ...existing,
+              mcpServers: {
+                ...(typeof existing.mcpServers === 'object' && existing.mcpServers !== null ? existing.mcpServers as Record<string, unknown> : {}),
+                mindlink: { command: 'mindlink', args: ['mcp'] },
+              },
+            };
+            writeFileSync(GLOBAL_WINDSURF_MCP_PATH, JSON.stringify(merged, null, 2));
+            refreshed.push('~/.codeium/windsurf/mcp_config.json');
           } catch {}
         }
 
@@ -237,6 +357,28 @@ Examples:
           } catch {}
         }
 
+        // Sync global user profile into User Profile section (if profile exists and has content)
+        if (existsSync(GLOBAL_USER_PROFILE_PATH) && existsSync(memoryPath)) {
+          try {
+            const profileRaw = readFileSync(GLOBAL_USER_PROFILE_PATH, 'utf8');
+            // Strip profile file header lines (# heading, > blockquotes, leading blank lines)
+            const profileLines = profileRaw.split('\n');
+            const bodyStart = profileLines.findIndex(l => {
+              const t = l.trim();
+              return t.length > 0 && !t.startsWith('#') && !t.startsWith('>') && !t.startsWith('<!--');
+            });
+            const profileBody = bodyStart >= 0 ? profileLines.slice(bodyStart).join('\n').trim() : '';
+            if (profileBody) {
+              const memContent = readFileSync(memoryPath, 'utf8');
+              const updated = replaceSection(memContent, 'User Profile', profileBody);
+              if (updated !== memContent) {
+                writeFileSync(memoryPath, updated);
+                if (!refreshed.includes('.brain/MEMORY.md')) refreshed.push('.brain/MEMORY.md (profile synced)');
+              }
+            }
+          } catch {}
+        }
+
         console.log(`  ${chalk.bold(projectPath)}`);
         for (const f of refreshed) {
           console.log(`    ${chalk.green('✓')}  ${f}`);
@@ -247,4 +389,7 @@ Examples:
     }
 
     console.log('');
+
+    // Apply deferred exit code from non-TTY version check (after agent refresh ran)
+    if (nonTtyExitCode !== null) process.exit(nonTtyExitCode);
   });

@@ -8,9 +8,15 @@ This project uses [MindLink](https://github.com/404-not-found/mindlink) for pers
 
 ### MANDATORY — At the start of every session
 
-**Step 1 — Read `.brain/MEMORY.md` first. Do not read anything else yet.**
+**Step 1 — Read memory first. Do not do anything else yet.**
 
-Open `.brain/MEMORY.md` and read the Core section. Do not proceed to Step 2 until you have done this.
+Open `.brain/MEMORY.md` and read the **Core** and **User Profile** sections only. Do not read the full file yet.
+
+Load additional sections only as needed for the task:
+- Writing or reviewing code → also read `## Architecture` + `## Conventions`
+- Making a design decision → also read `## Decisions`
+- Something feels off → also read `## Important Context`
+- Full briefing requested → read all sections
 
 **Before Step 2 — Check for prior write failures.**
 
@@ -59,6 +65,9 @@ MindLink gives you a shared memory layer — here is how to use it honestly:
 - **What other sessions have shared:** Read `.brain/SHARED.md` — any session that wrote discoveries here has made them visible to you. You cannot tell whether that session is still actively running; you can only see what it wrote. If SHARED.md is empty, no other session has written anything yet.
 - **History of all past sessions:** Read `.brain/LOG.md` — the complete append-only record of every session ever run in this project.
 - **Current snapshot:** Run `mindlink status` or read `.brain/SESSION.md`.
+- **Health check:** Run `mindlink verify` to check that memory files are filled in and up to date.
+- **Clean up stale entries:** Run `mindlink prune` to interactively retire old MEMORY.md entries.
+- **Global user profile:** Run `mindlink profile` to view or edit the cross-project user profile.
 
 **Be honest about what you know:** if the user asks "is another session active right now?", the correct answer is "I can see what other sessions wrote to SHARED.md, but I cannot tell if a session is currently running — only what it has shared."
 

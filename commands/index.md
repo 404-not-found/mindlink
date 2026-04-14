@@ -23,6 +23,7 @@ Commands are grouped by when and how you run them.
 | [summary](summary.md) | Full briefing — everything MindLink knows, in one view |
 | [log](log.md) | View full session history |
 | [diff](diff.md) | Show what changed in `.brain/` since the current session started |
+| [verify](verify.md) | Health check — are memory files filled in and up to date? |
 
 ### Keep running in a background terminal tab (while sessions are active)
 
@@ -31,6 +32,14 @@ Commands are grouped by when and how you run them.
 | [sync](sync.md) | Watch for changes from other sessions and surface them automatically |
 
 `mindlink sync` runs in **watch mode by default** — it stays alive and prints a notification whenever another session appends to `.brain/SHARED.md`. Use `--once` to check a single time and exit.
+
+### Launched automatically by Claude Code — not by hand
+
+| Command | Description |
+|---|---|
+| [mcp](mcp.md) | Start the MindLink MCP server (stdio transport for AI tool integration) |
+
+`mindlink mcp` is started automatically when Claude Code launches a session. It exposes 4 MCP tools (`mindlink_read_memory`, `mindlink_write_memory`, `mindlink_session_update`, `mindlink_verify`) for schema-validated memory reads and writes.
 
 ### Run in your terminal between sessions — not via AI
 
@@ -53,6 +62,8 @@ These commands are interactive, change settings, or modify files. Keep human han
 
 | Command | Description |
 |---|---|
+| [profile](profile.md) | Manage your global user profile (auto-imported into every new project) |
+| [prune](prune.md) | Review and retire stale MEMORY.md entries interactively |
 | [update](update.md) | Check for a newer version — never installs without asking |
 | [uninstall](uninstall.md) | Remove MindLink from the current project |
 

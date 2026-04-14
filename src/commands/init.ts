@@ -19,10 +19,11 @@ import {
 } from 'fs';
 import { execSync } from 'child_process';
 import { join, resolve, dirname, basename } from 'path';
-import { BRAIN_TEMPLATES_DIR, AGENT_TEMPLATES_DIR, HOOKS_TEMPLATES_DIR, BRAIN_DIR } from '../utils/paths.js';
+import { BRAIN_TEMPLATES_DIR, AGENT_TEMPLATES_DIR, HOOKS_TEMPLATES_DIR, BRAIN_DIR, GLOBAL_USER_PROFILE_PATH, GLOBAL_WINDSURF_MCP_PATH } from '../utils/paths.js';
 import { printBanner } from '../utils/banner.js';
 import { AGENTS } from '../utils/agents.js';
 import { registerProject } from '../utils/registry.js';
+import { sectionHasRealContent } from '../utils/content.js';
 
 interface ProjectInfo {
   name: string;
@@ -122,6 +123,51 @@ function memoryHasRealContent(memoryPath: string): boolean {
   } catch {
     return false;
   }
+}
+
+/** Inject global user profile into the ## User Profile section of MEMORY.md */
+function injectUserProfile(memoryContent: string, profileContent: string): string {
+  // Strip the profile file header (# MindLink — Global User Profile + > lines)
+  const profileLines = profileContent.split('\n');
+  const contentStart = profileLines.findIndex(l => {
+    const t = l.trim();
+    return t.length > 0 && !t.startsWith('#') && !t.startsWith('>') && !t.startsWith('<!--');
+  });
+  const profileBody = contentStart >= 0 ? profileLines.slice(contentStart).join('\n').trim() : '';
+  if (!profileBody) return memoryContent;
+
+  // Find ## User Profile section and inject after its heading + comments
+  const lines = memoryContent.split('\n');
+  let insertAt = -1;
+  let inProfile = false;
+  let profileHeadingLevel = 0;
+
+  for (let i = 0; i < lines.length; i++) {
+    const match = lines[i].match(/^(#{1,6})\s+(.+)/);
+    if (match) {
+      const level = match[1].length;
+      const title = match[2].replace(/<!--.*?-->/g, '').trim();
+      if (title.toLowerCase() === 'user profile') {
+        inProfile = true;
+        profileHeadingLevel = level;
+        continue;
+      }
+      if (inProfile && level <= profileHeadingLevel) {
+        // Next section — insert before this line
+        insertAt = i;
+        break;
+      }
+    }
+    if (inProfile && insertAt < 0 && i === lines.length - 1) {
+      insertAt = lines.length;
+    }
+  }
+
+  if (insertAt < 0) return memoryContent;
+
+  // Insert profile body before the next section (or end of file)
+  lines.splice(insertAt, 0, profileBody, '');
+  return lines.join('\n');
 }
 
 function buildMemoryMd(templateContent: string, info: ProjectInfo): string {
@@ -237,7 +283,11 @@ Examples:
               const hookDest = join(projectPath, '.claude', 'settings.json');
               if (!existsSync(hookDest)) {
                 mkdirSync(dirname(hookDest), { recursive: true });
-                writeFileSync(hookDest, readFileSync(join(HOOKS_TEMPLATES_DIR, 'claude-settings.json'), 'utf8'));
+                const settings = JSON.parse(readFileSync(join(HOOKS_TEMPLATES_DIR, 'claude-settings.json'), 'utf8'));
+                settings.mcpServers = {
+                  mindlink: { command: 'mindlink', args: ['mcp'], env: { MINDLINK_PROJECT_PATH: projectPath } },
+                };
+                writeFileSync(hookDest, JSON.stringify(settings, null, 2));
                 restored.push('.claude/settings.json');
               }
             }
@@ -431,6 +481,18 @@ Examples:
         created.push(`${file.label.padEnd(32)} ${chalk.dim(file.desc)}`);
       }
 
+      // Import global user profile into User Profile section if it exists
+      const memoryDest = join(brainDir, 'MEMORY.md');
+      if (existsSync(GLOBAL_USER_PROFILE_PATH)) {
+        const profileContent = readFileSync(GLOBAL_USER_PROFILE_PATH, 'utf8');
+        if (sectionHasRealContent(profileContent, 'MindLink — Global User Profile') ||
+            profileContent.split('\n').some(l => { const t = l.trim(); return t.length > 0 && !t.startsWith('#') && !t.startsWith('>') && !t.startsWith('<!--'); })) {
+          const injected = injectUserProfile(readFileSync(memoryDest, 'utf8'), profileContent);
+          writeFileSync(memoryDest, injected);
+          created.push(`User Profile imported from ~/.mindlink/USER.md`);
+        }
+      }
+
       // Agent instruction files
       for (const agentValue of selectedAgents) {
         const agent = AGENTS.find(a => a.value === agentValue);
@@ -441,14 +503,86 @@ Examples:
         created.push(`${agent.destFile.padEnd(32)} ${chalk.dim(agent.label)}`);
       }
 
-      // .claude/settings.json hook for Claude Code
+      // .claude/settings.json hook for Claude Code (includes MCP server entry)
       if (selectedAgents.includes('claude')) {
         const hookDest = join(projectPath, '.claude', 'settings.json');
         if (!existsSync(hookDest)) {
           mkdirSync(dirname(hookDest), { recursive: true });
-          writeFileSync(hookDest, readFileSync(join(HOOKS_TEMPLATES_DIR, 'claude-settings.json'), 'utf8'));
-          created.push(`.claude/settings.json${' '.repeat(14)} ${chalk.dim('Claude Code compact hook')}`);
+          const settings = JSON.parse(readFileSync(join(HOOKS_TEMPLATES_DIR, 'claude-settings.json'), 'utf8'));
+          // Inject absolute project path so MCP server always resolves the right .brain/
+          settings.mcpServers = {
+            mindlink: { command: 'mindlink', args: ['mcp'], env: { MINDLINK_PROJECT_PATH: projectPath } },
+          };
+          writeFileSync(hookDest, JSON.stringify(settings, null, 2));
+          created.push(`.claude/settings.json${' '.repeat(14)} ${chalk.dim('Claude Code hooks + MCP server')}`);
         }
+      }
+
+      // Cursor: .cursor/mcp.json (project-level MCP config)
+      if (selectedAgents.includes('cursor')) {
+        const cursorMcpDest = join(projectPath, '.cursor', 'mcp.json');
+        if (!existsSync(cursorMcpDest)) {
+          mkdirSync(join(projectPath, '.cursor'), { recursive: true });
+          const cursorMcp = { mcpServers: { mindlink: { command: 'mindlink', args: ['mcp'], env: { MINDLINK_PROJECT_PATH: projectPath } } } };
+          writeFileSync(cursorMcpDest, JSON.stringify(cursorMcp, null, 2));
+          created.push(`.cursor/mcp.json${' '.repeat(20)} ${chalk.dim('Cursor MCP server')}`);
+        }
+      }
+
+      // Continue.dev: .continue/mcpServers/mindlink.json (project-level MCP config)
+      if (selectedAgents.includes('continue')) {
+        const continueMcpDest = join(projectPath, '.continue', 'mcpServers', 'mindlink.json');
+        if (!existsSync(continueMcpDest)) {
+          mkdirSync(join(projectPath, '.continue', 'mcpServers'), { recursive: true });
+          const continueMcp = { mcpServers: { mindlink: { command: 'mindlink', args: ['mcp'], env: { MINDLINK_PROJECT_PATH: projectPath } } } };
+          writeFileSync(continueMcpDest, JSON.stringify(continueMcp, null, 2));
+          created.push(`.continue/mcpServers/mindlink.json ${chalk.dim('Continue MCP server')}`);
+        }
+      }
+
+      // GitHub Copilot: .vscode/mcp.json (project-level MCP config)
+      if (selectedAgents.includes('copilot')) {
+        const copilotMcpDest = join(projectPath, '.vscode', 'mcp.json');
+        if (!existsSync(copilotMcpDest)) {
+          mkdirSync(join(projectPath, '.vscode'), { recursive: true });
+          const copilotMcp = { mcpServers: { mindlink: { command: 'mindlink', args: ['mcp'], env: { MINDLINK_PROJECT_PATH: projectPath } } } };
+          writeFileSync(copilotMcpDest, JSON.stringify(copilotMcp, null, 2));
+          created.push(`.vscode/mcp.json${' '.repeat(19)} ${chalk.dim('GitHub Copilot MCP server')}`);
+        }
+      }
+
+      // Kiro: .kiro/settings/mcp.json (project-level MCP config, separate from steering file)
+      if (selectedAgents.includes('kiro')) {
+        const kiroMcpDest = join(projectPath, '.kiro', 'settings', 'mcp.json');
+        if (!existsSync(kiroMcpDest)) {
+          mkdirSync(join(projectPath, '.kiro', 'settings'), { recursive: true });
+          const kiroMcp = { mcpServers: { mindlink: { command: 'mindlink', args: ['mcp'], env: { MINDLINK_PROJECT_PATH: projectPath } } } };
+          writeFileSync(kiroMcpDest, JSON.stringify(kiroMcp, null, 2));
+          created.push(`.kiro/settings/mcp.json${' '.repeat(13)} ${chalk.dim('Kiro MCP server')}`);
+        }
+      }
+
+      // Windsurf: ~/.codeium/windsurf/mcp_config.json (global config — merge, no project path)
+      // Windsurf only supports global MCP config; project resolution uses cwd walk-up at runtime.
+      if (selectedAgents.includes('windsurf')) {
+        try {
+          mkdirSync(dirname(GLOBAL_WINDSURF_MCP_PATH), { recursive: true });
+          let existingWindsurf: Record<string, unknown> = {};
+          if (existsSync(GLOBAL_WINDSURF_MCP_PATH)) {
+            try { existingWindsurf = JSON.parse(readFileSync(GLOBAL_WINDSURF_MCP_PATH, 'utf8')); } catch {}
+          }
+          const mergedWindsurf = {
+            ...existingWindsurf,
+            mcpServers: {
+              ...(typeof existingWindsurf.mcpServers === 'object' && existingWindsurf.mcpServers !== null
+                ? existingWindsurf.mcpServers as Record<string, unknown>
+                : {}),
+              mindlink: { command: 'mindlink', args: ['mcp'] },
+            },
+          };
+          writeFileSync(GLOBAL_WINDSURF_MCP_PATH, JSON.stringify(mergedWindsurf, null, 2));
+          created.push(`~/.codeium/windsurf/mcp_config.json ${chalk.dim('Windsurf MCP server (global)')}`);
+        } catch {}
       }
 
       // .gitignore
@@ -488,7 +622,19 @@ Examples:
       for (const err of errors) console.log(`  ${chalk.red('✗')}  ${err}`);
     }
 
-    console.log('');
+    // Cline hint — MCP config can't be auto-written (VS Code internal storage)
+    if (selectedAgents.includes('cline')) {
+      console.log(`  ${chalk.yellow('→')}  Cline: add the MCP server manually in Cline's settings UI (MCP Servers tab)`);
+      console.log(`     ${chalk.dim('Command: mindlink  Args: mcp  Env: MINDLINK_PROJECT_PATH=' + projectPath)}`);
+      console.log('');
+    }
+
+    // Hint about global profile if not yet set up
+    if (!existsSync(GLOBAL_USER_PROFILE_PATH)) {
+      console.log(`  ${chalk.dim('→')}  Run ${chalk.cyan('mindlink profile')} to set up a global user profile — imported into every new project automatically.`);
+      console.log('');
+    }
+
     note(
       `Your AI finally has a brain.\n\nEvery new session wakes up knowing the project, past decisions,\ncurrent task, and what other sessions have shared. No more\nre-explaining from scratch. No more goldfish moments.\n\nLike any good brain, it remembers what matters and quietly\nlets go of the old stuff — that's what MEMORY.md is for:\npromote anything important there and it stays forever.\n\nStart a new AI session — it'll hit the ground running.\n\nRun ${chalk.cyan('mindlink help')} to see all commands.`,
       '◉ MindLink active'

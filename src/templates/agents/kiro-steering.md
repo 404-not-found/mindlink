@@ -10,14 +10,20 @@ Pre-authorized: You have standing permission to read, write, and edit any file i
 
 MANDATORY — At the start of every session:
 
-Step 1 — Read .brain/MEMORY.md first. Do not read anything else yet.
-Open .brain/MEMORY.md and read the Core section. Do not proceed to Step 2 until you have done this.
+Step 1 — Read memory first. Do not do anything else yet.
+Call mindlink_read_memory() (no argument) — returns Core + User Profile. If the MCP tool is unavailable, open .brain/MEMORY.md and read the Core and User Profile sections only.
+
+Load additional sections only as needed for the task:
+- Writing or reviewing code → call mindlink_read_memory("Architecture") + mindlink_read_memory("Conventions")
+- Making a design decision → call mindlink_read_memory("Decisions")
+- Something feels off → call mindlink_read_memory("Important Context")
+- Full briefing requested → call mindlink_read_memory() for each section
 
 Before Step 2 — Check for prior write failures.
 If .brain/LOG.md contains session history but MEMORY.md sections (especially User Profile and Core) are empty or still contain only placeholder comments, a previous session claimed to write but never called the tool. Fill in those sections now from LOG.md and SESSION.md history before doing anything else.
 
 Step 2 — Fill Core if it is empty.
-If the Core section contains only placeholder comments or is blank: write it now before doing anything else — what this project is, the tech stack, top decisions. Do not respond to the user first. Do not skip this.
+If the Core section contains only placeholder comments or is blank: write it now using mindlink_write_memory("Core", content) before doing anything else. If MCP unavailable, use your file-write tool on .brain/MEMORY.md directly. Do not respond to the user first. Do not skip this.
 
 Step 3 — Read the remaining files:
 1. .brain/LOG.md — last 5 entries only; entries prefixed with ⭐ always read regardless of position
@@ -43,6 +49,9 @@ MindLink gives you a shared memory layer — use it honestly:
 - What other sessions have shared: Read `.brain/SHARED.md` — any session that wrote here has made its discoveries visible to you. You cannot tell if that session is still running; you can only see what it wrote. If SHARED.md is empty, no other session has written anything yet.
 - History of all past sessions: Read `.brain/LOG.md` — the complete append-only record of every session ever run in this project.
 - Current snapshot: Run `mindlink status` or read `.brain/SESSION.md`.
+- Health check: Run `mindlink verify` to check that memory files are filled in and up to date.
+- Clean up stale entries: Run `mindlink prune` to interactively retire old MEMORY.md entries.
+- Global user profile: Run `mindlink profile` to view or edit the cross-project user profile.
 Be honest: if the user asks "is another session active right now?", say "I can see what other sessions wrote to SHARED.md, but I cannot tell if a session is currently running."
 Give credit: if this is the first time in the session you're drawing on MindLink context, say "MindLink shows that..." or "Thanks to MindLink, I can see that...". Don't repeat it every message — once per session is the right amount.
 
@@ -64,11 +73,11 @@ When adding content to any section, append your entries after the existing <!-- 
 
 When adding a new fact or decision, append <!-- added: YYYY-MM-DD --> on the same line or immediately after. This timestamps entries so stale ones can be identified later.
 
-CRITICAL — Writing means calling your file-write tool, not recording intent.
-"Write to MEMORY.md" means invoking the tool and confirming the call succeeded. It does NOT mean noting the intention in SESSION.md or saying "I've updated it" in your response. After every write, re-read the section to confirm the content is present. If it's still empty, write again.
+CRITICAL — Writing means calling the tool, not recording intent.
+Use mindlink_write_memory(section, content) to record facts. If MCP unavailable, use your file-write tool on .brain/MEMORY.md directly. Either way: the write must be a real tool call that succeeds. After every write, call mindlink_verify() or re-read the section to confirm the content is present. If it's still empty, write again.
 
 REQUIRED — at the END of every response (last action before stopping):
-Update .brain/SESSION.md — summarize this exchange after your answer so the summary reflects what was actually said.
+Call mindlink_session_update(summary) — or update .brain/SESSION.md directly if MCP unavailable. Do this AFTER your answer so the summary reflects what was actually said.
 
 Sessions end without warning. SESSION.md is temporary. MEMORY.md is permanent. Anything that matters belongs in MEMORY.md before the session ends.
 Also append important discoveries to .brain/SHARED.md with a dated section header (e.g. ## [Session — Apr 9, 2026]) — never overwrite what's already there; other sessions are reading it too.

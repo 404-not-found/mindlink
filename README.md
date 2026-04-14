@@ -22,9 +22,9 @@ Git gave every developer a shared version history. MindLink gives your AI team a
 
 ---
 
-> ### ◉ Latest — v1.2.0
-> **Auto-bootstrap on init · `mindlink diff` · Team onboarding mode · Memory timestamps · Windows hook warning · Propagating update system**
-> [→ Full release notes](https://github.com/404-not-found/mindlink/releases/tag/v1.2.0)
+> ### ◉ Latest — v2.0.0
+> **MCP integration for 6 agents · Smart loading · `mindlink verify` · `mindlink profile` · `mindlink prune`**
+> [→ Full release notes](https://github.com/404-not-found/mindlink/releases/tag/v2.0.0)
 
 ---
 
@@ -36,7 +36,7 @@ Git gave every developer a shared version history. MindLink gives your AI team a
 - [Supported Agents](#supported-agents)
 - [Commands](#commands)
 - [Can My AI Run These Commands?](#can-my-ai-run-these-commands-itself)
-- [What's New in v1.2](#whats-new-in-v12)
+- [What's New in v2.0](#whats-new-in-v20)
 - [Best with Claude Code](#best-with-claude-code)
 - [License](#license)
 - [Contributing](#contributing)
@@ -168,6 +168,9 @@ mindlink import      # unzip into this project — merge or overwrite your exist
 
 **Run in your terminal only — maintenance tasks:**
 ```bash
+mindlink verify      # check that .brain/ memory is healthy and up to date
+mindlink prune       # review and retire stale MEMORY.md entries
+mindlink profile     # manage your global user profile (imported into every new project)
 mindlink doctor      # health check — verify your setup is working correctly
 mindlink update      # check for a newer version, refreshes agent files in all projects
 mindlink uninstall   # remove MindLink from this project
@@ -181,9 +184,11 @@ Every command supports `--help`. Full CLI reference: [commands/](commands/index.
 
 Yes — and it should, for the read-only ones. Your AI has a terminal. Tell it to run `mindlink summary` or `mindlink status` and it reads the output directly. This is the cleanest way to brief a mid-session agent without copying files around.
 
-**AI can run:** `status`, `summary`, `log`, `diff`, `sync --once`
+**AI can run:** `status`, `summary`, `log`, `diff`, `sync --once`, `verify`
 
-**Run yourself:** `init`, `clear`, `reset`, `config`, `export`, `import`, `update`, `uninstall` — these are interactive, change settings, or modify files. Keep human hands on them.
+**Run yourself:** `init`, `clear`, `reset`, `config`, `profile`, `prune`, `export`, `import`, `update`, `uninstall` — these are interactive, change settings, or modify files. Keep human hands on them.
+
+**Launched automatically (not by hand):** `mcp` — started by Claude Code, Cursor, and other MCP-capable agents as a background process. Never run this yourself.
 
 The one exception: `mindlink sync` in watch mode runs continuously — keep it in a separate terminal tab.
 
@@ -209,22 +214,25 @@ Claude Code gets both the instruction file **and** an OS-level hook that fires b
 | Enforced on every message | ✗ | ✓ OS-level hook |
 | Post-response memory verification | ✗ | ✓ shell check |
 | Context compaction recovery | ✓ instruction | ✓ instruction + hook |
+| MCP tool integration | ✓ Cursor, Continue, Copilot, Kiro, Windsurf | ✓ Claude Code |
 
 If you're choosing an agent specifically to use with MindLink, Claude Code gives you the most reliable memory behavior. Other agents work well — Claude Code works harder.
 
+**v2.0: MCP support for more agents.** Cursor, Continue.dev, GitHub Copilot, Kiro, and Windsurf now also get an MCP server configured automatically on `mindlink init`. This gives those agents structured, schema-validated reads and writes instead of raw file operations — the same feedback loop Claude Code users have had since v1.
+
 ---
 
-## What's New in v1.2
+## What's New in v2.0
 
-**`mindlink init` now pre-fills your memory on day 1.** It scans your project — `package.json`, `README.md`, recent git commits, top-level directories — and writes a populated Core section into `MEMORY.md` before your first session. No more blank slate.
+**MCP integration — structured, auditable memory operations.** `mindlink mcp` is a stdio MCP server. `mindlink init` configures it automatically for Claude Code, Cursor, Continue.dev, GitHub Copilot, Kiro, and Windsurf. Agents call `mindlink_read_memory()`, `mindlink_write_memory()`, and `mindlink_session_update()` as proper tool calls — with structured inputs, structured results, and a verify loop to confirm writes actually landed.
 
-**Team onboarding mode.** When a teammate runs `mindlink init` in a project that already has `.brain/` memory, MindLink detects it and offers "set up agent files only" — writing just the instruction files without touching memory or config. One command, AI fully briefed.
+**Smart loading — only load what you need.** Agent templates now load Core + User Profile only by default. Architecture, Decisions, Conventions, and Important Context sections are loaded on demand, based on what the agent is about to do. Less context used per session; faster session starts.
 
-**`mindlink diff` — see what your AI learned this session.** Shows which `.brain/` files changed since the session started. If `.brain/` is git-tracked, shows line-level additions and removals.
+**`mindlink verify` — memory health check.** Scans `.brain/` and reports: is Core filled? Is SESSION.md fresh? Is MEMORY.md under the size limit? Is every agent file present? Flags errors and warnings. `--fix` auto-regenerates missing agent files.
 
-**Memory timestamps.** Agent instruction files now tell the AI to append `<!-- added: YYYY-MM-DD -->` to every new entry — so you can see how old a fact is and spot stale decisions.
+**`mindlink profile` — global user profile.** Write once in `~/.mindlink/USER.md`, automatically imported into every new project. Tells your AI who you are, how you like to work, and what your preferences are — without re-explaining it in every project.
 
-**`mindlink update` now propagates everything.** When a new version adds a section to MEMORY.md or changes a template, running `mindlink update` applies those changes to all your initialized projects — without touching your existing memory content.
+**`mindlink prune` — retire stale memory.** Reviews every timestamped entry in MEMORY.md and asks: keep, archive, or delete? Entries past their freshness threshold are surfaced first. `--dry-run` shows what would be flagged without touching anything.
 
 ---
 

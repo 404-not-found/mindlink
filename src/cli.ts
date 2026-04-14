@@ -16,6 +16,10 @@ import { importCommand } from './commands/import.js';
 import { doctorCommand } from './commands/doctor.js';
 import { versionCommand } from './commands/version.js';
 import { diffCommand } from './commands/diff.js';
+import { verifyCommand } from './commands/verify.js';
+import { profileCommand } from './commands/profile.js';
+import { pruneCommand } from './commands/prune.js';
+import { mcpCommand } from './commands/mcp.js';
 
 const program = new Command();
 
@@ -39,11 +43,15 @@ program.addCommand(importCommand);
 program.addCommand(doctorCommand);
 program.addCommand(versionCommand);
 program.addCommand(diffCommand);
+program.addCommand(verifyCommand);
+program.addCommand(profileCommand);
+program.addCommand(pruneCommand);
+program.addCommand(mcpCommand);
 
 // "Did you mean?" on unknown commands
 program.on('command:*', (operands: string[]) => {
   const unknown = operands[0];
-  const known = ['init', 'status', 'log', 'clear', 'reset', 'config', 'sync', 'update', 'summary', 'uninstall', 'export', 'import', 'doctor', 'version', 'diff'];
+  const known = ['init', 'status', 'log', 'clear', 'reset', 'config', 'sync', 'update', 'summary', 'uninstall', 'export', 'import', 'doctor', 'version', 'diff', 'verify', 'profile', 'prune', 'mcp'];
 
   // Simple Levenshtein-based suggestion
   function levenshtein(a: string, b: string): number {
