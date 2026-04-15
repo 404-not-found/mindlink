@@ -22,9 +22,9 @@ Git gave every developer a shared version history. MindLink gives your AI team a
 
 ---
 
-> ### ◉ Latest — v2.0.0
+> ### ◉ Latest — v2.0.2
 > **MCP integration for 6 agents · Smart loading · `mindlink verify` · `mindlink profile` · `mindlink prune`**
-> [→ Full release notes](https://github.com/404-not-found/mindlink/releases/tag/v2.0.0)
+> [→ Full release notes](https://github.com/404-not-found/mindlink/releases/tag/v2.0.2)
 
 ---
 
