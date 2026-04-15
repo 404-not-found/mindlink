@@ -284,11 +284,18 @@ Examples:
               if (!existsSync(hookDest)) {
                 mkdirSync(dirname(hookDest), { recursive: true });
                 const settings = JSON.parse(readFileSync(join(HOOKS_TEMPLATES_DIR, 'claude-settings.json'), 'utf8'));
-                settings.mcpServers = {
-                  mindlink: { command: 'mindlink', args: ['mcp'], env: { MINDLINK_PROJECT_PATH: projectPath } },
-                };
                 writeFileSync(hookDest, JSON.stringify(settings, null, 2));
                 restored.push('.claude/settings.json');
+              }
+              const mcpJsonDest = join(projectPath, '.mcp.json');
+              if (!existsSync(mcpJsonDest)) {
+                const mcpJson = {
+                  mcpServers: {
+                    mindlink: { type: 'stdio', command: 'mindlink', args: ['mcp'], env: { MINDLINK_PROJECT_PATH: projectPath } },
+                  },
+                };
+                writeFileSync(mcpJsonDest, JSON.stringify(mcpJson, null, 2));
+                restored.push('.mcp.json');
               }
             }
 
@@ -503,18 +510,25 @@ Examples:
         created.push(`${agent.destFile.padEnd(32)} ${chalk.dim(agent.label)}`);
       }
 
-      // .claude/settings.json hook for Claude Code (includes MCP server entry)
+      // .claude/settings.json hook for Claude Code (hooks + permissions only)
       if (selectedAgents.includes('claude')) {
         const hookDest = join(projectPath, '.claude', 'settings.json');
         if (!existsSync(hookDest)) {
           mkdirSync(dirname(hookDest), { recursive: true });
           const settings = JSON.parse(readFileSync(join(HOOKS_TEMPLATES_DIR, 'claude-settings.json'), 'utf8'));
-          // Inject absolute project path so MCP server always resolves the right .brain/
-          settings.mcpServers = {
-            mindlink: { command: 'mindlink', args: ['mcp'], env: { MINDLINK_PROJECT_PATH: projectPath } },
-          };
           writeFileSync(hookDest, JSON.stringify(settings, null, 2));
-          created.push(`.claude/settings.json${' '.repeat(14)} ${chalk.dim('Claude Code hooks + MCP server')}`);
+          created.push(`.claude/settings.json${' '.repeat(14)} ${chalk.dim('Claude Code hooks')}`);
+        }
+        // .mcp.json — Claude Code CLI reads MCP servers from here (not settings.json)
+        const mcpJsonDest = join(projectPath, '.mcp.json');
+        if (!existsSync(mcpJsonDest)) {
+          const mcpJson = {
+            mcpServers: {
+              mindlink: { type: 'stdio', command: 'mindlink', args: ['mcp'], env: { MINDLINK_PROJECT_PATH: projectPath } },
+            },
+          };
+          writeFileSync(mcpJsonDest, JSON.stringify(mcpJson, null, 2));
+          created.push(`.mcp.json${' '.repeat(24)} ${chalk.dim('Claude Code MCP server')}`);
         }
       }
 

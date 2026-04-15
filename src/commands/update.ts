@@ -193,31 +193,42 @@ Examples:
         }
 
         if (agentValues.includes('claude')) {
+          // .claude/settings.json — hooks + permissions only (no mcpServers)
           const hookDest = join(projectPath, '.claude', 'settings.json');
           try {
             mkdirSync(join(projectPath, '.claude'), { recursive: true });
             const template = JSON.parse(readFileSync(join(HOOKS_TEMPLATES_DIR, 'claude-settings.json'), 'utf8'));
-            // Merge with existing settings (preserve user's custom mcpServers entries)
             let existing: Record<string, unknown> = {};
             if (existsSync(hookDest)) {
               try { existing = JSON.parse(readFileSync(hookDest, 'utf8')); } catch {}
             }
+            // Remove stale mcpServers from settings.json (Claude Code CLI uses .mcp.json now)
+            const { mcpServers: _removed, ...existingWithoutMcp } = existing as Record<string, unknown> & { mcpServers?: unknown };
+            void _removed;
             const merged = {
-              ...template,
-              ...existing,
-              // Always refresh hooks and permissions from template
+              ...existingWithoutMcp,
               hooks: template.hooks,
               permissions: template.permissions,
-              // Merge mcpServers: keep user's other servers, update mindlink entry
-              mcpServers: {
-                ...(typeof existing.mcpServers === 'object' && existing.mcpServers !== null
-                  ? existing.mcpServers as Record<string, unknown>
-                  : {}),
-                mindlink: { command: 'mindlink', args: ['mcp'], env: { MINDLINK_PROJECT_PATH: projectPath } },
-              },
             };
             writeFileSync(hookDest, JSON.stringify(merged, null, 2));
             refreshed.push('.claude/settings.json');
+          } catch {}
+          // .mcp.json — Claude Code CLI reads MCP servers from here
+          const mcpJsonDest = join(projectPath, '.mcp.json');
+          try {
+            let existing: Record<string, unknown> = {};
+            if (existsSync(mcpJsonDest)) {
+              try { existing = JSON.parse(readFileSync(mcpJsonDest, 'utf8')); } catch {}
+            }
+            const merged = {
+              ...existing,
+              mcpServers: {
+                ...(typeof existing.mcpServers === 'object' && existing.mcpServers !== null ? existing.mcpServers as Record<string, unknown> : {}),
+                mindlink: { type: 'stdio', command: 'mindlink', args: ['mcp'], env: { MINDLINK_PROJECT_PATH: projectPath } },
+              },
+            };
+            writeFileSync(mcpJsonDest, JSON.stringify(merged, null, 2));
+            refreshed.push('.mcp.json');
           } catch {}
         }
 
