@@ -4,7 +4,7 @@ import chalk from 'chalk';
 import { execSync } from 'child_process';
 import { join, dirname } from 'path';
 import { existsSync, readFileSync, writeFileSync, mkdirSync } from 'fs';
-import { AGENT_TEMPLATES_DIR, HOOKS_TEMPLATES_DIR, BRAIN_TEMPLATES_DIR, BRAIN_DIR, GLOBAL_USER_PROFILE_PATH, GLOBAL_WINDSURF_MCP_PATH } from '../utils/paths.js';
+import { AGENT_TEMPLATES_DIR, HOOKS_TEMPLATES_DIR, BRAIN_TEMPLATES_DIR, BRAIN_DIR, GLOBAL_USER_PROFILE_PATH, GLOBAL_WINDSURF_MCP_PATH, GLOBAL_CLINE_MCP_PATH } from '../utils/paths.js';
 import { replaceSection } from '../utils/content.js';
 import { AGENTS } from '../utils/agents.js';
 import { getRegisteredProjects, pruneRegistry } from '../utils/registry.js';
@@ -323,6 +323,30 @@ Examples:
             };
             writeFileSync(GLOBAL_WINDSURF_MCP_PATH, JSON.stringify(merged, null, 2));
             refreshed.push('~/.codeium/windsurf/mcp_config.json');
+          } catch {}
+        }
+
+        // Cline: refresh ~/.cline/data/settings/cline_mcp_settings.json (global, alwaysAllow pre-auth)
+        if (agentValues.includes('cline')) {
+          try {
+            mkdirSync(dirname(GLOBAL_CLINE_MCP_PATH), { recursive: true });
+            let existing: Record<string, unknown> = {};
+            if (existsSync(GLOBAL_CLINE_MCP_PATH)) {
+              try { existing = JSON.parse(readFileSync(GLOBAL_CLINE_MCP_PATH, 'utf8')); } catch {}
+            }
+            const merged = {
+              ...existing,
+              mcpServers: {
+                ...(typeof existing.mcpServers === 'object' && existing.mcpServers !== null ? existing.mcpServers as Record<string, unknown> : {}),
+                mindlink: {
+                  command: 'mindlink',
+                  args: ['mcp'],
+                  alwaysAllow: ['mindlink_read_memory', 'mindlink_write_memory', 'mindlink_session_update', 'mindlink_verify'],
+                },
+              },
+            };
+            writeFileSync(GLOBAL_CLINE_MCP_PATH, JSON.stringify(merged, null, 2));
+            refreshed.push('~/.cline/data/settings/cline_mcp_settings.json');
           } catch {}
         }
 

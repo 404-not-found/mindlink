@@ -4,7 +4,8 @@
       "Read(**/.brain/**)",
       "Edit(**/.brain/**)",
       "Write(**/.brain/**)",
-      "Bash(mindlink *)"
+      "Bash(mindlink *)",
+      "mcp__mindlink__*"
     ]
   },
   "hooks": {

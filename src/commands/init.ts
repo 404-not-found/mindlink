@@ -19,7 +19,7 @@ import {
 } from 'fs';
 import { execSync } from 'child_process';
 import { join, resolve, dirname, basename } from 'path';
-import { BRAIN_TEMPLATES_DIR, AGENT_TEMPLATES_DIR, HOOKS_TEMPLATES_DIR, BRAIN_DIR, GLOBAL_USER_PROFILE_PATH, GLOBAL_WINDSURF_MCP_PATH } from '../utils/paths.js';
+import { BRAIN_TEMPLATES_DIR, AGENT_TEMPLATES_DIR, HOOKS_TEMPLATES_DIR, BRAIN_DIR, GLOBAL_USER_PROFILE_PATH, GLOBAL_WINDSURF_MCP_PATH, GLOBAL_CLINE_MCP_PATH } from '../utils/paths.js';
 import { printBanner } from '../utils/banner.js';
 import { AGENTS } from '../utils/agents.js';
 import { registerProject } from '../utils/registry.js';
@@ -297,6 +297,30 @@ Examples:
                 writeFileSync(mcpJsonDest, JSON.stringify(mcpJson, null, 2));
                 restored.push('.mcp.json');
               }
+            }
+            if (toRestore.includes('cline')) {
+              try {
+                mkdirSync(dirname(GLOBAL_CLINE_MCP_PATH), { recursive: true });
+                let existingCline: Record<string, unknown> = {};
+                if (existsSync(GLOBAL_CLINE_MCP_PATH)) {
+                  try { existingCline = JSON.parse(readFileSync(GLOBAL_CLINE_MCP_PATH, 'utf8')); } catch {}
+                }
+                const mergedCline = {
+                  ...existingCline,
+                  mcpServers: {
+                    ...(typeof existingCline.mcpServers === 'object' && existingCline.mcpServers !== null
+                      ? existingCline.mcpServers as Record<string, unknown>
+                      : {}),
+                    mindlink: {
+                      command: 'mindlink',
+                      args: ['mcp'],
+                      alwaysAllow: ['mindlink_read_memory', 'mindlink_write_memory', 'mindlink_session_update', 'mindlink_verify'],
+                    },
+                  },
+                };
+                writeFileSync(GLOBAL_CLINE_MCP_PATH, JSON.stringify(mergedCline, null, 2));
+                restored.push('~/.cline/data/settings/cline_mcp_settings.json');
+              } catch {}
             }
 
             // Write config.json if missing — needed so mindlink update tracks this project
@@ -576,6 +600,33 @@ Examples:
         }
       }
 
+      // Cline: ~/.cline/data/settings/cline_mcp_settings.json (global config — merge, alwaysAllow pre-auth)
+      // Cline is a VS Code extension; project path resolved at runtime via cwd walk-up — no MINDLINK_PROJECT_PATH needed.
+      if (selectedAgents.includes('cline')) {
+        try {
+          mkdirSync(dirname(GLOBAL_CLINE_MCP_PATH), { recursive: true });
+          let existingCline: Record<string, unknown> = {};
+          if (existsSync(GLOBAL_CLINE_MCP_PATH)) {
+            try { existingCline = JSON.parse(readFileSync(GLOBAL_CLINE_MCP_PATH, 'utf8')); } catch {}
+          }
+          const mergedCline = {
+            ...existingCline,
+            mcpServers: {
+              ...(typeof existingCline.mcpServers === 'object' && existingCline.mcpServers !== null
+                ? existingCline.mcpServers as Record<string, unknown>
+                : {}),
+              mindlink: {
+                command: 'mindlink',
+                args: ['mcp'],
+                alwaysAllow: ['mindlink_read_memory', 'mindlink_write_memory', 'mindlink_session_update', 'mindlink_verify'],
+              },
+            },
+          };
+          writeFileSync(GLOBAL_CLINE_MCP_PATH, JSON.stringify(mergedCline, null, 2));
+          created.push(`~/.cline/data/settings/cline_mcp_settings.json ${chalk.dim('Cline MCP server (global, pre-authorized)')}`);
+        } catch {}
+      }
+
       // Windsurf: ~/.codeium/windsurf/mcp_config.json (global config — merge, no project path)
       // Windsurf only supports global MCP config; project resolution uses cwd walk-up at runtime.
       if (selectedAgents.includes('windsurf')) {
@@ -634,13 +685,6 @@ Examples:
     if (errors.length > 0) {
       console.log('');
       for (const err of errors) console.log(`  ${chalk.red('✗')}  ${err}`);
-    }
-
-    // Cline hint — MCP config can't be auto-written (VS Code internal storage)
-    if (selectedAgents.includes('cline')) {
-      console.log(`  ${chalk.yellow('→')}  Cline: add the MCP server manually in Cline's settings UI (MCP Servers tab)`);
-      console.log(`     ${chalk.dim('Command: mindlink  Args: mcp  Env: MINDLINK_PROJECT_PATH=' + projectPath)}`);
-      console.log('');
     }
 
     // Hint about global profile if not yet set up

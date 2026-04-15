@@ -20,3 +20,6 @@ export const GLOBAL_USER_PROFILE_PATH = join(GLOBAL_MINDLINK_DIR, 'USER.md');
 
 // Windsurf global MCP config (Windsurf only supports global, not project-level)
 export const GLOBAL_WINDSURF_MCP_PATH = join(homedir(), '.codeium', 'windsurf', 'mcp_config.json');
+
+// Cline global MCP config (VS Code extension — global settings file)
+export const GLOBAL_CLINE_MCP_PATH = join(homedir(), '.cline', 'data', 'settings', 'cline_mcp_settings.json');
