@@ -532,12 +532,12 @@ Examples:
         }
       }
 
-      // Cursor: .cursor/mcp.json (project-level MCP config)
+      // Cursor: .cursor/mcp.json (project-level MCP config, type: stdio required)
       if (selectedAgents.includes('cursor')) {
         const cursorMcpDest = join(projectPath, '.cursor', 'mcp.json');
         if (!existsSync(cursorMcpDest)) {
           mkdirSync(join(projectPath, '.cursor'), { recursive: true });
-          const cursorMcp = { mcpServers: { mindlink: { command: 'mindlink', args: ['mcp'], env: { MINDLINK_PROJECT_PATH: projectPath } } } };
+          const cursorMcp = { mcpServers: { mindlink: { type: 'stdio', command: 'mindlink', args: ['mcp'], env: { MINDLINK_PROJECT_PATH: projectPath } } } };
           writeFileSync(cursorMcpDest, JSON.stringify(cursorMcp, null, 2));
           created.push(`.cursor/mcp.json${' '.repeat(20)} ${chalk.dim('Cursor MCP server')}`);
         }
@@ -554,12 +554,12 @@ Examples:
         }
       }
 
-      // GitHub Copilot: .vscode/mcp.json (project-level MCP config)
+      // GitHub Copilot: .vscode/mcp.json (VS Code uses "servers" key, not "mcpServers")
       if (selectedAgents.includes('copilot')) {
         const copilotMcpDest = join(projectPath, '.vscode', 'mcp.json');
         if (!existsSync(copilotMcpDest)) {
           mkdirSync(join(projectPath, '.vscode'), { recursive: true });
-          const copilotMcp = { mcpServers: { mindlink: { command: 'mindlink', args: ['mcp'], env: { MINDLINK_PROJECT_PATH: projectPath } } } };
+          const copilotMcp = { servers: { mindlink: { command: 'mindlink', args: ['mcp'], env: { MINDLINK_PROJECT_PATH: projectPath } } } };
           writeFileSync(copilotMcpDest, JSON.stringify(copilotMcp, null, 2));
           created.push(`.vscode/mcp.json${' '.repeat(19)} ${chalk.dim('GitHub Copilot MCP server')}`);
         }

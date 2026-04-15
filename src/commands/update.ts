@@ -232,7 +232,7 @@ Examples:
           } catch {}
         }
 
-        // Cursor: refresh .cursor/mcp.json (merge — preserve user's other servers)
+        // Cursor: refresh .cursor/mcp.json (merge — preserve user's other servers, type: stdio required)
         if (agentValues.includes('cursor')) {
           const cursorMcpDest = join(projectPath, '.cursor', 'mcp.json');
           try {
@@ -245,7 +245,7 @@ Examples:
               ...existing,
               mcpServers: {
                 ...(typeof existing.mcpServers === 'object' && existing.mcpServers !== null ? existing.mcpServers as Record<string, unknown> : {}),
-                mindlink: { command: 'mindlink', args: ['mcp'], env: { MINDLINK_PROJECT_PATH: projectPath } },
+                mindlink: { type: 'stdio', command: 'mindlink', args: ['mcp'], env: { MINDLINK_PROJECT_PATH: projectPath } },
               },
             };
             writeFileSync(cursorMcpDest, JSON.stringify(merged, null, 2));
@@ -264,7 +264,7 @@ Examples:
           } catch {}
         }
 
-        // GitHub Copilot: refresh .vscode/mcp.json (merge — preserve user's other servers)
+        // GitHub Copilot: refresh .vscode/mcp.json (VS Code uses "servers" key, not "mcpServers")
         if (agentValues.includes('copilot')) {
           const copilotMcpDest = join(projectPath, '.vscode', 'mcp.json');
           try {
@@ -275,8 +275,8 @@ Examples:
             }
             const merged = {
               ...existing,
-              mcpServers: {
-                ...(typeof existing.mcpServers === 'object' && existing.mcpServers !== null ? existing.mcpServers as Record<string, unknown> : {}),
+              servers: {
+                ...(typeof existing.servers === 'object' && existing.servers !== null ? existing.servers as Record<string, unknown> : {}),
                 mindlink: { command: 'mindlink', args: ['mcp'], env: { MINDLINK_PROJECT_PATH: projectPath } },
               },
             };
