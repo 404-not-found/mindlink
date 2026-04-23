@@ -89,12 +89,14 @@ describe('mindlink search', () => {
     rmSync(dir, { recursive: true, force: true });
   });
 
-  // ── No projects ─────────────────────────────────────────────────────────────
+  // ── No matches ──────────────────────────────────────────────────────────────
 
-  test('exits cleanly when no projects found', () => {
-    const result = run('search "postgres"', dir);
+  test('exits cleanly when query matches nothing', () => {
+    initProject(dir);
+    // Use a query guaranteed to match nothing in any real project
+    const result = run('search "xyzzy_no_match_guaranteed_12345"', dir);
     expect(result.code).toBe(0);
-    expect(result.stdout).toMatch(/no mindlink projects|no .brain/i);
+    expect(result.stdout).toMatch(/no matches/i);
   });
 
   // ── With project ─────────────────────────────────────────────────────────────
