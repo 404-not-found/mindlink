@@ -229,6 +229,59 @@ describe('mindlink init', () => {
     const result = run('init --yes', dir);
     expect(result.stdout).toContain('M I N D L I N K');
   });
+
+  // ── Git history analysis ───────────────────────────────────────────────────
+
+  test('works without git (non-git directory) — no crash', () => {
+    const result = run('init --yes', dir);
+    expect(result.code).toBe(0);
+    expect(existsSync(join(dir, '.brain/MEMORY.md'))).toBe(true);
+  });
+
+  test('MEMORY.md is created even when git is unavailable', () => {
+    run('init --yes', dir);
+    const memory = readFileSync(join(dir, '.brain/MEMORY.md'), 'utf8');
+    expect(memory).toContain('## Core');
+  });
+
+  test('git history populates Current focus when commits exist', () => {
+    execSync('git init', { cwd: dir });
+    execSync('git config user.email "test@test.com"', { cwd: dir });
+    execSync('git config user.name "Test"', { cwd: dir });
+    writeFileSync(join(dir, 'README.md'), '# Test project\n');
+    execSync('git add .', { cwd: dir });
+    execSync('git commit -m "initial commit"', { cwd: dir });
+
+    run('init --yes', dir);
+    const memory = readFileSync(join(dir, '.brain/MEMORY.md'), 'utf8');
+    expect(memory).toContain('Recent work');
+  });
+
+  // ── Stack hints ────────────────────────────────────────────────────────────
+
+  test('Next.js project gets architecture hints', () => {
+    writeFileSync(join(dir, 'package.json'), JSON.stringify({
+      name: 'my-app',
+      dependencies: { next: '^14.0.0', react: '^18.0.0' }
+    }));
+    run('init --yes', dir);
+    const memory = readFileSync(join(dir, '.brain/MEMORY.md'), 'utf8');
+    expect(memory).toMatch(/app\/|pages\//i);
+  });
+
+  test('Python project gets architecture hints', () => {
+    writeFileSync(join(dir, 'requirements.txt'), 'flask\nsqlalchemy\n');
+    run('init --yes', dir);
+    const memory = readFileSync(join(dir, '.brain/MEMORY.md'), 'utf8');
+    expect(memory).toMatch(/python|main\.py|venv/i);
+  });
+
+  test('Go project gets architecture hints', () => {
+    writeFileSync(join(dir, 'go.mod'), 'module example.com/myapp\n\ngo 1.21\n');
+    run('init --yes', dir);
+    const memory = readFileSync(join(dir, '.brain/MEMORY.md'), 'utf8');
+    expect(memory).toMatch(/go\.mod|cmd\/|main\.go/i);
+  });
 });
 
 // ── Banner utility ────────────────────────────────────────────────────────────

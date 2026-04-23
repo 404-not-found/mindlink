@@ -25,6 +25,14 @@ import { AGENTS } from '../utils/agents.js';
 import { registerProject } from '../utils/registry.js';
 import { sectionHasRealContent } from '../utils/content.js';
 
+interface GitInsights {
+  recentWork: string;       // summary of last 30 commits
+  topModules: string;       // most-changed dirs/files
+  topDecisions: string;     // inferred locked-in decisions from commit patterns
+  isTeam: boolean;          // multiple authors detected
+  projectAge: string;       // age from first commit
+}
+
 interface ProjectInfo {
   name: string;
   description: string;
@@ -32,6 +40,7 @@ interface ProjectInfo {
   recentActivity: string;
   topDirs: string;
   date: string;
+  git: GitInsights | null;
 }
 
 function detectProjectInfo(projectPath: string): ProjectInfo {
@@ -90,7 +99,7 @@ function detectProjectInfo(projectPath: string): ProjectInfo {
     }
   }
 
-  // Get recent git activity
+  // Get recent git activity (short log for recentActivity field)
   try {
     const log = execSync('git log --oneline -5', { cwd: projectPath, encoding: 'utf8', stdio: ['pipe','pipe','pipe'] }).trim();
     if (log) {
@@ -109,7 +118,135 @@ function detectProjectInfo(projectPath: string): ProjectInfo {
     if (dirs.length > 0) topDirs = dirs.join(', ');
   } catch {}
 
-  return { name, description, stack, recentActivity, topDirs, date };
+  // Deep git analysis — silently skipped if no git repo
+  const git = analyzeGitHistory(projectPath);
+
+  return { name, description, stack, recentActivity, topDirs, date, git };
+}
+
+/**
+ * Analyze git history to extract project insights.
+ * Returns null if git is unavailable or repo has no commits.
+ * All operations are wrapped in try/catch — never throws.
+ */
+function analyzeGitHistory(projectPath: string): GitInsights | null {
+  const exec = (cmd: string) =>
+    execSync(cmd, { cwd: projectPath, encoding: 'utf8', stdio: ['pipe', 'pipe', 'pipe'] }).trim();
+
+  try {
+    // Verify git repo with at least one commit
+    exec('git rev-parse HEAD');
+  } catch {
+    return null;
+  }
+
+  let recentWork = '';
+  let topModules = '';
+  let topDecisions = '';
+  let isTeam = false;
+  let projectAge = '';
+
+  // Recent work — last 30 commit messages, strip hashes
+  try {
+    const messages = exec('git log --pretty=format:"%s" -30')
+      .split('\n')
+      .map(m => m.trim())
+      .filter(m => m.length > 0 && m.length < 120);
+    if (messages.length > 0) {
+      recentWork = messages.slice(0, 8).join('\n');
+    }
+  } catch {}
+
+  // Top modules — files changed most often in last 30 commits
+  try {
+    const diffstat = exec('git log --name-only --pretty=format: -30')
+      .split('\n')
+      .map(l => l.trim())
+      .filter(l => l.length > 0);
+
+    // Count by top-level dir or file
+    const counts: Record<string, number> = {};
+    for (const file of diffstat) {
+      const parts = file.split('/');
+      const key = parts.length > 1 ? parts[0] + '/' : file;
+      counts[key] = (counts[key] ?? 0) + 1;
+    }
+    const sorted = Object.entries(counts)
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, 5)
+      .map(([k]) => k);
+    if (sorted.length > 0) topModules = sorted.join(', ');
+  } catch {}
+
+  // Team detection — multiple unique author emails
+  try {
+    const authors = exec('git log --pretty=format:"%ae" -30')
+      .split('\n')
+      .map(e => e.trim())
+      .filter(e => e.length > 0);
+    const unique = new Set(authors);
+    isTeam = unique.size > 1;
+  } catch {}
+
+  // Project age — date of first commit
+  try {
+    const firstDate = exec('git log --pretty=format:"%ad" --date=short | tail -1');
+    if (firstDate) {
+      const ms = Date.now() - new Date(firstDate).getTime();
+      const days = Math.floor(ms / 86400000);
+      if (days < 7) projectAge = `${days}d old`;
+      else if (days < 30) projectAge = `${Math.floor(days / 7)}w old`;
+      else if (days < 365) projectAge = `${Math.floor(days / 30)}mo old`;
+      else projectAge = `${Math.floor(days / 365)}y old`;
+    }
+  } catch {}
+
+  // Infer top decisions from commit message patterns
+  try {
+    const messages = exec('git log --pretty=format:"%s" -50').split('\n').map(m => m.trim());
+    const decisionKeywords = ['add', 'switch', 'replace', 'migrate', 'refactor', 'remove', 'use ', 'adopt', 'drop', 'move'];
+    const decisions = messages
+      .filter(m => decisionKeywords.some(k => m.toLowerCase().startsWith(k)))
+      .slice(0, 4)
+      .map(m => m.slice(0, 80));
+    if (decisions.length > 0) topDecisions = decisions.join('\n');
+  } catch {}
+
+  if (!recentWork && !topModules && !projectAge) return null;
+  return { recentWork, topModules, topDecisions, isTeam, projectAge };
+}
+
+/**
+ * Return stack-specific architecture hints to pre-populate MEMORY.md Architecture section.
+ * Returns empty string if no known hints for this stack.
+ */
+function buildStackHints(stack: string): string {
+  const s = stack.toLowerCase();
+  if (s.includes('next.js') || s.includes('nextjs')) {
+    return `Pages: app/ or pages/ router\nAPI routes: app/api/ or pages/api/\nComponents: components/\nState: (fill in — context, zustand, redux?)`;
+  }
+  if (s.includes('react') && !s.includes('next')) {
+    return `Components: src/components/\nState: (fill in — context, zustand, redux?)\nRouting: (fill in — react-router, tanstack?)`;
+  }
+  if (s.includes('express') || s.includes('fastify') || s.includes('koa')) {
+    return `Entry: src/index.ts or server.ts\nRoutes: src/routes/\nMiddleware: src/middleware/\nDB: (fill in)`;
+  }
+  if (s.includes('python')) {
+    return `Entry: main.py or src/\nDependencies: requirements.txt or pyproject.toml\nVirtual env: .venv/ or venv/`;
+  }
+  if (s.includes('rust')) {
+    return `Entry: src/main.rs or src/lib.rs\nKey crates: (fill in from Cargo.toml)\nModules: src/`;
+  }
+  if (s.includes('go')) {
+    return `Entry: main.go or cmd/\nPackages: internal/ or pkg/\nDependencies: go.mod`;
+  }
+  if (s.includes('java') || s.includes('kotlin')) {
+    return `Entry: src/main/\nTests: src/test/\nBuild: pom.xml or build.gradle`;
+  }
+  if (s.includes('ruby')) {
+    return `Entry: app/ (Rails) or lib/\nDependencies: Gemfile\nTests: spec/ or test/`;
+  }
+  return '';
 }
 
 /** Returns true if MEMORY.md has at least one real (non-comment, non-heading, non-empty) line */
@@ -193,7 +330,15 @@ function buildMemoryMd(templateContent: string, info: ProjectInfo): string {
   // Inject top dirs and recent activity under "Current focus"
   const focusLines: string[] = [];
   if (info.topDirs) focusLines.push(`Directories: ${info.topDirs}`);
-  if (info.recentActivity) focusLines.push(`Recent commits: ${info.recentActivity}`);
+  if (info.git?.recentWork) {
+    // Use rich git summary for current focus
+    const firstLine = info.git.recentWork.split('\n')[0];
+    focusLines.push(`Recent work: ${firstLine}`);
+  } else if (info.recentActivity) {
+    focusLines.push(`Recent commits: ${info.recentActivity}`);
+  }
+  if (info.git?.projectAge) focusLines.push(`Project age: ${info.git.projectAge}`);
+  if (info.git?.isTeam) focusLines.push(`Team project: multiple contributors detected`);
   const focusBlock = focusLines.length > 0
     ? focusLines.join('\n') + `\n<!-- Initialized ${info.date} — update to reflect the current active focus -->`
     : `<!-- Initialized ${info.date} — ask your AI to fill this in after your first session -->`;
@@ -201,6 +346,32 @@ function buildMemoryMd(templateContent: string, info: ProjectInfo): string {
     /### Current focus\n<!--[^]*?-->/,
     `### Current focus\n${focusBlock}`
   );
+
+  // Inject git-inferred top decisions under "Top decisions"
+  if (info.git?.topDecisions) {
+    const decisionLines = info.git.topDecisions
+      .split('\n')
+      .map(d => `- ${d} <!-- inferred from git history — verify and update -->`)
+      .join('\n');
+    content = content.replace(
+      /### Top decisions\n<!--[^]*?-->/,
+      `### Top decisions\n${decisionLines}\n<!-- The 3–5 most important locked-in choices. One line each. -->`
+    );
+  }
+
+  // Inject architecture hints — git topModules + stack-specific hints
+  const stackHints = buildStackHints(info.stack);
+  const archLines: string[] = [];
+  if (info.git?.topModules) archLines.push(`Most active modules (from git history): ${info.git.topModules}`);
+  if (stackHints) archLines.push(stackHints);
+  if (archLines.length > 0) {
+    content = content.replace(
+      /## Architecture[^\n]*\n\n<!--[^]*?-->/,
+      `## Architecture  <!-- Read when the task involves project structure -->\n\n` +
+      archLines.join('\n') +
+      `\n<!-- High-level structure: main components and how they relate. Update when the structure changes. -->`
+    );
+  }
 
   return content;
 }

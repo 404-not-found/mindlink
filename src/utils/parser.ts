@@ -15,7 +15,9 @@ export function extractSection(markdown: string, heading: string): string {
       const level = match[1].length;
       const title = match[2].trim();
 
-      if (title.toLowerCase() === heading.toLowerCase()) {
+      // Strip inline HTML comments (e.g. "Core  <!-- READ EVERY SESSION -->") before matching
+      const cleanTitle = title.replace(/<!--.*?-->/g, '').trim();
+      if (cleanTitle.toLowerCase() === heading.toLowerCase()) {
         inSection = true;
         headingLevel = level;
         continue;

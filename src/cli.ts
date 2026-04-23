@@ -20,6 +20,8 @@ import { verifyCommand } from './commands/verify.js';
 import { profileCommand } from './commands/profile.js';
 import { pruneCommand } from './commands/prune.js';
 import { mcpCommand } from './commands/mcp.js';
+import { recapCommand } from './commands/recap.js';
+import { searchCommand } from './commands/search.js';
 
 const program = new Command();
 
@@ -47,11 +49,13 @@ program.addCommand(verifyCommand);
 program.addCommand(profileCommand);
 program.addCommand(pruneCommand);
 program.addCommand(mcpCommand);
+program.addCommand(recapCommand);
+program.addCommand(searchCommand);
 
 // "Did you mean?" on unknown commands
 program.on('command:*', (operands: string[]) => {
   const unknown = operands[0];
-  const known = ['init', 'status', 'log', 'clear', 'reset', 'config', 'sync', 'update', 'summary', 'uninstall', 'export', 'import', 'doctor', 'version', 'diff', 'verify', 'profile', 'prune', 'mcp'];
+  const known = ['init', 'status', 'log', 'clear', 'reset', 'config', 'sync', 'update', 'summary', 'uninstall', 'export', 'import', 'doctor', 'version', 'diff', 'verify', 'profile', 'prune', 'mcp', 'recap', 'search'];
 
   // Simple Levenshtein-based suggestion
   function levenshtein(a: string, b: string): number {
