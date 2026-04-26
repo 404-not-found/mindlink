@@ -22,9 +22,9 @@ Git gave every developer a shared version history. MindLink gives your AI team a
 
 ---
 
-> ### ◉ Latest — v2.1.0
-> **Smart init from git history · Stack-aware templates · `mindlink recap` · `mindlink search`**
-> [→ Full release notes](https://github.com/404-not-found/mindlink/releases/tag/v2.1.0)
+> ### ◉ Latest — v2.2.0
+> **`mindlink learn` — teach your AI from any file or URL · Smart init · `mindlink recap` · `mindlink search`**
+> [→ Full release notes](https://github.com/404-not-found/mindlink/releases/tag/v2.2.0)
 
 ---
 

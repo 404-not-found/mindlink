@@ -1,6 +1,6 @@
 {
   "name": "mindlink",
-  "version": "2.1.0",
+  "version": "2.2.0",
   "description": "Give your AI a brain. Session memory, cross-session sync, and cross-agent context — one command per project.",
   "type": "module",
   "bin": {
